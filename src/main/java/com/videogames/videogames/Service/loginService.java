@@ -1,0 +1,54 @@
+package com.videogames.videogames.Service;
+
+import com.videogames.videogames.Entity.Carrello;
+import com.videogames.videogames.Entity.Role;
+import com.videogames.videogames.Entity.Utente;
+import com.videogames.videogames.Repository.CarrelloRepository;
+import com.videogames.videogames.Repository.RoleRepository;
+import com.videogames.videogames.Repository.utenteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class loginService {
+
+    @Autowired
+    private utenteRepository utenteRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private CarrelloRepository carrelloRepository;
+
+    public Utente newUtente(Utente formUtente, List<String> ruoli){
+
+        //Assegno i ruoli all'utente
+        List<Role> ruoliAssengati = new ArrayList<>();
+        if (ruoli != null && !ruoli.isEmpty()){
+            for (String r : ruoli){
+                Role rNome = roleRepository.findByName(r);
+                ruoliAssengati.add(rNome);
+            }
+        }else{
+            //Se nessun ruolo, in automatico user
+            Role defaultRuolo = roleRepository.findByName("USER");
+            ruoliAssengati.add(defaultRuolo);
+        }
+        formUtente.setRoles(ruoliAssengati);
+
+        //setto la password e poi salvo
+        formUtente.setPassword("{noop}" + formUtente.getPassword());
+
+        Utente utente = utenteRepository.save(formUtente);
+        //Associo utente ad un carrello
+        Carrello carrello = new Carrello();
+        carrello.setUtente(formUtente);
+
+        carrelloRepository.save(carrello);
+        return utente;
+    }
+}
