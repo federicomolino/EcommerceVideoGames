@@ -1,9 +1,13 @@
 package com.videogames.videogames.Service;
 
+import com.videogames.videogames.Entity.CarrelloGioco;
 import com.videogames.videogames.Entity.Gioco;
+import com.videogames.videogames.Repository.CarrelloGiocoRepository;
 import com.videogames.videogames.Repository.giocoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class serviceGioco {
@@ -11,11 +15,22 @@ public class serviceGioco {
     @Autowired
     private giocoRepository giocoRepository;
 
+    @Autowired
+    private CarrelloGiocoRepository carrelloGiocoRepository;
+
+    @Autowired
+    private carrelloService carrelloService;
+
     public Gioco addGioco(Gioco giocoForm){
        return giocoRepository.save(giocoForm);
     }
 
     public void cancellaGioco(Integer id){
+        //Cerchiamo se il gioco è in qualche carrello
+        Optional<CarrelloGioco> carrelloGioco = carrelloGiocoRepository.findByIdGiocoCarrello(id);
+        if (carrelloGioco.isPresent()){
+            carrelloService.cancellaGiocoCarrello(carrelloGioco.get().getId_carrelloGioco());
+        }
         giocoRepository.deleteById(id);
     }
 

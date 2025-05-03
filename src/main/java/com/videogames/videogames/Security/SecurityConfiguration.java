@@ -17,6 +17,7 @@ public class SecurityConfiguration {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
+                .requestMatchers("/api/**").permitAll()
                 .requestMatchers("/login/**").permitAll()
                 .requestMatchers("/gioco/newGioco","/gioco/editGioco/**","/gioco/delete/**").hasAuthority("ADMIN")
                 .requestMatchers("/", "/**").authenticated()

@@ -1,5 +1,6 @@
 package com.videogames.videogames.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -32,6 +33,7 @@ public class Gioco {
 
     private int quantita;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "gioco")
     private List<CarrelloGioco> carrelliAssociati;
 
