@@ -35,10 +35,10 @@ public class carrelloController {
     @GetMapping()
     public String showCarrello(Model model, Principal principal){
         Optional<Utente> u = carrelloService.recuperoUtente(principal);
-
         List<CarrelloGioco> carrello = carrelloGiocoRepository.findByUtente(u);
-
+        double prezzo = carrelloService.prezzoFinaleCarrello(principal);
         model.addAttribute("listCarrello", carrello);
+        model.addAttribute("prezzoTotale", prezzo);
         return "Carrello/carrello";
     }
 

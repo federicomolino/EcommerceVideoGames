@@ -77,6 +77,59 @@
         </div>
       </div>
     </div>
+
+    <div class="col-5">
+      <div class="row mt-5 ms-3 border rounded p-4 shadow-sm d-flex">
+        <!--Totale prezzo-->
+        <div>
+          <h6>Totale pagamento</h6>
+          <span th:text="'€ ' + ${prezzoTotale}">€ 12</span>
+          <hr>
+        </div>
+
+        <div>
+          <span>Modalità pagamento</span>
+          <form class="mt-2">
+
+            <div class="col-6">
+              <div class="d-flex flex-column">
+                <!--Inserimento carta-->
+                <label style="font-size: 15px">Inserisci numero carta</label>
+                <input maxlength="19" autocomplete="cc-number" type="text" placeholder="1234 5678 9012 3456"
+                       pattern="[0-9\s]{13,19}" name="card"
+                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                       style="height: 20px;">
+              </div>
+
+              <!--Inserimento data-->
+              <div>
+                <label style="font-size: 15px" class="mt-2">Data Scadenza</label>
+                <input type="month" name="scadenzaCard" style="height: 20px;">
+              </div>
+
+              <!--Inserimento CVV-->
+              <div>
+                <label style="font-size: 15px" class="mt-2">CVV/CVC</label>
+                <input type="text" name="scadenzaCard" style="height: 20px; width:40px;"
+                placeholder="123" class="ms-2" maxlength="3">
+              </div>
+
+              <!--Quando visualizzare il bottone per il pagamento-->
+              <div th:if="${prezzoTotale == 0}">
+                <button class="mt-4 btn btn-outline-success btn-sm" type="submit" disabled>Pagamento</button>
+              </div>
+              <div th:if="${prezzoTotale != 0}">
+                <button class="mt-4 btn btn-outline-success btn-sm" type="submit">Pagamento</button>
+              </div>
+
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

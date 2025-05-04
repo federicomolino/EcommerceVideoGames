@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,6 +35,19 @@ public class carrelloService {
         Optional<Utente> utente = userRepository.findByUsername(username);
 
         return utente;
+    }
+
+    public double prezzoFinaleCarrello(Principal principal){
+        Optional<Utente> utente = recuperoUtente(principal);
+        List<CarrelloGioco> carrelloGioco = carrelloGiocoRepository.findByUtente(utente);
+        double price = 0;
+        if (!carrelloGioco.isEmpty()){
+            for (CarrelloGioco carrello : carrelloGioco){
+                Gioco g = carrello.getGioco();
+                price += g.getPrezzo() * carrello.getQuantita();
+            }
+        }
+        return price;
     }
 
     //Aggiunta al carrello

@@ -7,6 +7,7 @@ import com.videogames.videogames.Repository.giocoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,6 +21,16 @@ public class serviceGioco {
 
     @Autowired
     private carrelloService carrelloService;
+
+    public List<Gioco> showGiochi(String titolo){
+        List<Gioco> giochi;
+        if (titolo == null || titolo.isEmpty()){
+            giochi = giocoRepository.findAll();
+        }else {
+            giochi = giocoRepository.findByTitoloContainingIgnoreCase(titolo);
+        }
+        return giochi;
+    }
 
     public Gioco addGioco(Gioco giocoForm){
        return giocoRepository.save(giocoForm);
