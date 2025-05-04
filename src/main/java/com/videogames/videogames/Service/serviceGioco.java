@@ -51,7 +51,7 @@ public class serviceGioco {
     }
 
     //Modifica Gioco
-    public Gioco editGioco(Gioco editFormGioco){
+    public Gioco editGioco(Gioco editFormGioco) {
         editFormGioco.setTitolo(editFormGioco.getTitolo());
         editFormGioco.setDescrizione(editFormGioco.getDescrizione());
         editFormGioco.setPrezzo(editFormGioco.getPrezzo());

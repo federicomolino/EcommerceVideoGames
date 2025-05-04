@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionApi{
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(NessunGiocoTrovato.class)
     public ResponseEntity<ErrorResponse> erroriApi(NessunGiocoTrovato e, HttpServletRequest request){
         ErrorResponse err = new ErrorResponse(
                 e.getMessage(),
@@ -21,6 +21,15 @@ public class GlobalExceptionApi{
 
     @ExceptionHandler(ExceptionAddGioco.class)
     public ResponseEntity<ErrorResponse> errorApiAddGioco(ExceptionAddGioco e, HttpServletRequest request){
+        ErrorResponse err = new ErrorResponse(
+                e.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ExceptionEditGioco.class)
+    public ResponseEntity<ErrorResponse> errorApiEditGioco(ExceptionEditGioco e, HttpServletRequest request){
         ErrorResponse err = new ErrorResponse(
                 e.getMessage(),
                 request.getRequestURI()

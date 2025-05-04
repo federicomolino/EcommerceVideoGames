@@ -1,10 +1,12 @@
 package com.videogames.videogames.ApiRest;
 
 import com.videogames.videogames.Entity.Gioco;
+import com.videogames.videogames.Exception.ExceptionAddGioco;
 import com.videogames.videogames.Exception.NessunGiocoTrovato;
 import com.videogames.videogames.Repository.giocoRepository;
 import com.videogames.videogames.Service.serviceGioco;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +38,11 @@ public class ApiGioco {
 
     @PostMapping
     public ResponseEntity<?> addGioco(@RequestBody Gioco gioco) {
-        Gioco newGioco = serviceGioco.addGioco(gioco);
-        return ResponseEntity.ok(newGioco);
+        try {
+            Gioco newGioco = serviceGioco.addGioco(gioco);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newGioco);
+        }catch (ExceptionAddGioco ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        }
     }
 }
