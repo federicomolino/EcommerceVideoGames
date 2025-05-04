@@ -6,15 +6,13 @@ import com.videogames.videogames.Repository.giocoRepository;
 import com.videogames.videogames.Service.serviceGioco;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/gioco")
-public class ApiAddGioco {
+public class ApiGioco {
 
     @Autowired
     private giocoRepository giocoRepository;
@@ -29,5 +27,16 @@ public class ApiAddGioco {
             throw new NessunGiocoTrovato("CG404_NESSUN_GIOCO_TROVATO");
         }
         return ResponseEntity.ok(gioco);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteGioco(@PathVariable Integer id){
+        serviceGioco.cancellaGioco(id);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> addGioco(@RequestBody Gioco gioco) {
+        Gioco newGioco = serviceGioco.addGioco(gioco);
+        return ResponseEntity.ok(newGioco);
     }
 }

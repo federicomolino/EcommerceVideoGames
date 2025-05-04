@@ -18,4 +18,13 @@ public class GlobalExceptionApi{
         );
         return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(ExceptionAddGioco.class)
+    public ResponseEntity<ErrorResponse> errorApiAddGioco(ExceptionAddGioco e, HttpServletRequest request){
+        ErrorResponse err = new ErrorResponse(
+                e.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+    }
 }

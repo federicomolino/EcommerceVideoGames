@@ -2,6 +2,7 @@ package com.videogames.videogames.Service;
 
 import com.videogames.videogames.Entity.CarrelloGioco;
 import com.videogames.videogames.Entity.Gioco;
+import com.videogames.videogames.Exception.ExceptionAddGioco;
 import com.videogames.videogames.Repository.CarrelloGiocoRepository;
 import com.videogames.videogames.Repository.giocoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,11 @@ public class serviceGioco {
     }
 
     public Gioco addGioco(Gioco giocoForm){
-       return giocoRepository.save(giocoForm);
+        try{
+            return giocoRepository.save(giocoForm);
+        }catch (Exception ex) {
+            throw new ExceptionAddGioco("CG_500_DATI_INSERITI_PRESENTI_NEL_SISTEMA");
+        }
     }
 
     public void cancellaGioco(Integer id){
