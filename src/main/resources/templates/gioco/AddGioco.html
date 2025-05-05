@@ -78,6 +78,15 @@
                         <li th:each="err : ${#fields.errors('quantita')}" th:text="${err}" class="text-danger">Input is incorrect</li>
                     </ul>
                 </div>
+
+                <div class="mb-1">
+                    <label class="form-label">Data Uscita</label>
+                    <input type="date" name="dataUscitaGioco" th:field="*{dataUscitaGioco}" class="form-control"
+                           id="dataUscitaGioco" required>
+                    <ul th:if="${#fields.hasErrors('dataUscitaGioco')}">
+                        <li th:each="err : ${#fields.errors('dataUscitaGioco')}" th:text="${err}" class="text-danger">Input is incorrect</li>
+                    </ul>
+                </div>
             </div>
 
             <!-- Pulsanti -->

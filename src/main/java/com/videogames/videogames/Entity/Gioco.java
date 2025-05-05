@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -20,6 +21,10 @@ public class Gioco {
     private String descrizione;
 
     private String softwareHouse;
+
+    private LocalDate dataUscitaGioco;
+
+    private enum piattaforma {PC,PS5,XBOXONE,SWITCH}
 
     @Column(unique = true)
     private long codiceProdotto;
@@ -107,5 +112,13 @@ public class Gioco {
 
     public void setPrezzo(double prezzo) {
         this.prezzo = prezzo;
+    }
+
+    public LocalDate getDataUscitaGioco() {
+        return dataUscitaGioco;
+    }
+
+    public void setDataUscitaGioco(LocalDate dataUscitaGioco) {
+        this.dataUscitaGioco = dataUscitaGioco;
     }
 }

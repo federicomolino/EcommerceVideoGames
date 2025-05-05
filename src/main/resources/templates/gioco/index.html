@@ -44,71 +44,74 @@
             <!--CheckRicerca-->
             <div class="row">
                 <div class="col-3">
-                    <div class="container border rounded p-5 shadow bg-light">
-                        <h6>Dettagli</h6>
-                        <hr>
+                        <div class="container border rounded p-3 shadow bg-light">
+                            <h6>Dettagli</h6>
+                            <hr>
 
-                        <div class="mt-3">
-                            <h6>Prezzo</h6>
-                            <input type="range" class="form-range" min="0" max="5" step="1" id="customRange3"
-                                   name="rangePrezzo">
-                            <div class="d-flex justify-content-between px-2 text-muted small">
-                                <span>10€</span>
-                                <span> 20€</span>
-                                <span> 30€</span>
-                                <span> 40€</span>
-                                <span> +50€</span>
+                            <div class="mt-3">
+                                <h6>Prezzo</h6>
+                                <input type="range" class="form-range" min="0" max="5" step="1" id="customRange3"
+                                       name="rangePrezzo">
+                                <div class="d-flex justify-content-between px-2 text-muted small">
+                                    <span>10€</span>
+                                    <span> 20€</span>
+                                    <span> 30€</span>
+                                    <span> 40€</span>
+                                    <span> +50€</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <h6>Anno pubblicazione</h6>
+                                <input type="month" id="annoPubblicazione" value="2025-05">
+                            </div>
+
+                            <div class="mt-3">
+                                <h6>Piattaforma</h6>
+                                <div>
+                                    <label for="customRange3" class="form-label">pc</label>
+                                    <input type="checkbox" value="pc">
+                                </div>
+
+                                <div>
+                                    <label for="customRange3" class="form-label">PS5</label>
+                                    <input type="checkbox" value="ps5">
+                                </div>
+
+                                <div>
+                                    <label for="customRange3" class="form-label">Xbox One</label>
+                                    <input type="checkbox" value="ps5">
+                                </div>
+
+                                <div>
+                                    <label for="customRange3" class="form-label">Switch</label>
+                                    <input type="checkbox" value="switch">
+                                </div>
                             </div>
                         </div>
-
-                        <div class="mt-3">
-                            <h6>Anno pubblicazione</h6>
-                            <input type="month" id="annoPubblicazione" value="2025-05">
-                        </div>
-
-                        <div class="mt-3">
-                            <h6>Piattaforma</h6>
-                            <div>
-                                <label for="customRange3" class="form-label">pc</label>
-                                <input type="checkbox" value="pc">
-                            </div>
-
-                            <div>
-                                <label for="customRange3" class="form-label">PS5</label>
-                                <input type="checkbox" value="ps5">
-                            </div>
-
-                            <div>
-                                <label for="customRange3" class="form-label">Xbox One</label>
-                                <input type="checkbox" value="ps5">
-                            </div>
-
-                            <div>
-                                <label for="customRange3" class="form-label">Switch</label>
-                                <input type="checkbox" value="switch">
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
 
                 <div class="col-9">
                     <div class="container border rounded p-5 shadow bg-light">
                         <div class="d-flex row fw-bold border-bottom pb-2 mb-3 text-secondary">
-                            <div class="col-3 d-flex">
+                            <div class="col-2 d-flex">
                                 <h5>In Evidenza</h5>
                             </div>
                             <div class="col-2 d-flex justify-content-center">
                                 <h6>Prezzo</h6>
                             </div>
-                            <div class="col-3 d-flex justify-content-center">
-                                <h6>Aggiungi al carrello</h6>
-                            </div>
                             <div class="col-2 d-flex justify-content-center">
+                                <h6>Data Uscita</h6>
+                            </div>
+                            <div class="col-1 d-flex justify-content-center">
                                 <h6>Quantita</h6>
                             </div>
-                            <div sec:authorize="hasAuthority('ADMIN')" class="col-2 d-flex justify-content-center">
+                            <div sec:authorize="hasAuthority('ADMIN')" class="col-1 d-flex justify-content-center">
                                 <h6>Cancella</h6>
+                            </div>
+                            <div class="col-2 d-flex justify-content-center">
+                                <h6>Aggiungi al carrello</h6>
                             </div>
                         </div>
 
@@ -117,39 +120,45 @@
                                  th:each="gioco, iterStat : ${list}"
                                  th:classappend="${iterStat.index % 2 == 0} ? 'bg-light' : 'bg-white'">
 
-                                <div class="col-3 d-flex align-items-center">
-                                    <a th:href="@{/gioco/infoGame/{idGioco}(idGioco=${gioco.idGioco})}" class="link-dark link-offset-2 link-underline-opacity-0" th:text="${gioco.titolo}">prova</a>
+                                <div class="col-2 d-flex align-items-center">
+                                    <a th:href="@{/gioco/infoGame/{idGioco}(idGioco=${gioco.idGioco})}"
+                                       class="link-dark link-offset-2 link-underline-opacity-0 fw-bold"
+                                       th:text="${gioco.titolo}">prova</a>
                                 </div>
 
                                 <div class="col-2 justify-content-center d-flex align-items-center">
-                                    <span th:text="${gioco.prezzo} + ' €'">12.00</span>
+                                    <span th:text="${gioco.prezzo} + ' €'">123.00</span>
                                 </div>
 
-                                <!--Aggiunta al carrello-->
-                                <div class="col-3 d-flex justify-content-center align-items-center">
-                                    <form th:action="@{/carrello/add/{id}(id=${gioco.idGioco})}" method="post">
-                                        <button type="submit" class="btn">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus-fill" viewBox="0 0 16 16">
-                                                <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0M8.5 8a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V12a.5.5 0 0 0 1 0v-1.5H10a.5.5 0 0 0 0-1H8.5z"/>
-                                            </svg>
-                                        </button>
-                                    </form>
+                                <div class="col-2 justify-content-center d-flex align-items-center">
+                                    <span th:text="${gioco.dataUscitaGioco}">05/2025</span>
                                 </div>
 
                                 <!--Quantità-->
-                                <div class="col-2 justify-content-center d-flex align-items-center">
+                                <div class="col-1 justify-content-center d-flex align-items-center">
                                     <span th:text="${gioco.quantita}"
                                           class="border border-dark text-dark rounded-3 d-flex justify-content-center align-items-center"
                                           style="width: 20px; height: 20px;">2
                                     </span>
                                 </div>
                                 <!--Cancella-->
-                                <div class="col-2 justify-content-center d-flex align-items-center" sec:authorize="hasAuthority('ADMIN')">
+                                <div class="col-1 justify-content-center d-flex align-items-center" sec:authorize="hasAuthority('ADMIN')">
                                     <form th:action="@{/gioco/delete/{idGioco}(idGioco=${gioco.idGioco})}" method="post">
                                         <button type="submit" class="btn text-danger btn-sm" onclick="return confirm('Vuoi cancellare il gioco? Se il gioco si trova in un carrello verrà eliminato!!')">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                                                 <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                                                 <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!--Aggiunta al carrello-->
+                                <div class="col-1 d-flex justify-content-center align-items-center">
+                                    <form th:action="@{/carrello/add/{id}(id=${gioco.idGioco})}" method="post">
+                                        <button type="submit" class="btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus-fill" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0M8.5 8a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V12a.5.5 0 0 0 1 0v-1.5H10a.5.5 0 0 0 0-1H8.5z"/>
                                             </svg>
                                         </button>
                                     </form>

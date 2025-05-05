@@ -82,19 +82,10 @@ public class giocoController {
     @PostMapping("editGioco/{idGioco}")
     public String editGioco(@PathVariable("idGioco")Integer idGioco, @Valid  @ModelAttribute("EditFormGioco") Gioco editFormGioco,
                             BindingResult bindingResult){
-        if (editFormGioco.getTitolo() != null && (editFormGioco.getTitolo().trim().isEmpty() ||
-                editFormGioco.getTitolo().equals(giocoRepository.TitleGioco(editFormGioco.getTitolo())))){
 
-            bindingResult.rejectValue("titolo","errorTitolo",
-                    "Titolo inserito non corretto");
-
-        }else if (editFormGioco.getPrezzo() < 0){
+        if (editFormGioco.getPrezzo() < 0){
             bindingResult.rejectValue("prezzo","errorPrezzo",
                     "Il prezzo non può essere inferiore a 0€");
-        }else if (editFormGioco.getKeyAttivazione() != null && (editFormGioco.getKeyAttivazione().length() > 20 ||
-                editFormGioco.getKeyAttivazione().equals(giocoRepository.KeyGioco(editFormGioco.getKeyAttivazione())))){
-            bindingResult.rejectValue("keyAttivazione","errorkeyAttivazione",
-                    "Chiave inserita non valida");
         } else if (editFormGioco.getQuantita() < 0) {
             bindingResult.rejectValue("quantita","quantita",
                     "Quantità non valida");
