@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class serviceGioco {
+public class GiocoService {
 
     @Autowired
     private giocoRepository giocoRepository;

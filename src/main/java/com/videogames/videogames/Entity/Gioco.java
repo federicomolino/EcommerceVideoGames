@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,9 +23,8 @@ public class Gioco {
 
     private String softwareHouse;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dataUscitaGioco;
-
-    private enum piattaforma {PC,PS5,XBOXONE,SWITCH}
 
     @Column(unique = true)
     private long codiceProdotto;
@@ -41,6 +41,22 @@ public class Gioco {
     @JsonIgnore
     @OneToMany(mappedBy = "gioco")
     private List<CarrelloGioco> carrelliAssociati;
+
+    public List<Piattaforma> getPiattaforma() {
+        return piattaforma;
+    }
+
+    public void setPiattaforma(List<Piattaforma> piattaforma) {
+        this.piattaforma = piattaforma;
+    }
+
+    @ManyToMany
+    @JoinTable(
+            name = "gioco_piattaforma",
+            joinColumns = @JoinColumn(name = "gioco_id"),
+            inverseJoinColumns = @JoinColumn(name = "piattaforma_id")
+    )
+    private List<Piattaforma> piattaforma;
 
     public List<CarrelloGioco> getCarrelliAssociati() {
         return carrelliAssociati;

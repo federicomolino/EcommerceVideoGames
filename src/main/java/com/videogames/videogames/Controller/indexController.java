@@ -1,6 +1,6 @@
 package com.videogames.videogames.Controller;
 
-import com.videogames.videogames.Service.serviceGioco;
+import com.videogames.videogames.Service.GiocoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,11 +14,11 @@ public class indexController {
 //    private giocoRepository giocoRepository;
 
     @Autowired
-    private serviceGioco serviceGioco;
+    private GiocoService GiocoService;
 
     @GetMapping("/")
     public String indexPage(@RequestParam(name = "titolo", required = false)String titolo, Model model){
-        model.addAttribute("list", serviceGioco.showGiochi(titolo));
+        model.addAttribute("list", GiocoService.showGiochi(titolo));
         return "gioco/index";
     }
 }

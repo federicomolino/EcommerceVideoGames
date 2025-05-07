@@ -15,6 +15,7 @@ public class DataBaseUserDetails implements UserDetails {
     private final Integer id_utente;
     private final String username;
     private final String password;
+    //Lista che spring utilizza per validare le authorities
     private final List<GrantedAuthority> authorities;
 
     public DataBaseUserDetails(Utente utente) {

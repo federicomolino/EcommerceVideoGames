@@ -89,9 +89,6 @@
             <h6 class="mb-0 me-2">Data Uscita</h6>
           </div>
           <input type="date" name="dataUscitaGioco" th:field="*{dataUscitaGioco}" class="form-control mt-1" id="dataUscitaGioco">
-          <div th:if="${#fields.hasErrors('dataUscitaGioco')}" class="text-danger">
-            <span th:errors="*{dataUscitaGioco}"></span>
-          </div>
         </li>
 
       </ul>

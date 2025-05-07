@@ -2,7 +2,7 @@ package com.videogames.videogames.Controller;
 
 import com.videogames.videogames.Entity.Gioco;
 import com.videogames.videogames.Repository.giocoRepository;
-import com.videogames.videogames.Service.serviceGioco;
+import com.videogames.videogames.Service.GiocoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,7 +20,7 @@ public class giocoController {
     private giocoRepository giocoRepository;
 
     @Autowired
-    private serviceGioco serviceGioco;
+    private GiocoService GiocoService;
 
     @GetMapping("/newGioco")
     public String showNewGioco(Model model){
@@ -59,7 +59,7 @@ public class giocoController {
             return "gioco/AddGioco";
         }
 
-        serviceGioco.addGioco(giocoForm);
+        GiocoService.addGioco(giocoForm);
         return "redirect:/";
     }
 
@@ -83,6 +83,17 @@ public class giocoController {
     public String editGioco(@PathVariable("idGioco")Integer idGioco, @Valid  @ModelAttribute("EditFormGioco") Gioco editFormGioco,
                             BindingResult bindingResult){
 
+        Optional<Gioco> gioco = giocoRepository.findById(idGioco);
+        if (gioco.isPresent()){
+            if (!editFormGioco.getTitolo().equals(gioco.get().getTitolo())){
+                bindingResult.rejectValue("titolo", "errorTitolo",
+                        "Titolo non valido");
+            } else if (editFormGioco.getCodiceProdotto() != gioco.get().getCodiceProdotto()) {
+                bindingResult.rejectValue("codiceProdotto", "errorCodiceProdotto",
+                        "Codice Prodotto non valido");
+            }
+        }
+
         if (editFormGioco.getPrezzo() < 0){
             bindingResult.rejectValue("prezzo","errorPrezzo",
                     "Il prezzo non può essere inferiore a 0€");
@@ -91,31 +102,18 @@ public class giocoController {
                     "Quantità non valida");
         }
 
-        Optional<Long> CodiceProdotto = giocoRepository.findcodiceProdottoGioco(editFormGioco.getCodiceProdotto());
-        if (CodiceProdotto.isPresent()) {
-            Optional<Gioco> giocoId = giocoRepository.findById(idGioco);
-
-            if (giocoId.isPresent()){
-                Gioco gioco = giocoId.get();
-                if (gioco.getCodiceProdotto() != editFormGioco.getCodiceProdotto()) {
-                    // Il codice prodotto esiste già ma non appartiene a questo gioco --> errore
-                    bindingResult.rejectValue("codiceProdotto", "errorcodiceProdotto",
-                            "Codice Prodotto non valido");
-                }
-            }
-        }
 
         if (bindingResult.hasErrors()){
             return "gioco/editGioco";
         }
 
-        serviceGioco.editGioco(editFormGioco);
+        GiocoService.editGioco(editFormGioco);
         return "redirect:/gioco/infoGame/" + idGioco;
     }
 
     @PostMapping("delete/{idGioco}")
     public String cancellaGioco(@PathVariable("idGioco") Integer idGioco){
-        serviceGioco.cancellaGioco(idGioco);
+        GiocoService.cancellaGioco(idGioco);
         return "redirect:/";
     }
 
