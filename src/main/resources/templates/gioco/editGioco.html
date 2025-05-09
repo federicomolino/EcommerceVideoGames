@@ -19,81 +19,104 @@
   <hr>
 
   <form method="post" th:object="${EditFormGioco}" th:action="@{'/gioco/editGioco/' + ${EditFormGioco.idGioco}}">
-    <div class="col-4">
-      <ul>
-        <li>
-          <div class="d-flex align-items-center">
-            <h6 class="mb-0 me-2">Titolo</h6>
-          </div>
-          <input type="text" th:field="*{titolo}" class="form-control mt-1" id="titolo" required>
-          <div th:if="${#fields.hasErrors('titolo')}" class="text-danger">
-            <span th:errors="*{titolo}"></span>
-          </div>
-        </li>
+  <div class="row">
+      <div class="col-4">
+        <ul>
+          <li>
+            <div class="d-flex align-items-center">
+              <h6 class="mb-0 me-2">Titolo</h6>
+            </div>
+            <input type="text" th:field="*{titolo}" class="form-control mt-1" id="titolo" required>
+            <div th:if="${#fields.hasErrors('titolo')}" class="text-danger">
+              <span th:errors="*{titolo}"></span>
+            </div>
+          </li>
 
-        <li>
-          <div class="d-flex align-items-center">
-            <h6 class="mb-0 me-2">Descrizione</h6>
-          </div>
-          <input type="text" th:field="*{descrizione}" class="form-control mt-1" id="descrizione">
-          <div th:if="${#fields.hasErrors('descrizione')}" class="text-danger">
-            <span th:errors="*{descrizione}"></span>
-          </div>
-        </li>
+          <li>
+            <div class="d-flex align-items-center">
+              <h6 class="mb-0 me-2">Descrizione</h6>
+            </div>
+            <input type="text" th:field="*{descrizione}" class="form-control mt-1" id="descrizione">
+            <div th:if="${#fields.hasErrors('descrizione')}" class="text-danger">
+              <span th:errors="*{descrizione}"></span>
+            </div>
+          </li>
 
-        <li>
-          <div class="d-flex align-items-center">
-            <h6 class="mb-0 me-2">Prezzo</h6>
-          </div>
-          <input type="number" th:field="*{prezzo}" class="form-control mt-1" id="prezzo" required>
-          <div th:if="${#fields.hasErrors('prezzo')}" class="text-danger">
-            <span th:errors="*{prezzo}"></span>
-          </div>
-        </li>
+          <li>
+            <div class="d-flex align-items-center">
+              <h6 class="mb-0 me-2">Prezzo</h6>
+            </div>
+            <input type="number" th:field="*{prezzo}" class="form-control mt-1" id="prezzo" required>
+            <div th:if="${#fields.hasErrors('prezzo')}" class="text-danger">
+              <span th:errors="*{prezzo}"></span>
+            </div>
+          </li>
 
-        <li>
-          <div class="d-flex align-items-center">
-            <h6 class="mb-0 me-2">Codice Prodotto</h6>
-          </div>
-          <input type="text" name="codiceProdotto" th:field="*{codiceProdotto}" class="form-control mt-1" id="codiceProdotto" required>
+          <li>
+            <div class="d-flex align-items-center">
+              <h6 class="mb-0 me-2">Codice Prodotto</h6>
+            </div>
+            <input type="text" name="codiceProdotto" th:field="*{codiceProdotto}" class="form-control mt-1" id="codiceProdotto" required>
 
-          <div th:if="${#fields.hasErrors('codiceProdotto')}" class="text-danger">
-            <span th:errors="*{codiceProdotto}"></span>
-          </div>
+            <div th:if="${#fields.hasErrors('codiceProdotto')}" class="text-danger">
+              <span th:errors="*{codiceProdotto}"></span>
+            </div>
 
-        </li>
+          </li>
 
-        <li>
-          <div class="d-flex align-items-center">
-            <h6 class="mb-0 me-2">Quantità</h6>
-          </div>
-          <input type="number" name="quantita" th:field="*{quantita}" class="form-control mt-1" id="quantita"
-                 required min="0">
-          <div th:if="${#fields.hasErrors('quantita')}" class="text-danger">
-            <span th:errors="*{quantita}"></span>
-          </div>
-        </li>
+          <li>
+            <div class="d-flex align-items-center">
+              <h6 class="mb-0 me-2">Quantità</h6>
+            </div>
+            <input type="number" name="quantita" th:field="*{quantita}" class="form-control mt-1" id="quantita"
+                   required min="0">
+            <div th:if="${#fields.hasErrors('quantita')}" class="text-danger">
+              <span th:errors="*{quantita}"></span>
+            </div>
+          </li>
 
-        <li>
-          <div class="d-flex align-items-center">
-            <h6 class="mb-0 me-2">Software House</h6>
-          </div>
-          <input type="text" name="softwareHouse" th:field="*{softwareHouse}" class="form-control mt-1" id="softwareHouse">
-          <div th:if="${#fields.hasErrors('softwareHouse')}" class="text-danger">
-            <span th:errors="*{softwareHouse}"></span>
-          </div>
-        </li>
+          <li>
+            <div class="d-flex align-items-center">
+              <h6 class="mb-0 me-2">Software House</h6>
+            </div>
+            <input type="text" name="softwareHouse" th:field="*{softwareHouse}" class="form-control mt-1" id="softwareHouse">
+            <div th:if="${#fields.hasErrors('softwareHouse')}" class="text-danger">
+              <span th:errors="*{softwareHouse}"></span>
+            </div>
+          </li>
 
-        <li>
-          <div class="d-flex align-items-center">
-            <h6 class="mb-0 me-2">Data Uscita</h6>
-          </div>
-          <input type="date" name="dataUscitaGioco" th:field="*{dataUscitaGioco}" class="form-control mt-1" id="dataUscitaGioco">
-        </li>
+          <li>
+            <div class="d-flex align-items-center">
+              <h6 class="mb-0 me-2">Data Uscita</h6>
+            </div>
+            <input type="date" name="dataUscitaGioco" th:field="*{dataUscitaGioco}" class="form-control mt-1" id="dataUscitaGioco">
+          </li>
+        </ul>
+      </div>
 
-      </ul>
-      <button type="submit" class="btn btn-outline-success mt-2 ms-4">Modifica Gioco</button>
-    </div>
+        <!--Lista di piattaforme disponibili-->
+      <div class="ms-3 col-4">
+          <div class="border rounded p-2" style="max-height: 150px; overflow-y: auto;">
+
+            <div th:if="${listPiattaforma.isEmpty or listPiattaforma == null}">
+              <span class="text-black text-decoration-none" href="/piattaforma">Nessuna Piattaforma inserita
+                per il gioco selezionato</span>
+            </div>
+
+            <div th:unless="${listPiattaforma.isEmpty or listPiattaforma == null}">
+              <h6>Modifica la piattaforma</h6>
+              <div class="form-check form-switch mt-2" th:each="piattaforma : ${listPiattaforma}">
+                <input class="form-check-input" type="checkbox" role="switch" th:id=${piattaforma.id_piattaforma}
+                       th:value="${piattaforma.id_piattaforma}"
+                       name="piattaformeSelezionate"
+                       th:checked="${gioco != null and gioco.piattaforma != null and gioco.piattaforma.contains(piattaforma)}">
+                <label class="form-check-label" th:text="${piattaforma.nomePiattaforma}">PC</label>
+              </div>
+            </div>
+          </div>
+      </div>
+  </div>
+    <button type="submit" class="btn btn-outline-success mt-2 ms-4">Modifica Gioco</button>
   </form>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

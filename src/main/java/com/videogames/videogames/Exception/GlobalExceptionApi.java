@@ -36,4 +36,13 @@ public class GlobalExceptionApi{
         );
         return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(NessunaPiattaformaPresente.class)
+    public ResponseEntity<ErrorResponse> errorApiPiattaforma(NessunaPiattaformaPresente e, HttpServletRequest request){
+        ErrorResponse err = new ErrorResponse(
+                e.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

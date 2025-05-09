@@ -37,9 +37,9 @@ public class ApiGioco {
     }
 
     @PostMapping
-    public ResponseEntity<?> addGioco(@RequestBody Gioco gioco) {
+    public ResponseEntity<?> addGioco(@RequestBody Gioco gioco, List<Integer> piattaformaSelezionataId) {
         try {
-            Gioco newGioco = GiocoService.addGioco(gioco);
+            Gioco newGioco = GiocoService.addGioco(gioco,piattaformaSelezionataId);
             return ResponseEntity.status(HttpStatus.CREATED).body(newGioco);
         }catch (ExceptionAddGioco ex){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());

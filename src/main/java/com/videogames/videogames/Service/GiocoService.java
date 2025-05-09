@@ -2,8 +2,10 @@ package com.videogames.videogames.Service;
 
 import com.videogames.videogames.Entity.CarrelloGioco;
 import com.videogames.videogames.Entity.Gioco;
+import com.videogames.videogames.Entity.Piattaforma;
 import com.videogames.videogames.Exception.ExceptionAddGioco;
 import com.videogames.videogames.Repository.CarrelloGiocoRepository;
+import com.videogames.videogames.Repository.PiattaformaRepository;
 import com.videogames.videogames.Repository.giocoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,9 @@ public class GiocoService {
     @Autowired
     private carrelloService carrelloService;
 
+    @Autowired
+    private PiattaformaRepository piattaformaRepository;
+
     public List<Gioco> showGiochi(String titolo){
         List<Gioco> giochi;
         if (titolo == null || titolo.isEmpty()){
@@ -33,8 +38,11 @@ public class GiocoService {
         return giochi;
     }
 
-    public Gioco addGioco(Gioco giocoForm){
+    public Gioco addGioco(Gioco giocoForm, List<Integer> piattaformaSelezionataId){
         try{
+            //Salvo la/e piattaforma selezionata
+            List<Piattaforma> piattaformaSelezionata = piattaformaRepository.findAllById(piattaformaSelezionataId);
+            giocoForm.setPiattaforma(piattaformaSelezionata);
             return giocoRepository.save(giocoForm);
         }catch (Exception ex) {
             throw new ExceptionAddGioco("CG_500_DATI_INSERITI_PRESENTI_NEL_SISTEMA");
@@ -51,7 +59,11 @@ public class GiocoService {
     }
 
     //Modifica Gioco
-    public Gioco editGioco(Gioco editFormGioco) {
+    public Gioco editGioco(Gioco editFormGioco, List<Integer> selezionePiattaformaID) {
+        //Salvo la/e piattaforma selezionata
+        List<Piattaforma> piattaformaSelezionata = piattaformaRepository.findAllById(selezionePiattaformaID);
+        editFormGioco.setPiattaforma(piattaformaSelezionata);
+
         editFormGioco.setTitolo(editFormGioco.getTitolo());
         editFormGioco.setDescrizione(editFormGioco.getDescrizione());
         editFormGioco.setPrezzo(editFormGioco.getPrezzo());

@@ -1,5 +1,6 @@
 package com.videogames.videogames.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class Piattaforma {
     private int quantitaPerPiattaforma;
 
     @ManyToMany(mappedBy = "piattaforma")
+    @JsonBackReference
     private List<Gioco> gioco;
 
     public List<Gioco> getGioco() {

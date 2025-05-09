@@ -25,50 +25,61 @@
   </div>
   <hr>
   <!--Informazioni relative al gioco-->
-  <div class="col-4">
-    <ul>
-      <li>
-        <div class="d-flex align-items-center">
-          <h6 class="mb-0 me-2">Descrizione</h6>
-        </div>
-        <span th:text="${gioco.descrizione}">Descrizione</span>
-      </li>
+  <div class="row">
+    <div class="col-4">
+      <ul>
+        <li>
+          <div class="d-flex align-items-center">
+            <h6 class="mb-0 me-2">Descrizione</h6>
+          </div>
+          <span th:text="${gioco.descrizione}">Descrizione</span>
+        </li>
 
-      <li>
-        <div class="d-flex align-items-center mt-3">
-          <h6 class="mb-0 me-2">Prezzo</h6>
-        </div>
-        <span th:text="${gioco.prezzo}">Prezzo</span>
-      </li>
+        <li>
+          <div class="d-flex align-items-center mt-3">
+            <h6 class="mb-0 me-2">Prezzo</h6>
+          </div>
+          <span th:text="${gioco.prezzo}">Prezzo</span>
+        </li>
 
-      <li>
-        <div class="d-flex align-items-center mt-3">
-          <h6 class="mb-0 me-2">Codice Prodotto</h6>
-        </div>
-        <span th:text="${gioco.codiceProdotto}">Codice Prodotto</span>
-      </li>
+        <li>
+          <div class="d-flex align-items-center mt-3">
+            <h6 class="mb-0 me-2">Codice Prodotto</h6>
+          </div>
+          <span th:text="${gioco.codiceProdotto}">Codice Prodotto</span>
+        </li>
 
-      <li>
-        <div class="d-flex align-items-center mt-3">
-          <h6 class="mb-0 me-2">Quantità</h6>
-        </div>
-        <span th:text="${gioco.quantita}">Quantità</span>
-      </li>
+        <li>
+          <div class="d-flex align-items-center mt-3">
+            <h6 class="mb-0 me-2">Quantità</h6>
+          </div>
+          <span th:text="${gioco.quantita}">Quantità</span>
+        </li>
 
-      <li th:if="${!gioco.softwareHouse.isEmpty}">
-        <div class="d-flex align-items-center mt-3">
-          <h6 class="mb-0 me-2">Software House</h6>
-        </div>
-        <span th:text="${gioco.softwareHouse}">Software House</span>
-      </li>
+        <li th:if="${!gioco.softwareHouse.isEmpty}">
+          <div class="d-flex align-items-center mt-3">
+            <h6 class="mb-0 me-2">Software House</h6>
+          </div>
+          <span th:text="${gioco.softwareHouse}">Software House</span>
+        </li>
 
-      <li th:if="${gioco.dataUscitaGioco != null}">
-        <div class="d-flex align-items-center mt-3">
-          <h6 class="mb-0 me-2">Data Uscita</h6>
-        </div>
-        <span th:text="${gioco.dataUscitaGioco}">Data Uscita</span>
-      </li>
-    </ul>
+        <li th:if="${gioco.dataUscitaGioco != null}">
+          <div class="d-flex align-items-center mt-3">
+            <h6 class="mb-0 me-2">Data Uscita</h6>
+          </div>
+          <span th:text="${gioco.dataUscitaGioco}">Data Uscita</span>
+        </li>
+      </ul>
+    </div>
+    <!--Lista piattaforma-->
+    <div class="col-4" th:unless="${listPiattaforma.isEmpty}">
+      <h5>Gioco disponibile su Piattaforma:</h5>
+      <div th:each="piattaforma : ${listPiattaforma}">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" th:text="${piattaforma.nomePiattaforma}">PC</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

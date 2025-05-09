@@ -1,7 +1,9 @@
 package com.videogames.videogames.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -34,13 +36,24 @@ public class Gioco {
     private String keyAttivazione;
 
     @NotNull
+    @Min(value = 0, message = "Valore inserito non valido, non può essere inferiore a 0")
     private double prezzo;
 
+    @Min(value = 0, message = "Quantità non valida")
     private int quantita;
 
     @JsonIgnore
     @OneToMany(mappedBy = "gioco")
     private List<CarrelloGioco> carrelliAssociati;
+
+    @ManyToMany
+    @JoinTable(
+            name = "gioco_piattaforma",
+            joinColumns = @JoinColumn(name = "gioco_id"),
+            inverseJoinColumns = @JoinColumn(name = "piattaforma_id")
+    )
+    @JsonManagedReference
+    private List<Piattaforma> piattaforma;
 
     public List<Piattaforma> getPiattaforma() {
         return piattaforma;
@@ -49,14 +62,6 @@ public class Gioco {
     public void setPiattaforma(List<Piattaforma> piattaforma) {
         this.piattaforma = piattaforma;
     }
-
-    @ManyToMany
-    @JoinTable(
-            name = "gioco_piattaforma",
-            joinColumns = @JoinColumn(name = "gioco_id"),
-            inverseJoinColumns = @JoinColumn(name = "piattaforma_id")
-    )
-    private List<Piattaforma> piattaforma;
 
     public List<CarrelloGioco> getCarrelliAssociati() {
         return carrelliAssociati;
