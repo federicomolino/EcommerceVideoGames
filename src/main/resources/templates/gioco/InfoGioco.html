@@ -80,6 +80,30 @@
         </ul>
       </div>
     </div>
+
+    <!--Recensioni gioco-->
+    <div class="col-4" th:if="${listRecensioni.isEmpty}">
+      <div class="alert alert-warning" role="alert">
+        Nessuna recensione presente <a th:href="@{'/gioco/addRecensione/' + ${gioco.idGioco}}"
+                                       class="alert-link">Aggiungila</a>
+      </div>
+    </div>
+
+    <div class="col-4" th:unless="${listRecensioni.isEmpty}">
+      <h5>Recensioni</h5>
+      <div th:each="recensioni : ${listRecensioni}">
+        <ul class="list-group list-group-flush">
+          <div class="mt-2">
+            <div class="d-flex justify-content-between">
+              <span th:text="${recensione.utente.username}">federico.molino</span>
+              <span th:text="${recensione.dataRecensione}">28/05/2025</span>
+            </div>
+          </div>
+          <textarea class="form-control" id="exampleTextarea" rows="4" th:text="${piattaforma.nomePiattaforma}" readonly>PC</textarea>
+        </ul>
+      </div>
+    </div>
+
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

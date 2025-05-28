@@ -53,6 +53,18 @@ public class Gioco {
     )
     private List<Piattaforma> piattaforma;
 
+    @OneToMany(mappedBy = "gioco")
+    @JsonIgnore
+    List<Recensione> recensione;
+
+    public List<Recensione> getRecensione() {
+        return recensione;
+    }
+
+    public void setRecensione(List<Recensione> recensione) {
+        this.recensione = recensione;
+    }
+
     public List<Piattaforma> getPiattaforma() {
         return piattaforma;
     }

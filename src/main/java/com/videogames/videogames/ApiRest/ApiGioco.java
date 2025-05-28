@@ -34,8 +34,13 @@ public class ApiGioco {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteGioco(@PathVariable Integer id){
-        GiocoService.cancellaGioco(id);
+    public ResponseEntity<?> deleteGioco(@PathVariable Integer id){
+        try{
+            GiocoService.cancellaGioco(id);
+        }catch (NessunGiocoTrovato ex){
+            throw new NessunGiocoTrovato("CG_ID_PASSATO_NON_VALIDO");
+        }
+        return ResponseEntity.ok(id);
     }
 
     @PostMapping

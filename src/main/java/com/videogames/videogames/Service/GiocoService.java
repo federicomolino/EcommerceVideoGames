@@ -4,6 +4,7 @@ import com.videogames.videogames.Entity.CarrelloGioco;
 import com.videogames.videogames.Entity.Gioco;
 import com.videogames.videogames.Entity.Piattaforma;
 import com.videogames.videogames.Exception.ExceptionAddGioco;
+import com.videogames.videogames.Exception.NessunGiocoTrovato;
 import com.videogames.videogames.Repository.CarrelloGiocoRepository;
 import com.videogames.videogames.Repository.PiattaformaRepository;
 import com.videogames.videogames.Repository.giocoRepository;
@@ -50,6 +51,10 @@ public class GiocoService {
     }
 
     public void cancellaGioco(Integer id){
+        Optional<Gioco> gioco = giocoRepository.findById(id);
+        if (!gioco.isPresent()){
+            throw new NessunGiocoTrovato("CG400_ID_PASSATO_NON_VALIDO");
+        }
         //Cerchiamo se il gioco è in qualche carrello
         Optional<CarrelloGioco> carrelloGioco = carrelloGiocoRepository.findByIdGiocoCarrello(id);
         if (carrelloGioco.isPresent()){

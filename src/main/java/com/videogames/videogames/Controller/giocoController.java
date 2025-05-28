@@ -75,6 +75,7 @@ public class giocoController {
         model.addAttribute("gioco", idSingoloGioco);
         //visualizzo le piattaforme presenti per il gioco
         model.addAttribute("listPiattaforma", idSingoloGioco.getPiattaforma());
+        model.addAttribute("listRecensioni",idSingoloGioco.getRecensione());
         return "gioco/infoGioco";
     }
 
