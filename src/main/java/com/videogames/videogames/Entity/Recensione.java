@@ -19,11 +19,6 @@ public class Recensione {
 
     private LocalDate dataRecensione;
 
-    public Recensione(String recensione){
-        this.recensione = recensione;
-        this.dataRecensione = LocalDate.now();
-    }
-
     public Long getRecensione_id() {
         return recensione_id;
     }

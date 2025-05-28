@@ -89,17 +89,17 @@
       </div>
     </div>
 
-    <div class="col-4" th:unless="${listRecensioni.isEmpty}">
+    <div class="col-4" th:unless="${listRecensioni == null or listRecensioni.isEmpty}">
       <h5>Recensioni</h5>
       <div th:each="recensioni : ${listRecensioni}">
         <ul class="list-group list-group-flush">
           <div class="mt-2">
             <div class="d-flex justify-content-between">
-              <span th:text="${recensione.utente.username}">federico.molino</span>
-              <span th:text="${recensione.dataRecensione}">28/05/2025</span>
+<!--              <span th:text="${recensioni.utente.username}">federico.molino</span>-->
+              <span th:text="${recensioni.dataRecensione}">28/05/2025</span>
             </div>
           </div>
-          <textarea class="form-control" id="exampleTextarea" rows="4" th:text="${piattaforma.nomePiattaforma}" readonly>PC</textarea>
+          <textarea class="form-control" id="exampleTextarea" rows="4" th:text="${recensioni.recensione}" readonly>PC</textarea>
         </ul>
       </div>
     </div>

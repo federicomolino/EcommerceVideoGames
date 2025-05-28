@@ -1,7 +1,9 @@
 package com.videogames.videogames.Controller;
 
 import com.videogames.videogames.Entity.Gioco;
+import com.videogames.videogames.Entity.Recensione;
 import com.videogames.videogames.Repository.PiattaformaRepository;
+import com.videogames.videogames.Repository.RecensioneRepository;
 import com.videogames.videogames.Repository.giocoRepository;
 import com.videogames.videogames.Service.GiocoService;
 import jakarta.validation.Valid;
@@ -27,6 +29,9 @@ public class giocoController {
 
     @Autowired
     private GiocoService GiocoService;
+
+    @Autowired
+    private RecensioneRepository recensioneRepository;
 
     @GetMapping("/newGioco")
     public String showNewGioco(Model model){
@@ -72,10 +77,12 @@ public class giocoController {
     @GetMapping("infoGame/{idGioco}")
     public String infoGiocoId(@PathVariable("idGioco") Integer idGioco, Model model){
         Gioco idSingoloGioco = giocoRepository.findById(idGioco).get();
+        List<Recensione> recensioneIdGioco = recensioneRepository.findByGiocoIdGioco(idGioco);
+
         model.addAttribute("gioco", idSingoloGioco);
         //visualizzo le piattaforme presenti per il gioco
         model.addAttribute("listPiattaforma", idSingoloGioco.getPiattaforma());
-        model.addAttribute("listRecensioni",idSingoloGioco.getRecensione());
+        model.addAttribute("listRecensioni",recensioneIdGioco);
         return "gioco/infoGioco";
     }
 
