@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,8 +38,12 @@ public class carrelloController {
         Optional<Utente> u = carrelloService.recuperoUtente(principal);
         List<CarrelloGioco> carrello = carrelloGiocoRepository.findByUtente(u);
         double prezzo = carrelloService.prezzoFinaleCarrello(principal);
+        //Trasformo il prezzo in modo che abbia due decimali
+        DecimalFormat priceDecimal = new DecimalFormat("#.##");
+        String priceDecimalFormatter = priceDecimal.format(prezzo);
+
         model.addAttribute("listCarrello", carrello);
-        model.addAttribute("prezzoTotale", prezzo);
+        model.addAttribute("prezzoTotale", priceDecimalFormatter);
         return "Carrello/carrello";
     }
 

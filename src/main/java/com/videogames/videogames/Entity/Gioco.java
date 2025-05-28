@@ -1,7 +1,6 @@
 package com.videogames.videogames.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -52,7 +51,6 @@ public class Gioco {
             joinColumns = @JoinColumn(name = "gioco_id"),
             inverseJoinColumns = @JoinColumn(name = "piattaforma_id")
     )
-    @JsonManagedReference
     private List<Piattaforma> piattaforma;
 
     public List<Piattaforma> getPiattaforma() {

@@ -6,11 +6,10 @@ import com.videogames.videogames.Repository.PiattaformaRepository;
 import com.videogames.videogames.Service.PiattaformaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/piattaforma")
@@ -29,5 +28,14 @@ public class ApiPiattaforma {
             throw new NessunaPiattaformaPresente("PI500_NESSUNA_PIATTAFORMA_PRESENTE");
         }
         return ResponseEntity.ok(piattaforma);
+    }
+
+    @DeleteMapping("{id}")
+    public void deletePiattaforma(@PathVariable() Integer id){
+        Optional<Piattaforma> piattaforma = piattaformaRepository.findById(id);
+        if (piattaforma.isEmpty()){
+            throw new NessunaPiattaformaPresente("PI500_NESSUNA_PIATTAFORMA_PRESENTE");
+        }
+        piattaformaService.deletePiattaforma(id);
     }
 }

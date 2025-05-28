@@ -1,6 +1,7 @@
 package com.videogames.videogames.ApiRest;
 
 import com.videogames.videogames.Entity.Gioco;
+import com.videogames.videogames.Entity.Piattaforma;
 import com.videogames.videogames.Exception.ExceptionAddGioco;
 import com.videogames.videogames.Exception.NessunGiocoTrovato;
 import com.videogames.videogames.Repository.giocoRepository;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -37,12 +39,18 @@ public class ApiGioco {
     }
 
     @PostMapping
-    public ResponseEntity<?> addGioco(@RequestBody Gioco gioco, List<Integer> piattaformaSelezionataId) {
+    public ResponseEntity<?> addGioco(@RequestBody Gioco gioco) {
         try {
-            Gioco newGioco = GiocoService.addGioco(gioco,piattaformaSelezionataId);
+            //Mi prendo l'id della piattaforma passato
+            List<Integer> piattaformaIdPassata = new ArrayList<>();
+            for (Piattaforma piattaforma : gioco.getPiattaforma()){
+                piattaformaIdPassata.add(piattaforma.getId_piattaforma());
+            }
+
+            Gioco newGioco = GiocoService.addGioco(gioco,piattaformaIdPassata);
             return ResponseEntity.status(HttpStatus.CREATED).body(newGioco);
         }catch (ExceptionAddGioco ex){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+            throw new ExceptionAddGioco("CG_500_DATI_INSERITI_PRESENTI_NEL_SISTEMA");
         }
     }
 }

@@ -35,6 +35,7 @@ public class giocoController {
         return "gioco/Addgioco";
     }
 
+
     @PostMapping("newGioco")
     public String AddGioco(@Valid @ModelAttribute("formAdd") Gioco giocoForm, BindingResult bindingResult, Model model,
                            @RequestParam(value = "piattaformeSelezionate", required = false)
