@@ -78,13 +78,13 @@ public class giocoController {
     public String infoGiocoId(@PathVariable("idGioco") Integer idGioco, Model model){
         Gioco idSingoloGioco = giocoRepository.findById(idGioco).get();
         List<Recensione> recensioneIdGioco = recensioneRepository.findByGiocoIdGioco(idGioco);
-
         model.addAttribute("gioco", idSingoloGioco);
         //visualizzo le piattaforme presenti per il gioco
         model.addAttribute("listPiattaforma", idSingoloGioco.getPiattaforma());
         model.addAttribute("listRecensioni",recensioneIdGioco);
         return "gioco/infoGioco";
     }
+
 
     @GetMapping("editGioco/{idGioco}")
     public String showEditGioco(@PathVariable("idGioco") Integer idGioco, Model model){

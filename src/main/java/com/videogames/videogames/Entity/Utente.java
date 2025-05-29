@@ -30,6 +30,17 @@ public class Utente {
     )
     private List<Role> roles;
 
+    @OneToMany(mappedBy = "recensione_id")
+    List<Recensione> recensione;
+
+    public List<Recensione> getRecensione() {
+        return recensione;
+    }
+
+    public void setRecensione(List<Recensione> recensione) {
+        this.recensione = recensione;
+    }
+
     public List<Carrello> getCarrello() {
         return carrello;
     }

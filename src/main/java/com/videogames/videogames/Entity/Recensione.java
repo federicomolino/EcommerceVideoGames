@@ -15,9 +15,25 @@ public class Recensione {
     @JoinColumn(name = "gioco_id")
     private Gioco gioco;
 
+    @ManyToOne
+    @JoinColumn(name = "utente_id")
+    private Utente utente;
+
     private String recensione;
 
     private LocalDate dataRecensione;
+
+    public Recensione(){
+        this.dataRecensione = LocalDate.now();
+    }
+
+    public Utente getUtente() {
+        return utente;
+    }
+
+    public void setUtente(Utente utente) {
+        this.utente = utente;
+    }
 
     public Long getRecensione_id() {
         return recensione_id;

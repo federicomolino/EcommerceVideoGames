@@ -10,26 +10,32 @@
 <div class="container">
   <div class="row mt-5">
     <h3>Aggiungi Recensione</h3>
-    <form method="post" th:object="${formAddRecensione}" th:action="@{'/gioco/addRecensione/' + ${formAddRecensione.idGioco}}>
+    <form method="post" th:object="${formAddRecensione}">
       <div class="col-4 mt-3">
         <label>Scrivi la tua recensione</label>
-        <textarea class="form-control" id="exampleTextarea" rows="4"> </textarea>
+        <textarea class="form-control" id="exampleTextarea" rows="4" th:field="*{recensione}"></textarea>
 
         <div class="mt-3">
           <div>
             <label>Creata da:</label>
-            <strong th:text="${utente.username}">federico.molino</strong>
+            <strong th:text="${utente.name}">federico.molino</strong>
+            <div th:if="${#fields.hasErrors('utente')}" class="text-danger">
+              <span th:errors="*{utente}"></span>
+            </div>
           </div>
 
           <div class="mt-3">
             <label>In data: </label>
-            <strong th:text="${recensione.dataRecensione}">28-05-2025</strong>
+            <strong th:text="${formAddRecensione.dataRecensione}"></strong>
+            <div th:if="${#fields.hasErrors('dataRecensione')}" class="text-danger">
+              <span th:errors="*{dataRecensione}"></span>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="mt-4">
-        <button type="button" class="btn btn-outline-success">New Recensione</button>
+        <button type="submit" class="btn btn-outline-success">New Recensione</button>
       </div>
     </form>
   </div>

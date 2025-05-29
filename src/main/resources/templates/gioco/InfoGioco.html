@@ -84,23 +84,31 @@
     <!--Recensioni gioco-->
     <div class="col-4" th:if="${listRecensioni.isEmpty}">
       <div class="alert alert-warning" role="alert">
-        Nessuna recensione presente <a th:href="@{'/gioco/addRecensione/' + ${gioco.idGioco}}"
+        Nessuna recensione presente <a th:href="@{/gioco/addRecensione/{id}(id=${gioco.idGioco})}"
                                        class="alert-link">Aggiungila</a>
       </div>
     </div>
 
     <div class="col-4" th:unless="${listRecensioni == null or listRecensioni.isEmpty}">
-      <h5>Recensioni</h5>
+
+      <div class="d-flex justify-content-between">
+        <h5>Recensioni</h5>
+        <a th:href="@{/gioco/addRecensione/{id}(id=${gioco.idGioco})}"
+           class=" mt-1 btn btn-sm btn-outline-success">Aggiungi Recensione</a>
+      </div>
+
+      <div class="mt-1 border rounded p-3" style="max-height: 400px; overflow-y: auto;">
       <div th:each="recensioni : ${listRecensioni}">
         <ul class="list-group list-group-flush">
           <div class="mt-2">
             <div class="d-flex justify-content-between">
-<!--              <span th:text="${recensioni.utente.username}">federico.molino</span>-->
+              <span th:text="${recensioni.utente.username}">federico.molino</span>
               <span th:text="${recensioni.dataRecensione}">28/05/2025</span>
             </div>
           </div>
           <textarea class="form-control" id="exampleTextarea" rows="4" th:text="${recensioni.recensione}" readonly>PC</textarea>
         </ul>
+      </div>
       </div>
     </div>
 
