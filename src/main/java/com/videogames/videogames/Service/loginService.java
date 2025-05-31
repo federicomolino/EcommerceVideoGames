@@ -9,6 +9,7 @@ import com.videogames.videogames.Repository.utenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,5 +51,18 @@ public class loginService {
 
         carrelloRepository.save(carrello);
         return utente;
+    }
+
+    public Utente editUtente(Utente utente, Principal principal){
+        String username = principal.getName();
+        List<Utente> utenteEdit = utenteRepository.findByUsername(username);
+        Utente utenteDaModificare = utenteEdit.get(0);
+        //Modifia Utente
+        utenteDaModificare.setUsername(utente.getUsername());
+        utenteDaModificare.setName(utente.getName());
+        utenteDaModificare.setSurname(utente.getSurname());
+        utenteDaModificare.setEmail(utente.getEmail());
+        utenteDaModificare.setPassword("{noop}" + utente.getPassword());
+        return utenteRepository.save(utenteDaModificare);
     }
 }

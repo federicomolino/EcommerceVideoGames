@@ -1,5 +1,6 @@
 package com.videogames.videogames.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -13,10 +14,12 @@ public class Recensione {
 
     @ManyToOne
     @JoinColumn(name = "gioco_id")
+    @JsonIgnore
     private Gioco gioco;
 
     @ManyToOne
     @JoinColumn(name = "utente_id")
+    @JsonIgnore
     private Utente utente;
 
     private String recensione;
