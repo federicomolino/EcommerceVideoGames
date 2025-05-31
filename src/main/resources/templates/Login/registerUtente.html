@@ -13,7 +13,7 @@
   <div class="row d-flex justify-content-around">
     <div class="col-4">
       <form class="border rounded p-4 shadow-sm" th:object="${UtenteForm}" th:action="@{/login/register}" method="post">
-        <legend>Registrati</legend>
+        <legend>Registrazione Nuovo Utente</legend>
         <div class="mb-3">
           <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
           <input type="text" id="username" th:field="*{username}" class="form-control" placeholder="Inserisci il tuo username" required>
@@ -93,6 +93,32 @@
               <strong>Email:</strong>
               <span th:text="*{email}" class="ms-2">federico.molino@gmail.com</span>
             </div>
+        </div>
+      </div>
+
+      <!--Lista utenti-->
+      <div class="d-flex justify-content-end mt-5" sec:authorize="hasAuthority('ADMIN')">
+        <div class="col-12">
+          <form method="post" th:object=${"formDisabilitaUtente"}>
+            <div class="border rounded p-4 shadow-sm" style="max-height: 200px; overflow-y: auto;">
+              <div class="d-flex justify-content-between">
+                <h6>Utenti Presenti</h6>
+                <button type="submit" class="btn btn-outline-success btn-sm px-3">Salva</button>
+              </div>
+              <hr>
+              <div th:each="utenti : ${utentiPresenti}">
+                <div class="d-flex justify-content-between">
+                  <p th:text="${utenti.username}" class="col-8">
+                    federico.molino
+                  <div class="form-check form-switch mt-1">
+                    <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+                    <label class="form-check-label" for="switchCheckDefault">Disabilita</label>
+                  </div>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>

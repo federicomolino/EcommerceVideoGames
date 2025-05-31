@@ -32,6 +32,8 @@ public class loginController {
             String username = principal.getName();
             List<Utente> utente = utenteRepository.findByUsername(username);
             model.addAttribute("utente",utente.get(0));
+            List<Utente> utentiPresenti = utenteRepository.findAll();
+            model.addAttribute("utentiPresenti", utentiPresenti);
         }
 
         model.addAttribute("UtenteForm", new Utente());

@@ -22,6 +22,16 @@ public class Utente {
 
     private String password;
 
+    private boolean disabilitaUtente;
+
+    public boolean isDisabilitaUtente() {
+        return disabilitaUtente;
+    }
+
+    public void setDisabilitaUtente(boolean disabilitaUtente) {
+        this.disabilitaUtente = disabilitaUtente;
+    }
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "utente_roles", // Nome della tabella intermedia
