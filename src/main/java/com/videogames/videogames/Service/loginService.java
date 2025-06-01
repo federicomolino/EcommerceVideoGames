@@ -85,4 +85,11 @@ public class loginService {
         }
         utenteRepository.saveAll(tuttiUtenti);
     }
+
+    public void cancellaUtente(Integer id_utente){
+        Utente utente = utenteRepository.findById(id_utente).get();
+        Carrello carrelloUtente = carrelloRepository.findById(id_utente).get();
+        carrelloRepository.delete(carrelloUtente);
+        utenteRepository.delete(utente);
+    }
 }

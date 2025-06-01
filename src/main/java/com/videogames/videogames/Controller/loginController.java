@@ -1,6 +1,7 @@
 package com.videogames.videogames.Controller;
 
 import com.videogames.videogames.Entity.Utente;
+import com.videogames.videogames.Repository.CarrelloRepository;
 import com.videogames.videogames.Repository.utenteRepository;
 import com.videogames.videogames.Service.loginService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +26,9 @@ public class loginController {
 
     @Autowired
     private loginService loginService;
+
+    @Autowired
+    private CarrelloRepository carrelloRepository;
 
     @GetMapping()
     public String login(Model model){
@@ -68,7 +72,7 @@ public class loginController {
 
 
         loginService.newUtente(utenteForm, ruoli);
-        return "redirect:/";
+        return "redirect:/login/register";
     }
 
     @GetMapping("/editUser")
@@ -119,6 +123,12 @@ public class loginController {
     @PostMapping("disabilitaUtenti")
     public String disabilitaUtente(@RequestParam(name = "utentiSelezionati", required = false) List<Integer> utentiSelezionati){
         loginService.disabilitaUtenti(utentiSelezionati);
+        return "redirect:/login/register";
+    }
+
+    @PostMapping("/register/delete/{id_utente}")
+    public String cancellaUtente(@PathVariable("id_utente") Integer id_utente){
+        loginService.cancellaUtente(id_utente);
         return "redirect:/login/register";
     }
 }
