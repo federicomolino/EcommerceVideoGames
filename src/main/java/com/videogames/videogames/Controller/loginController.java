@@ -26,6 +26,12 @@ public class loginController {
     @Autowired
     private loginService loginService;
 
+    @GetMapping()
+    public String login(Model model){
+        model.addAttribute("UtenteFormLogin", new Utente());
+        return "Login/login";
+    }
+
     @GetMapping("register")
     public String RegistraUtente(Model model, Principal principal){
         if (principal != null){
@@ -63,12 +69,6 @@ public class loginController {
 
         loginService.newUtente(utenteForm, ruoli);
         return "redirect:/";
-    }
-
-    @GetMapping()
-    public String login(Model model){
-        model.addAttribute("UtenteFormLogin", new Utente());
-        return "Login/login";
     }
 
     @GetMapping("/editUser")
@@ -114,5 +114,11 @@ public class loginController {
         SecurityContextHolder.clearContext();//puliamo il contesto di sicurezza
 
         return "redirect:/login?logout";
+    }
+
+    @PostMapping("disabilitaUtenti")
+    public String disabilitaUtente(@RequestParam(name = "utentiSelezionati", required = false) List<Integer> utentiSelezionati){
+        loginService.disabilitaUtenti(utentiSelezionati);
+        return "redirect:/login/register";
     }
 }

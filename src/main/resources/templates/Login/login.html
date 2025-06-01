@@ -16,12 +16,14 @@
             <legend>Accedi</legend>
             <div class="mb-3">
               <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
-              <input type="text" id="username" th:field="*{username}" class="form-control" placeholder="Inserisci il tuo Username">
+              <input type="text" id="username" th:field="*{username}" class="form-control"
+                     placeholder="Inserisci il tuo Username">
             </div>
 
             <div class="mb-3">
               <label for="password" class="form-label">Inserisci la password <span class="text-danger">*</span></label>
-              <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Inserisci password">
+              <input type="password" id="password" th:field="*{password}" class="form-control"
+                     placeholder="Inserisci password">
             </div>
 
             <!--Credenziali errate-->
@@ -37,7 +39,7 @@
 
           <!-- Mostra l'errore se c'è un problema con il login -->
           <div th:if="${param.error}">
-              <p class="text-danger">Nome utente o password non validi!</p>
+              <p class="text-danger" th:unless="${param.error == 'disabled'}">Nome utente o password non validi!</p>
           </div>
       </div>
     </div>

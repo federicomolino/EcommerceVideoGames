@@ -65,4 +65,24 @@ public class loginService {
         utenteDaModificare.setPassword("{noop}" + utente.getPassword());
         return utenteRepository.save(utenteDaModificare);
     }
+
+    public void disabilitaUtenti(List<Integer> utentiSelezionati){
+        List<Utente> tuttiUtenti = utenteRepository.findAll();
+        if (utentiSelezionati == null){
+            for (Utente u : tuttiUtenti){
+                u.setDisabilitaUtente(false);
+            }
+        }else {
+            for (Utente utente : tuttiUtenti){
+                // Se l'utente è selezionato, lo disabilito (flag a true)
+                if (utentiSelezionati.contains(utente.getId_utente())){
+                    utente.setDisabilitaUtente(true);
+                } else {
+                    // Altrimenti lo abilito (flag a false)
+                    utente.setDisabilitaUtente(false);
+                }
+            }
+        }
+        utenteRepository.saveAll(tuttiUtenti);
+    }
 }

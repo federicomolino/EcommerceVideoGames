@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class indexController {
 
-//    @Autowired
-//    private giocoRepository giocoRepository;
-
     @Autowired
     private GiocoService GiocoService;
 

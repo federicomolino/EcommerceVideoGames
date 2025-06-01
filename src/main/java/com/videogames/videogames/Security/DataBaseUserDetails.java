@@ -15,6 +15,7 @@ public class DataBaseUserDetails implements UserDetails {
     private final Integer id_utente;
     private final String username;
     private final String password;
+    private final boolean disabilitaUtente;
     //Lista che spring utilizza per validare le authorities
     private final List<GrantedAuthority> authorities;
 
@@ -22,6 +23,7 @@ public class DataBaseUserDetails implements UserDetails {
         this.id_utente = utente.getId_utente();
         this.username = utente.getUsername();
         this.password = utente.getPassword();
+        this.disabilitaUtente = utente.isDisabilitaUtente();
 
         authorities = new ArrayList<>();
         for(Role role : utente.getRoles()){
@@ -43,5 +45,10 @@ public class DataBaseUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return this.username;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return !this.disabilitaUtente;
     }
 }

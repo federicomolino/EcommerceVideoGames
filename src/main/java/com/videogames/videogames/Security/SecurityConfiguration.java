@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -25,7 +26,8 @@ public class SecurityConfiguration {
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .failureUrl("/login?error=true") // Usa il parametro `error=true` per mostrare l'errore
+                .failureHandler(customAuthenticationFailureHandler()) // usa handler personalizzato
+                //.failureUrl("/login?error=true") // Usa il parametro `error=true` per mostrare l'errore
                 .permitAll()
                 .and()
                 .logout(logout -> logout
@@ -37,13 +39,18 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    AuthenticationFailureHandler customAuthenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
+    }
+
+    @Bean
     DatabaseUserDetailsService userDetailsService(){
         return new DatabaseUserDetailsService();
     }
 
     @Bean
     PasswordEncoder passwordEncoder(){
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+;        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Bean
