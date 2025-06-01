@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
@@ -52,22 +53,22 @@ public class loginController {
 
     @PostMapping("register")
     public String newUtente(@Valid @ModelAttribute("UtenteForm") Utente utenteForm, BindingResult bindingResult,
-                            @RequestParam(required = false, name = "ruoli")List<String> ruoli){
+                            @RequestParam(required = false, name = "ruoli")List<String> ruoli,
+                            RedirectAttributes redirectAttributes){
 
         List<Utente> utenteUsername = utenteRepository.findByUsername(utenteForm.getUsername());
         List<Utente> utenteEmail = utenteRepository.findByEmail(utenteForm.getEmail());
         if (!utenteUsername.isEmpty()){
-            bindingResult.rejectValue("username","errorUsername",
-                    "Username inserito già usato");
-            return "Login/registerUtente";
+            redirectAttributes.addFlashAttribute("errorUsername","Username inserito già usato");
+            return "redirect:/login/register";
         }else if (!utenteEmail.isEmpty()){
-            bindingResult.rejectValue("email","errorEmail",
+            redirectAttributes.addFlashAttribute("errorEmail",
                     "Email inserita già presente nel sistema");
-            return "Login/registerUtente";
+            return "redirect:/login/register";
         }
 
         if (bindingResult.hasErrors()){
-            return "Login/registerUtente";
+            return "redirect:/login/register";
         }
 
 

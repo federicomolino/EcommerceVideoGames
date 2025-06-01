@@ -17,7 +17,7 @@
         <div class="mb-3">
           <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
           <input type="text" id="username" th:field="*{username}" class="form-control" placeholder="Inserisci il tuo username" required>
-          <span th:if="${#fields.hasErrors('username')}" class="text-danger" th:errors="*{username}"></span>
+          <div th:if="${errorUsername}" class="text-danger" th:text="${errorUsername}"></div>
         </div>
 
         <div class="mb-3">
@@ -33,7 +33,7 @@
         <div class="mb-3">
           <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
           <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="Inserisci la tua email" required>
-          <span th:if="${#fields.hasErrors('email')}" class="text-danger" th:errors="*{email}"></span>
+          <div th:if="${errorEmail}" class="text-danger" th:text="${errorEmail}"></div>
         </div>
 
         <div class="mb-3">
