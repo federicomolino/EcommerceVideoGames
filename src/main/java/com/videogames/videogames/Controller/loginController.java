@@ -122,8 +122,10 @@ public class loginController {
     }
 
     @PostMapping("disabilitaUtenti")
-    public String disabilitaUtente(@RequestParam(name = "utentiSelezionati", required = false) List<Integer> utentiSelezionati){
+    public String disabilitaUtente(@RequestParam(name = "utentiSelezionati", required = false) List<Integer> utentiSelezionati,
+                                   RedirectAttributes redirectAttributes){
         loginService.disabilitaUtenti(utentiSelezionati);
+        redirectAttributes.addFlashAttribute("salvataggioConSuccesso", true);
         return "redirect:/login/register";
     }
 

@@ -22,7 +22,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/login/**").permitAll()
                 .requestMatchers("/gioco/newGioco","/gioco/editGioco/**","/gioco/delete/**").hasAuthority("ADMIN")
                 .requestMatchers("/piattaforma").hasAuthority("ADMIN")
-                .requestMatchers("/", "/**").authenticated()
+                .requestMatchers("/","/**").authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")

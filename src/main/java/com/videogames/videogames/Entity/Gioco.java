@@ -57,6 +57,10 @@ public class Gioco {
     @JsonIgnore
     List<Recensione> recensione;
 
+    @OneToMany(mappedBy = "gioco")
+    @JsonIgnore
+    List<CodiciPromozionale> codiciPromozionali;
+
     public List<Recensione> getRecensione() {
         return recensione;
     }
@@ -151,5 +155,13 @@ public class Gioco {
 
     public void setDataUscitaGioco(LocalDate dataUscitaGioco) {
         this.dataUscitaGioco = dataUscitaGioco;
+    }
+
+    public List<CodiciPromozionale> getCodiciPromozionali() {
+        return codiciPromozionali;
+    }
+
+    public void setCodiciPromozionali(List<CodiciPromozionale> codiciPromozionali) {
+        this.codiciPromozionali = codiciPromozionali;
     }
 }

@@ -1,0 +1,48 @@
+package com.videogames.videogames.Controller;
+
+import com.videogames.videogames.Entity.CodiciPromozionale;
+import com.videogames.videogames.Entity.Gioco;
+import com.videogames.videogames.Repository.CodicePromozionaleRepository;
+import com.videogames.videogames.Repository.giocoRepository;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
+
+@Controller
+@RequestMapping("/gioco/addCodicePromozionale")
+public class CodicePromozionaleController {
+
+    @Autowired
+    private giocoRepository giocoRepository;
+
+    @Autowired
+    private CodicePromozionaleRepository codicePromozionaleRepository;
+
+    @GetMapping()
+    public String showCodicePromozionale (Model model){
+        List<Gioco> gioco = giocoRepository.findAll();
+        model.addAttribute("listGiochi", gioco);
+        model.addAttribute("formAddCodicePromozionale", new CodiciPromozionale());
+        return "gioco/CodicePromozionale";
+    }
+
+    @PostMapping()
+    public String addCodiceSconto(@Valid @ModelAttribute("formAddCodicePromozionale") CodiciPromozionale codiciPromozionale,
+                                  BindingResult bindingResult){
+        codicePromozionaleRepository.save(codiciPromozionale);
+
+        if (bindingResult.hasErrors()){
+            return "gioco/CodicePromozionale";
+        }
+        return "gioco/CodicePromozionale";
+    }
+
+}

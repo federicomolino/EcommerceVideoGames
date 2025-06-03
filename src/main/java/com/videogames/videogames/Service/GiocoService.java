@@ -6,6 +6,7 @@ import com.videogames.videogames.Entity.Piattaforma;
 import com.videogames.videogames.Exception.ExceptionAddGioco;
 import com.videogames.videogames.Exception.NessunGiocoTrovato;
 import com.videogames.videogames.Repository.CarrelloGiocoRepository;
+import com.videogames.videogames.Repository.CodicePromozionaleRepository;
 import com.videogames.videogames.Repository.PiattaformaRepository;
 import com.videogames.videogames.Repository.giocoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class GiocoService {
 
     @Autowired
     private PiattaformaRepository piattaformaRepository;
+
+    @Autowired
+    private CodicePromozionaleRepository codicePromozionaleRepository;
 
     public List<Gioco> showGiochi(String titolo){
         List<Gioco> giochi;
@@ -68,7 +72,6 @@ public class GiocoService {
         //Salvo la/e piattaforma selezionata
         List<Piattaforma> piattaformaSelezionata = piattaformaRepository.findAllById(selezionePiattaformaID);
         editFormGioco.setPiattaforma(piattaformaSelezionata);
-
         editFormGioco.setTitolo(editFormGioco.getTitolo());
         editFormGioco.setDescrizione(editFormGioco.getDescrizione());
         editFormGioco.setPrezzo(editFormGioco.getPrezzo());

@@ -1,7 +1,9 @@
 package com.videogames.videogames.Controller;
 
+import com.videogames.videogames.Entity.CodiciPromozionale;
 import com.videogames.videogames.Entity.Gioco;
 import com.videogames.videogames.Entity.Recensione;
+import com.videogames.videogames.Repository.CodicePromozionaleRepository;
 import com.videogames.videogames.Repository.PiattaformaRepository;
 import com.videogames.videogames.Repository.RecensioneRepository;
 import com.videogames.videogames.Repository.giocoRepository;
@@ -32,6 +34,9 @@ public class giocoController {
 
     @Autowired
     private RecensioneRepository recensioneRepository;
+
+    @Autowired
+    private CodicePromozionaleRepository codicePromozionaleRepository;
 
     @GetMapping("/newGioco")
     public String showNewGioco(Model model){
@@ -92,6 +97,8 @@ public class giocoController {
         model.addAttribute("gioco", idSingoloGioco.get());
         model.addAttribute("EditFormGioco", idSingoloGioco.get());
         model.addAttribute("listPiattaforma", piattaformaRepository.findAll());
+        model.addAttribute("listCodicePromozionale", codicePromozionaleRepository.findAll());
+        model.addAttribute("codicePromozionale", new CodiciPromozionale());
         return "gioco/editGioco";
     }
 

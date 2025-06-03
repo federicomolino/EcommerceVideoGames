@@ -96,7 +96,6 @@
         <a th:href="@{/gioco/addRecensione/{id}(id=${gioco.idGioco})}"
            class=" mt-1 btn btn-sm btn-outline-success">Aggiungi Recensione</a>
       </div>
-
       <div class="mt-1 border rounded p-3" style="max-height: 400px; overflow-y: auto;">
       <div th:each="recensioni : ${listRecensioni}">
         <ul class="list-group list-group-flush">
