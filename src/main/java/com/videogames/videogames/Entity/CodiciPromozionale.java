@@ -11,7 +11,7 @@ public class CodiciPromozionale {
     private Long idCodicePromozionle;
 
     @Column(unique = true)
-    @Size(max = 30, message = "Lunghezza massimo di 30 caratteri")
+    @Size(max = 30, message = "Lunghezza massima di 30 caratteri")
     private String codicePromozionale;
 
     private boolean usato;

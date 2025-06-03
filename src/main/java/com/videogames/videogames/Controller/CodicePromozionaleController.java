@@ -36,7 +36,27 @@ public class CodicePromozionaleController {
 
     @PostMapping()
     public String addCodiceSconto(@Valid @ModelAttribute("formAddCodicePromozionale") CodiciPromozionale codiciPromozionale,
-                                  BindingResult bindingResult){
+                                  BindingResult bindingResult, Model model){
+        List<Gioco> gioco = giocoRepository.findAll();
+
+        List<CodiciPromozionale> codiciPromozionali = codicePromozionaleRepository.findAll();
+        for (CodiciPromozionale codice : codiciPromozionali){
+            if (codice.getCodicePromozionale().equals(codiciPromozionale.getCodicePromozionale())){
+                bindingResult.rejectValue("codicePromozionale","ErrorCodicePromozionale",
+                        "Codice già presente nel sistema");
+                model.addAttribute("listGiochi",gioco);
+                return "gioco/CodicePromozionale";
+            }
+        }
+
+        if (codiciPromozionale.getValoreCodicePromozionale() != 20 && codiciPromozionale.getValoreCodicePromozionale() != 50
+                && codiciPromozionale.getValoreCodicePromozionale() != 100){
+            bindingResult.rejectValue("valoreCodicePromozionale","ErrorValoreCodice",
+                    "Valore inserito non valido");
+            model.addAttribute("listGiochi",gioco);
+            return "gioco/CodicePromozionale";
+        }
+
         codicePromozionaleRepository.save(codiciPromozionale);
 
         if (bindingResult.hasErrors()){

@@ -36,8 +36,7 @@
               <div>
                 <h6>Aggiungi Codice Promozionale</h6>
 
-                <form method="post" th:object="${formAddCodicePromozionale}" th:action="@{/gioco/addCodicePromozionale}"
-                      enctype="multipart/form-data">
+                <form method="post" th:object="${formAddCodicePromozionale}" th:action="@{/gioco/addCodicePromozionale}">
                   <label class="mt-2">Seleziona il gioco <span class="text-danger">*</span></label>
                   <select class="form-select mt-2" aria-label="Default select example" th:field="*{gioco}">
                     <option selected disabled th:value="0">Seleziona gioco</option>
@@ -45,12 +44,19 @@
                             th:value=${gioco.idGioco}
                             th:text="${gioco.titolo}">Prova</option>
                   </select>
+                  <ul th:if="${#fields.hasErrors('gioco')}">
+                    <li th:each="err : ${#fields.errors('gioco')}" th:text="${err}" class="text-danger">Input is incorrect</li>
+                  </ul>
 
                   <label class="mt-4">Inserisci Codice Sconto <span class="text-danger">*</span></label>
                   <input type="text" id="codicePromozionale" class="form-control" maxlength="30" th:field="*{codicePromozionale}">
                   <div id="passwordHelpBlock" class="form-text">
                     Il codice promozionale è univoco, massimo di 30 caratteri
                   </div>
+                  <ul th:if="${#fields.hasErrors('codicePromozionale')}">
+                    <li th:each="err : ${#fields.errors('codicePromozionale')}"
+                        th:text="${err}" class="text-danger">Input is incorrect</li>
+                  </ul>
 
                   <label class="mt-4">Inserisci Valore Codice Sconto <span class="text-danger">*</span></label>
                   <select class="form-select mt-2" aria-label="Default select example" th:field="*{valoreCodicePromozionale}">
@@ -59,6 +65,10 @@
                     <option th:value="50">50€</option>
                     <option th:value="100">100€</option>
                   </select>
+                  <ul th:if="${#fields.hasErrors('valoreCodicePromozionale')}">
+                    <li th:each="err : ${#fields.errors('valoreCodicePromozionale')}"
+                        th:text="${err}" class="text-danger">Input is incorrect</li>
+                  </ul>
 
                   <div class="mt-4 text-end">
                     <button type="submit" class="btn btn-success btn-sm">Aggiungi Sconto</button>
