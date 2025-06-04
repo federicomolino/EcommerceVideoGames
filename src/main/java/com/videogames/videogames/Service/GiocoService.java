@@ -12,6 +12,7 @@ import com.videogames.videogames.Repository.giocoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,7 +55,7 @@ public class GiocoService {
         }
     }
 
-    public void cancellaGioco(Integer id){
+    public void cancellaGioco(Integer id, Principal principal){
         Optional<Gioco> gioco = giocoRepository.findById(id);
         if (!gioco.isPresent()){
             throw new NessunGiocoTrovato("CG400_ID_PASSATO_NON_VALIDO");
@@ -62,7 +63,7 @@ public class GiocoService {
         //Cerchiamo se il gioco è in qualche carrello
         Optional<CarrelloGioco> carrelloGioco = carrelloGiocoRepository.findByIdGiocoCarrello(id);
         if (carrelloGioco.isPresent()){
-            carrelloService.cancellaGiocoCarrello(carrelloGioco.get().getId_carrelloGioco());
+            carrelloService.cancellaGiocoCarrello(carrelloGioco.get().getId_carrelloGioco(),principal);
         }
         giocoRepository.deleteById(id);
     }

@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -136,8 +137,8 @@ public class giocoController {
     }
 
     @PostMapping("delete/{idGioco}")
-    public String cancellaGioco(@PathVariable("idGioco") Integer idGioco){
-        GiocoService.cancellaGioco(idGioco);
+    public String cancellaGioco(@PathVariable("idGioco") Integer idGioco, Principal principal){
+        GiocoService.cancellaGioco(idGioco,principal);
         return "redirect:/";
     }
 

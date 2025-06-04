@@ -88,7 +88,29 @@
         </div>
 
         <div>
+          <!--Codice Promozionale-->
+          <form th:object="${formAddCodicePromozionale}" method="post" th:action="@{/carrello/codicePromozionale}">
+          <div class="d-flex justify-content-around">
+              <div class="mt-2 d-flex flex-column  col-6">
+                <label>Inserisci codice promozionale</label>
+                <input maxlength="30" autocomplete="cc-number" type="text" placeholder="Inserisci codice"
+                       style="height: 20px;"
+                        th:field="*{codicePromozionale}">
+                <!-- Messaggio di errore -->
+                <div th:if="${codicePromozionale}" class="text-danger">
+                  <p th:text="${codicePromozionale}">Codice già utilizzato</p>
+                </div>
+
+              </div>
+
+              <div>
+                <button class="mt-4 btn btn-outline-success btn-sm" type="submit">Verifica</button>
+              </div>
+            </div>
+          </form>
+          <hr>
           <span>Modalità pagamento</span>
+
           <form class="mt-2">
 
             <div class="col-6">
@@ -121,9 +143,7 @@
               <div th:if="${prezzoTotale != 0}">
                 <button class="mt-4 btn btn-outline-success btn-sm" type="submit">Pagamento</button>
               </div>
-
             </div>
-
           </form>
         </div>
       </div>

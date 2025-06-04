@@ -1,15 +1,18 @@
 package com.videogames.videogames.Service;
 
+import com.videogames.videogames.Entity.Carrello;
 import com.videogames.videogames.Entity.CarrelloGioco;
 import com.videogames.videogames.Entity.Gioco;
 import com.videogames.videogames.Entity.Utente;
 import com.videogames.videogames.Exception.QuantitaInsufficenteException;
 import com.videogames.videogames.Repository.CarrelloGiocoRepository;
+import com.videogames.videogames.Repository.CarrelloRepository;
 import com.videogames.videogames.Repository.UserRepository;
 import com.videogames.videogames.Repository.giocoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +29,9 @@ public class carrelloService {
     @Autowired
     private giocoRepository giocoRepository;
 
+    @Autowired
+    private CarrelloRepository carrelloRepository;
+
     //Recupero utente
     public Optional<Utente> recuperoUtente(Principal principal){
 //      Recupero Utente
@@ -37,15 +43,28 @@ public class carrelloService {
         return utente;
     }
 
-    public double prezzoFinaleCarrello(Principal principal){
+    public double prezzoFinaleCarrello(Principal principal, double codicePromozionale){
         Optional<Utente> utente = recuperoUtente(principal);
+        Utente user = utente.get();
+        Carrello carr = carrelloRepository.findByUtente(user);
         List<CarrelloGioco> carrelloGioco = carrelloGiocoRepository.findByUtente(utente);
         double price = 0;
+        if (carrelloGioco.isEmpty()){
+            carr.setPrezzoFinale(BigDecimal.valueOf(price));
+            carrelloRepository.save(carr);
+        }
         if (!carrelloGioco.isEmpty()){
             for (CarrelloGioco carrello : carrelloGioco){
                 Gioco g = carrello.getGioco();
                 price += g.getPrezzo() * carrello.getQuantita();
+                carr.setPrezzoFinale(BigDecimal.valueOf(price));
+                carrelloRepository.save(carr);
             }
+        }
+        if (codicePromozionale != 0){
+            price -= codicePromozionale;
+            carr.setPrezzoFinale(BigDecimal.valueOf(price));
+            carrelloRepository.save(carr);
         }
         return price;
     }
@@ -69,6 +88,7 @@ public class carrelloService {
             CarrelloGioco carrelloGioco = UtenteAndGioco.get();
             carrelloGioco.setQuantita(carrelloGioco.getQuantita() +1);
             carrelloGiocoRepository.save(carrelloGioco);
+            prezzoFinaleCarrello(principal,0);
             return "redirect:/carrello";
 
         } else {
@@ -82,17 +102,19 @@ public class carrelloService {
             newCarello.setGioco(optGioco);
             newCarello.setQuantita(1);
             carrelloGiocoRepository.save(newCarello);
+            prezzoFinaleCarrello(principal,0);
         }
         return "redirect:/carrello";
     }
 
-    public void cancellaGiocoCarrello(Integer id){
+    public void cancellaGiocoCarrello(Integer id, Principal principal){
         CarrelloGioco carrelloGioco = carrelloGiocoRepository.findById(id).get();
         Gioco gioco = carrelloGioco.getGioco();
         //Aggiungio la quantità eliminata al magazzino
         int addQuantitaMagazzino = gioco.getQuantita() + carrelloGioco.getQuantita();
         gioco.setQuantita(addQuantitaMagazzino);
         carrelloGiocoRepository.deleteById(id);
+        prezzoFinaleCarrello(principal,0);
     }
 
     public CarrelloGioco modificaQuantitaCarrello(Integer id, CarrelloGioco formEditCarrello){

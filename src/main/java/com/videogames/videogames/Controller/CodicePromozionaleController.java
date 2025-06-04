@@ -4,6 +4,7 @@ import com.videogames.videogames.Entity.CodiciPromozionale;
 import com.videogames.videogames.Entity.Gioco;
 import com.videogames.videogames.Repository.CodicePromozionaleRepository;
 import com.videogames.videogames.Repository.giocoRepository;
+import com.videogames.videogames.Service.CodicePromozionaleService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,12 +27,15 @@ public class CodicePromozionaleController {
     @Autowired
     private CodicePromozionaleRepository codicePromozionaleRepository;
 
+    @Autowired
+    private CodicePromozionaleService codicePromozionaleService;
+
     @GetMapping()
     public String showCodicePromozionale (Model model){
         List<Gioco> gioco = giocoRepository.findAll();
         model.addAttribute("listGiochi", gioco);
         model.addAttribute("formAddCodicePromozionale", new CodiciPromozionale());
-        return "gioco/CodicePromozionale";
+        return "CodicePromozionale/CodicePromozionale";
     }
 
     @PostMapping()
@@ -45,8 +49,13 @@ public class CodicePromozionaleController {
                 bindingResult.rejectValue("codicePromozionale","ErrorCodicePromozionale",
                         "Codice già presente nel sistema");
                 model.addAttribute("listGiochi",gioco);
-                return "gioco/CodicePromozionale";
+                return "CodicePromozionale/CodicePromozionale";
             }
+        }
+        if (codiciPromozionale.getCodicePromozionale().trim().isEmpty()){
+            bindingResult.rejectValue("codicePromozionale","ErrorCodicePromozionale",
+                    "Codice non valido");
+            model.addAttribute("listGiochi",gioco);
         }
 
         if (codiciPromozionale.getValoreCodicePromozionale() != 20 && codiciPromozionale.getValoreCodicePromozionale() != 50
@@ -54,15 +63,16 @@ public class CodicePromozionaleController {
             bindingResult.rejectValue("valoreCodicePromozionale","ErrorValoreCodice",
                     "Valore inserito non valido");
             model.addAttribute("listGiochi",gioco);
-            return "gioco/CodicePromozionale";
+            return "CodicePromozionale/CodicePromozionale";
         }
 
-        codicePromozionaleRepository.save(codiciPromozionale);
+        codicePromozionaleService.addCodicePromoziale(codiciPromozionale);
 
         if (bindingResult.hasErrors()){
+            model.addAttribute("listGiochi",gioco);
             return "gioco/CodicePromozionale";
         }
-        return "gioco/CodicePromozionale";
+        return "CodicePromozionale/CodicePromozionale";
     }
 
 }

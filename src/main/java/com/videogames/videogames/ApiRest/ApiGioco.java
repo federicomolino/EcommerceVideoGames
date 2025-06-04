@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,9 +35,9 @@ public class ApiGioco {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteGioco(@PathVariable Integer id){
+    public ResponseEntity<?> deleteGioco(@PathVariable Integer id, Principal principal){
         try{
-            GiocoService.cancellaGioco(id);
+            GiocoService.cancellaGioco(id, principal);
         }catch (NessunGiocoTrovato ex){
             throw new NessunGiocoTrovato("CG_ID_PASSATO_NON_VALIDO");
         }

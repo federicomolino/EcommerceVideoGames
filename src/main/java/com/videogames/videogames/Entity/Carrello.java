@@ -2,6 +2,7 @@ package com.videogames.videogames.Entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -17,6 +18,17 @@ public class Carrello {
 
     @OneToMany(mappedBy = "carrello")
     private List<CarrelloGioco> giochiCarrello;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal prezzoFinale;
+
+    public BigDecimal getPrezzoFinale() {
+        return prezzoFinale;
+    }
+
+    public void setPrezzoFinale(BigDecimal prezzoFinale) {
+        this.prezzoFinale = prezzoFinale;
+    }
 
     public Utente getUtente() {
         return utente;

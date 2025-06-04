@@ -1,10 +1,10 @@
 package com.videogames.videogames.Controller;
 
-import com.videogames.videogames.Entity.CarrelloGioco;
-import com.videogames.videogames.Entity.Gioco;
-import com.videogames.videogames.Entity.Utente;
+import com.videogames.videogames.Entity.*;
 import com.videogames.videogames.Exception.QuantitaInsufficenteException;
 import com.videogames.videogames.Repository.CarrelloGiocoRepository;
+import com.videogames.videogames.Repository.CarrelloRepository;
+import com.videogames.videogames.Repository.CodicePromozionaleRepository;
 import com.videogames.videogames.Repository.giocoRepository;
 import com.videogames.videogames.Service.carrelloService;
 import jakarta.validation.Valid;
@@ -33,17 +33,22 @@ public class carrelloController {
     @Autowired
     private carrelloService carrelloService;
 
+    @Autowired
+    private CodicePromozionaleRepository codicePromozionaleRepository;
+
+    @Autowired
+    private CarrelloRepository carrelloRepository;
+
     @GetMapping()
     public String showCarrello(Model model, Principal principal){
         Optional<Utente> u = carrelloService.recuperoUtente(principal);
+        Utente user = u.get();
         List<CarrelloGioco> carrello = carrelloGiocoRepository.findByUtente(u);
-        double prezzo = carrelloService.prezzoFinaleCarrello(principal);
-        //Trasformo il prezzo in modo che abbia due decimali
-        DecimalFormat priceDecimal = new DecimalFormat("#.##");
-        String priceDecimalFormatter = priceDecimal.format(prezzo);
+        Carrello carr = carrelloRepository.findByUtente(user);
 
         model.addAttribute("listCarrello", carrello);
-        model.addAttribute("prezzoTotale", priceDecimalFormatter);
+        model.addAttribute("prezzoTotale", carr.getPrezzoFinale());
+        model.addAttribute("formAddCodicePromozionale", new CodiciPromozionale());
         return "Carrello/carrello";
     }
 
@@ -61,9 +66,62 @@ public class carrelloController {
         return "redirect:/carrello";
     }
 
+    //Sconto per codice promozionale inserito
+    @PostMapping("/codicePromozionale")
+    public String scountCodicePromozionale(@ModelAttribute("formAddCodicePromozionale") CodiciPromozionale codiciPromozionale,
+                                           RedirectAttributes redirectAttributes, Model model, Principal principal){
+        List<Gioco> giochi = giocoRepository.findAll();
+        List<CodiciPromozionale> codiciPromozionaliPresenti = codicePromozionaleRepository.findAll();
+        Optional<Utente> u = carrelloService.recuperoUtente(principal);
+        List<CarrelloGioco> carrello = carrelloGiocoRepository.findByUtente(u);
+
+        if (codiciPromozionale.getCodicePromozionale().isEmpty()){
+            redirectAttributes.addFlashAttribute("codicePromozionale",
+                    "Il codice non può essere vuoto");
+            return "redirect:/carrello";
+        }
+
+        for (CodiciPromozionale codice : codiciPromozionaliPresenti){
+            if (codice.getCodicePromozionale().equals(codiciPromozionale.getCodicePromozionale())){
+                if (codice.isUsato()){
+                    redirectAttributes.addFlashAttribute("codicePromozionale",
+                            "Codice già utilizzato");
+                    return "redirect:/carrello";
+                }
+                int idGioco = codice.getGioco().getIdGioco();
+
+                //Verifico se il gioco è nel carello
+                for (CarrelloGioco c : carrello){
+                    if (c.getGioco().getIdGioco()==idGioco){
+                        //Applico sconto
+                        for (Gioco g : giochi){
+                            if (g.getIdGioco() == idGioco){
+                                codice.setUsato(true);
+                                codicePromozionaleRepository.save(codice);
+                                double prezzo = carrelloService.prezzoFinaleCarrello(principal,codice.getValoreCodicePromozionale());
+                                //Trasformo il prezzo in modo che abbia due decimali
+                                DecimalFormat priceDecimal = new DecimalFormat("#.##");
+                                String priceDecimalFormatter = priceDecimal.format(prezzo);
+                                model.addAttribute("prezzoTotale", priceDecimalFormatter);
+                                model.addAttribute("listCarrello", carrello);
+                                model.addAttribute("formAddCodicePromozionale", new CodiciPromozionale());
+                                return "Carrello/carrello";
+                            }
+                        }
+                    }else {
+                        redirectAttributes.addFlashAttribute("codicePromozionale",
+                                "Codice non valido");
+                        return "redirect:/carrello";
+                    }
+                }
+            }
+        }
+        return "Carrello/carrello";
+    }
+
     @PostMapping("/delete/{id}")
-    public String cancellaGiocoCarrello(@PathVariable("id") Integer id){
-        carrelloService.cancellaGiocoCarrello(id);
+    public String cancellaGiocoCarrello(@PathVariable("id") Integer id, Principal principal){
+        carrelloService.cancellaGiocoCarrello(id, principal);
         return "redirect:/carrello";
     }
 
@@ -78,12 +136,13 @@ public class carrelloController {
     @PostMapping("/edit/{id}")
     public String carrelloGiocoEdit(@PathVariable("id") Integer id, @Valid
                                     @ModelAttribute("formEditCarrello") CarrelloGioco formEditCarrello,
-                                    BindingResult bindingResult, Model model){
+                                    BindingResult bindingResult, Model model, Principal principal){
         if (bindingResult.hasErrors()){
             return "Carrello/editCarrello";
         }
         try {
             carrelloService.modificaQuantitaCarrello(id, formEditCarrello);
+            carrelloService.prezzoFinaleCarrello(principal, 0);
         }catch (QuantitaInsufficenteException ex){
             CarrelloGioco carrelloGioco = carrelloGiocoRepository.findById(id).get();
             bindingResult.rejectValue("quantita", "errorQuantita",
