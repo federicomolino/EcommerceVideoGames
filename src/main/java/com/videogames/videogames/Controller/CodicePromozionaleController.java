@@ -10,10 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -73,6 +71,28 @@ public class CodicePromozionaleController {
             return "gioco/CodicePromozionale";
         }
         return "CodicePromozionale/CodicePromozionale";
+    }
+
+    @GetMapping("/listaCodici")
+    public String showCodiciPresenti(Model model){
+        List<CodiciPromozionale> codiciPromozionale = codicePromozionaleRepository.findAll();
+        model.addAttribute("listCodiciPromozinali", codiciPromozionale);
+        return "CodicePromozionale/listaCodiciPromozionali";
+    }
+
+    @PostMapping("/listaCodici-delete")
+    public String deleteCodicePromozionale(@RequestParam(value = "selectedIds",required = false) List<Long> selectedIds,
+                                           RedirectAttributes redirectAttributes){
+
+        if (selectedIds == null || selectedIds.isEmpty()){
+            redirectAttributes.addFlashAttribute("listCodici",
+                    "Non è stato selezionato nessun codice");
+            return "redirect:/gioco/addCodicePromozionale/listaCodici";
+        }
+
+        codicePromozionaleService.cancellaCodicePromozionale(selectedIds);
+
+        return "redirect:/gioco/addCodicePromozionale/listaCodici";
     }
 
 }
