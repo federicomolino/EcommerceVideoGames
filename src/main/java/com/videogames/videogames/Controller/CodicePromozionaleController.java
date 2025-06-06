@@ -38,7 +38,7 @@ public class CodicePromozionaleController {
 
     @PostMapping()
     public String addCodiceSconto(@Valid @ModelAttribute("formAddCodicePromozionale") CodiciPromozionale codiciPromozionale,
-                                  BindingResult bindingResult, Model model){
+                                  BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes){
         List<Gioco> gioco = giocoRepository.findAll();
 
         List<CodiciPromozionale> codiciPromozionali = codicePromozionaleRepository.findAll();
@@ -68,9 +68,10 @@ public class CodicePromozionaleController {
 
         if (bindingResult.hasErrors()){
             model.addAttribute("listGiochi",gioco);
-            return "gioco/CodicePromozionale";
+            return "CodicePromozionale/CodicePromozionale";
         }
-        return "CodicePromozionale/CodicePromozionale";
+        redirectAttributes.addFlashAttribute("codiceAggiunto","Il codice è stato aggiunto");
+        return "redirect:/gioco/addCodicePromozionale";
     }
 
     @GetMapping("/listaCodici")

@@ -23,6 +23,16 @@
         </div>
       </div>
 
+      <!---->
+      <div th:if="${codiceAggiunto}">
+        <div class="alert alert-success position-relative" role="alert">
+          <div class="text-center w-100">
+            Codice Aggiunto correttamente
+          </div>
+          <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      </div>
+
       <!--Lista giochi-->
       <div th:unless="${listGiochi.isEmpty}">
         <div class="container">
