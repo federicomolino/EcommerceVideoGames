@@ -52,6 +52,7 @@ public class carrelloController {
             model.addAttribute("prezzoTotale", carr.getPrezzoFinale());
         }else {
             model.addAttribute("prezzoTotale", carr.getPrezzoFinaleSconto());
+            model.addAttribute("scontoApplicato", true);
         }
 
         model.addAttribute("listCarrello", carrello);
@@ -88,6 +89,15 @@ public class carrelloController {
             return "redirect:/carrello";
         }
 
+        //Verifico se il codice esiste
+        for (int i = 0; i < codiciPromozionaliPresenti.size(); i ++){
+            if (!codiciPromozionaliPresenti.get(i).equals(codiciPromozionale.getCodicePromozionale())){
+                redirectAttributes.addFlashAttribute("codicePromozionale",
+                        "Codice non valido");
+                return "redirect:/carrello";
+            }
+        }
+
 
         for (CodiciPromozionale codice : codiciPromozionaliPresenti){
             if (codice.getCodicePromozionale().equals(codiciPromozionale.getCodicePromozionale())){
@@ -116,10 +126,6 @@ public class carrelloController {
                                 return "Carrello/carrello";
                             }
                         }
-                    }else {
-                        redirectAttributes.addFlashAttribute("codicePromozionale",
-                                "Codice non valido");
-                        return "redirect:/carrello";
                     }
                 }
             }

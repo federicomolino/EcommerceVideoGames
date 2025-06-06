@@ -100,6 +100,10 @@
                 <div th:if="${codicePromozionale}" class="text-danger">
                   <p th:text="${codicePromozionale}">Codice già utilizzato</p>
                 </div>
+                <!-- Sconto Applicato -->
+                <div th:if="${scontoApplicato}" class="text-success">
+                  <strong>Sconto Applicato!!</strong>
+                </div>
               </div>
 
               <div>
