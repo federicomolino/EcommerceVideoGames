@@ -90,12 +90,19 @@ public class carrelloController {
         }
 
         //Verifico se il codice esiste
+
+        boolean codiceTrovato = false;
+
         for (int i = 0; i < codiciPromozionaliPresenti.size(); i ++){
-            if (!codiciPromozionaliPresenti.get(i).equals(codiciPromozionale.getCodicePromozionale())){
-                redirectAttributes.addFlashAttribute("codicePromozionale",
-                        "Codice non valido");
-                return "redirect:/carrello";
+            if (codiciPromozionaliPresenti.get(i).getCodicePromozionale()
+                    .equals(codiciPromozionale.getCodicePromozionale())){
+                codiceTrovato = true;
             }
+        }
+        if (!codiceTrovato){
+            redirectAttributes.addFlashAttribute("codicePromozionale",
+                    "Codice non valido");
+            return "redirect:/carrello";
         }
 
 
