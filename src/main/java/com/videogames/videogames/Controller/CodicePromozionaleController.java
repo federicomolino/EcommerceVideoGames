@@ -94,5 +94,4 @@ public class CodicePromozionaleController {
 
         return "redirect:/gioco/addCodicePromozionale/listaCodici";
     }
-
 }

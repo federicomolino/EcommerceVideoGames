@@ -49,6 +49,7 @@ public class carrelloService {
         Carrello carr = carrelloRepository.findByUtente(user);
         List<CarrelloGioco> carrelloGioco = carrelloGiocoRepository.findByUtente(utente);
         double price = 0;
+
         if (carrelloGioco.isEmpty()){
             carr.setPrezzoFinale(BigDecimal.valueOf(price));
             carrelloRepository.save(carr);
@@ -63,10 +64,24 @@ public class carrelloService {
         }
         if (codicePromozionale != 0){
             price -= codicePromozionale;
-            carr.setPrezzoFinale(BigDecimal.valueOf(price));
+            carr.setPrezzoFinaleSconto(BigDecimal.valueOf(price));
             carrelloRepository.save(carr);
         }
         return price;
+    }
+
+    public double recuperoScontoApplicato(Principal principal){
+        // Recupero utente
+        Utente u = recuperoUtente(principal).get();
+        // Recupero carrello
+        Carrello carr = carrelloRepository.findByUtente(u);
+        double scontoApplicato = 0;
+        if (carr.getPrezzoFinaleSconto() != null &&
+                carr.getPrezzoFinaleSconto().compareTo(BigDecimal.ZERO) > 0) {
+            BigDecimal sconto = carr.getPrezzoFinale().subtract(carr.getPrezzoFinaleSconto());
+            scontoApplicato = sconto.doubleValue();
+        }
+        return scontoApplicato;
     }
 
     //Aggiunta al carrello
@@ -88,8 +103,6 @@ public class carrelloService {
             CarrelloGioco carrelloGioco = UtenteAndGioco.get();
             carrelloGioco.setQuantita(carrelloGioco.getQuantita() +1);
             carrelloGiocoRepository.save(carrelloGioco);
-            prezzoFinaleCarrello(principal,0);
-            return "redirect:/carrello";
 
         } else {
             //Diminuisco la quantià del gioco
@@ -102,8 +115,8 @@ public class carrelloService {
             newCarello.setGioco(optGioco);
             newCarello.setQuantita(1);
             carrelloGiocoRepository.save(newCarello);
-            prezzoFinaleCarrello(principal,0);
         }
+        prezzoFinaleCarrello(principal,recuperoScontoApplicato(principal));
         return "redirect:/carrello";
     }
 
@@ -114,10 +127,9 @@ public class carrelloService {
         int addQuantitaMagazzino = gioco.getQuantita() + carrelloGioco.getQuantita();
         gioco.setQuantita(addQuantitaMagazzino);
         carrelloGiocoRepository.deleteById(id);
-        prezzoFinaleCarrello(principal,0);
     }
 
-    public CarrelloGioco modificaQuantitaCarrello(Integer id, CarrelloGioco formEditCarrello){
+    public CarrelloGioco modificaQuantitaCarrello(Integer id, CarrelloGioco formEditCarrello, Principal principal){
         CarrelloGioco carrelloGioco = carrelloGiocoRepository.findById(id).get();
         Gioco idGioco = carrelloGioco.getGioco();
 
@@ -142,6 +154,7 @@ public class carrelloService {
         }
 
         carrelloGioco.setQuantita(formEditCarrello.getQuantita());
+        prezzoFinaleCarrello(principal,recuperoScontoApplicato(principal));
         return carrelloGiocoRepository.save(carrelloGioco);
     }
 

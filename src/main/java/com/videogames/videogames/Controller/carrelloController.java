@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -45,9 +46,15 @@ public class carrelloController {
         Utente user = u.get();
         List<CarrelloGioco> carrello = carrelloGiocoRepository.findByUtente(u);
         Carrello carr = carrelloRepository.findByUtente(user);
+        BigDecimal prezzoFinaleScontato = carr.getPrezzoFinaleSconto();
+
+        if (prezzoFinaleScontato == null || prezzoFinaleScontato.compareTo(BigDecimal.ZERO) == 0){
+            model.addAttribute("prezzoTotale", carr.getPrezzoFinale());
+        }else {
+            model.addAttribute("prezzoTotale", carr.getPrezzoFinaleSconto());
+        }
 
         model.addAttribute("listCarrello", carrello);
-        model.addAttribute("prezzoTotale", carr.getPrezzoFinale());
         model.addAttribute("formAddCodicePromozionale", new CodiciPromozionale());
         return "Carrello/carrello";
     }
@@ -80,6 +87,7 @@ public class carrelloController {
                     "Il codice non può essere vuoto");
             return "redirect:/carrello";
         }
+
 
         for (CodiciPromozionale codice : codiciPromozionaliPresenti){
             if (codice.getCodicePromozionale().equals(codiciPromozionale.getCodicePromozionale())){
@@ -141,7 +149,7 @@ public class carrelloController {
             return "Carrello/editCarrello";
         }
         try {
-            carrelloService.modificaQuantitaCarrello(id, formEditCarrello);
+            carrelloService.modificaQuantitaCarrello(id, formEditCarrello,principal);
             carrelloService.prezzoFinaleCarrello(principal, 0);
         }catch (QuantitaInsufficenteException ex){
             CarrelloGioco carrelloGioco = carrelloGiocoRepository.findById(id).get();

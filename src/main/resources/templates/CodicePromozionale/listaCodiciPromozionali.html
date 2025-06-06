@@ -22,43 +22,46 @@
           </div>
         </div>
 
-        <div th:unless="${listCodiciPromozinali.isEmpty}">
-          <form method="post" th:object="${formCodiciPromozionali}" th:action="@{/gioco/addCodicePromozionale/listaCodici-delete}">
-            <div class="col-5">
-              <div class="d-flex justify-content-between mb-2">
-                <strong>Lista codici</strong>
-                <button type="submit" class="btn btn-danger btn-sm">Elimina</button>
-              </div>
-              <div th:if="${listCodici}" class="text-danger">
-                <strong th:text="${listCodici}">Non è stato selezionato nessun codice</strong>
-              </div>
-              <div th:each="CodiciPromozionali : ${listCodiciPromozinali}">
-                <ul class="list-group">
-                  <li class="list-group-item">
-                    <input class="form-check-input me-1" type="checkbox" th:value="${CodiciPromozionali.idCodicePromozionle}"
-                           th:id="'checkbox_' + ${CodiciPromozionali.idCodicePromozionle}"
-                           name="selectedIds">
-                    <label class="form-check-label stretched-link" th:text="${CodiciPromozionali.codicePromozionale}"
-                           th:for="'checkbox_' + ${CodiciPromozionali.idCodicePromozionle}">First checkbox</label>
+        <div class="col-5">
+          <div th:unless="${listCodiciPromozinali.isEmpty}">
+            <form method="post" th:object="${formCodiciPromozionali}" th:action="@{/gioco/addCodicePromozionale/listaCodici-delete}">
+              <div>
+                <div class="d-flex justify-content-between mb-2">
+                  <strong>Lista codici</strong>
+                  <button type="submit" class="btn btn-danger btn-sm">Elimina</button>
+                </div>
+                <div th:if="${listCodici}" class="text-danger">
+                  <strong th:text="${listCodici}">Non è stato selezionato nessun codice</strong>
+                </div>
+                <div th:each="CodiciPromozionali : ${listCodiciPromozinali}">
+                  <ul class="list-group">
+                    <li class="list-group-item">
+                      <input class="form-check-input me-1" type="checkbox" th:value="${CodiciPromozionali.idCodicePromozionle}"
+                             th:id="'checkbox_' + ${CodiciPromozionali.idCodicePromozionle}"
+                             name="selectedIds">
+                      <label class="form-check-label stretched-link" th:text="${CodiciPromozionali.codicePromozionale}"
+                             th:for="'checkbox_' + ${CodiciPromozionali.idCodicePromozionle}">First checkbox</label>
 
-                    <div class="ms-4">
-                      <!--Codici utilizzabili o no-->
-                      <div th:if ="${CodiciPromozionali.usato == true}">
-                      <label class="text-danger">Codice già utilizzato</label>
-                      </div>
-                      <div th:if ="${CodiciPromozionali.usato == false}">
-                        <label class="text-success">Codice non utilizzato</label>
-                      </div>
+                      <div class="ms-4">
+                        <!--Codici utilizzabili o no-->
+                        <div th:if ="${CodiciPromozionali.usato == true}">
+                        <label class="text-danger">Codice già utilizzato</label>
+                        </div>
+                        <div th:if ="${CodiciPromozionali.usato == false}">
+                          <label class="text-success">Codice non utilizzato</label>
+                        </div>
 
-                      <div>
-                        <span th:text="'Titolo Gioco: ' + ${CodiciPromozionali.gioco.titolo}">Gioco</span>
+                        <div>
+                          <span th:text="'Titolo Gioco: ' + ${CodiciPromozionali.gioco.titolo}">Gioco</span>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                </ul>
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
+        </div>
         </div>
       </div>
   </div>

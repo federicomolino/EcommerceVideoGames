@@ -22,6 +22,17 @@ public class Carrello {
     @Column(precision = 10, scale = 2)
     private BigDecimal prezzoFinale;
 
+    @Column(precision = 10, scale = 2)
+    private BigDecimal prezzoFinaleSconto;
+
+    public BigDecimal getPrezzoFinaleSconto() {
+        return prezzoFinaleSconto;
+    }
+
+    public void setPrezzoFinaleSconto(BigDecimal prezzoFinaleSconto) {
+        this.prezzoFinaleSconto = prezzoFinaleSconto;
+    }
+
     public BigDecimal getPrezzoFinale() {
         return prezzoFinale;
     }
