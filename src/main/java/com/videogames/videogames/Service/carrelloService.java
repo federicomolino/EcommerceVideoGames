@@ -1,14 +1,8 @@
 package com.videogames.videogames.Service;
 
-import com.videogames.videogames.Entity.Carrello;
-import com.videogames.videogames.Entity.CarrelloGioco;
-import com.videogames.videogames.Entity.Gioco;
-import com.videogames.videogames.Entity.Utente;
+import com.videogames.videogames.Entity.*;
 import com.videogames.videogames.Exception.QuantitaInsufficenteException;
-import com.videogames.videogames.Repository.CarrelloGiocoRepository;
-import com.videogames.videogames.Repository.CarrelloRepository;
-import com.videogames.videogames.Repository.UserRepository;
-import com.videogames.videogames.Repository.giocoRepository;
+import com.videogames.videogames.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +25,9 @@ public class carrelloService {
 
     @Autowired
     private CarrelloRepository carrelloRepository;
+
+    @Autowired
+    private CodicePromozionaleRepository codicePromozionaleRepository;
 
     //Recupero utente
     public Optional<Utente> recuperoUtente(Principal principal){
@@ -135,7 +132,6 @@ public class carrelloService {
 
         //Elimino il gioco dal carrello
         carrelloGiocoRepository.deleteById(id);
-
         //Recupero lo sconto precedentemente applicato
         double sconto = recuperoScontoApplicato(principal);
         prezzoFinaleCarrello(principal,sconto);

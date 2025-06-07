@@ -90,7 +90,6 @@ public class carrelloController {
         }
 
         //Verifico se il codice esiste
-
         boolean codiceTrovato = false;
 
         for (int i = 0; i < codiciPromozionaliPresenti.size(); i ++){
@@ -130,7 +129,7 @@ public class carrelloController {
                                 model.addAttribute("prezzoTotale", priceDecimalFormatter);
                                 model.addAttribute("listCarrello", carrello);
                                 model.addAttribute("formAddCodicePromozionale", new CodiciPromozionale());
-                                return "Carrello/carrello";
+                                return "redirect:/carrello";
                             }
                         }
                     }
