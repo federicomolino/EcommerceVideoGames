@@ -83,7 +83,10 @@ public class CodicePromozionaleController {
 
     @PostMapping("/listaCodici-delete")
     public String deleteCodicePromozionale(@RequestParam(value = "selectedIds",required = false) List<Long> selectedIds,
+                                           @RequestParam("action") String action,
                                            RedirectAttributes redirectAttributes){
+
+        System.out.println("Azione ricevuta: " + action);
 
         if (selectedIds == null || selectedIds.isEmpty()){
             redirectAttributes.addFlashAttribute("listCodici",
@@ -91,7 +94,11 @@ public class CodicePromozionaleController {
             return "redirect:/gioco/addCodicePromozionale/listaCodici";
         }
 
-        codicePromozionaleService.cancellaCodicePromozionale(selectedIds);
+        if ("delete".equals(action)){
+            codicePromozionaleService.cancellaCodicePromozionale(selectedIds);
+        } else if ("active".equals(action)) {
+            codicePromozionaleService.riattivaCodiciPromozionali(selectedIds);
+        }
 
         return "redirect:/gioco/addCodicePromozionale/listaCodici";
     }

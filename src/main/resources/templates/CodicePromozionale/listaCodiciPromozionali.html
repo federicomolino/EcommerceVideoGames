@@ -28,7 +28,10 @@
               <div>
                 <div class="d-flex justify-content-between mb-2">
                   <strong>Lista codici</strong>
-                  <button type="submit" class="btn btn-danger btn-sm">Elimina</button>
+                  <div>
+                    <button type="submit" class="btn btn-success btn-sm" name="action" value="active">Riattiva</button>
+                    <button type="submit" class="btn btn-danger btn-sm" name="action" value="delete">Elimina</button>
+                  </div>
                 </div>
                 <div th:if="${listCodici}" class="text-danger">
                   <strong th:text="${listCodici}">Non è stato selezionato nessun codice</strong>

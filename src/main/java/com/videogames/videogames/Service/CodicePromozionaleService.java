@@ -22,4 +22,17 @@ public class CodicePromozionaleService {
             codicePromozionaleRepository.deleteById(idCodicePromozionle);
         }
     }
+
+    public void riattivaCodiciPromozionali(List<Long> idCodiciPromozionali){
+        //Mi prendo i codici passati
+        List<CodiciPromozionale> codiciPromozionalePresenti = codicePromozionaleRepository.findAllById(idCodiciPromozionali);
+
+        for (CodiciPromozionale codiciPromozionale : codiciPromozionalePresenti){
+            //Riattivo nel caso siano stati già usati
+            if (codiciPromozionale.isUsato()){
+                codiciPromozionale.setUsato(false);
+                codicePromozionaleRepository.save(codiciPromozionale);
+            }
+        }
+    }
 }
