@@ -11,8 +11,15 @@ import com.videogames.videogames.Repository.PiattaformaRepository;
 import com.videogames.videogames.Repository.giocoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,5 +87,44 @@ public class GiocoService {
         editFormGioco.setQuantita(editFormGioco.getQuantita());
         editFormGioco.setSoftwareHouse(editFormGioco.getSoftwareHouse());
         return giocoRepository.save(editFormGioco);
+    }
+
+    //Aggiungo giochi tramite file
+    public List<Gioco> parseFile(MultipartFile file) throws IOException {
+        List<Gioco> giocoList = new ArrayList<>();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
+        String line;
+        //salta la prima riga
+        reader.readLine();
+
+        //legge ogni riga fermandosi quando sarà null
+        while ((line = reader.readLine()) != null){
+            String[] parts = line.split(",");
+            //Almeno 5 elementi nel file
+            if (parts.length >= 5){
+                Gioco gioco = new Gioco();
+                gioco.setCodiceProdotto(Long.valueOf(parts[0].trim()));
+                gioco.setDescrizione(parts[1].trim());
+                gioco.setKeyAttivazione(parts[2].trim());
+                gioco.setPrezzo(Double.valueOf(parts[3]));
+                gioco.setSoftwareHouse(parts[4].trim());
+                gioco.setTitolo(parts[5].trim());
+                //Verifico la quantità inserita
+                if (Double.parseDouble(parts[6]) < 0){
+                    return null;
+                }
+                gioco.setQuantita(Integer.valueOf(parts[6]));
+
+                //Verifico il caso in cui il formato e la data non sia ok
+                try {
+                    gioco.setDataUscitaGioco(LocalDate.parse(parts[7]));
+                }catch (DateTimeParseException e){
+                    return null;
+                }
+                giocoList.add(gioco);
+            }
+        }
+
+        return giocoList;
     }
 }

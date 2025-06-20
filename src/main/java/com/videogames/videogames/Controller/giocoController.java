@@ -10,11 +10,15 @@ import com.videogames.videogames.Repository.giocoRepository;
 import com.videogames.videogames.Service.GiocoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -140,6 +144,25 @@ public class giocoController {
     public String cancellaGioco(@PathVariable("idGioco") Integer idGioco, Principal principal){
         GiocoService.cancellaGioco(idGioco,principal);
         return "redirect:/";
+    }
+
+    @PostMapping("newGioco/file")
+    public String addGiochiFile(@RequestParam("file")MultipartFile file, RedirectAttributes redirectAttributes){
+        if (file.isEmpty()){
+            return "redirect:/gioco/newGioco";
+        }
+
+        try {
+            List<Gioco> listGiochi = GiocoService.parseFile(file);
+            giocoRepository.saveAll(listGiochi);
+        }catch (IOException | DataAccessException ex){
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Errore durante l'importazione del csv");
+            return "redirect:/gioco/newGioco";
+        }
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Giochi creati correttamente!!!");
+        return  "redirect:/gioco/newGioco";
     }
 
 }

@@ -9,7 +9,36 @@
 <div th:replace="~{navbar/navbar :: navbar}"></div>
 
 <div class="container">
+
+    <!--Errore CSV-->
+    <div th:if="${errorMessage}" class="alert alert-danger d-flex justify-content-between mt-2 col-4 mx-auto">
+        <span th:text="${errorMessage}">Errore durante l'importazione del csv</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!--Giochi creati tramite CSV-->
+    <div th:if="${successMessage}" class="alert alert-success d-flex justify-content-between mt-2 col-4 mx-auto">
+        <span th:text="${successMessage}">Giochi creati correttamente con csv</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
     <h2 class="mb-2 mt-2">Nuovo Gioco</h2>
+    <!--Giochi dal file-->
+    <form method="post" th:action="@{/gioco/newGioco/file}" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-4 d-flex justify-content-between">
+                <div class="input-group mb-3">
+                    <input type="file" class="form-control" id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload"
+                    name="file">
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-primary btn-sm ms-4 mt-1">Importa</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
     <form method="post" th:object="${formAdd}" th:action="@{/gioco/newGioco}" enctype="multipart/form-data">
         <div class="row">
             <div class="col-4 col-md-6">
