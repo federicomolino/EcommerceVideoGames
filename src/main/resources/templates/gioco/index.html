@@ -53,7 +53,7 @@
 
             <!--Ricerca-->
             <div class="col-3"
-                 th:if="${parametri['BARRA_RICERCA']} == true">
+                 th:if="${parametri?.['BARRA_RICERCA']} == true">
                 <form>
                     <div class="input-group mt-2">
                         <input type="text" class="form-control" placeholder="Cerca gioco" name="titolo"
@@ -84,7 +84,7 @@
             <!--CheckRicerca-->
             <div class="row">
                 <div class="col-3"
-                     th:if="${parametri['DETTAGLIO_RICERCA']} == true">
+                     th:if="${parametri?.['DETTAGLIO_RICERCA']} == true">
                     <form method="get" th:action="@{/gioco/searchGiochi}">
                         <div>
                             <div class="container border rounded p-3 shadow bg-light">
