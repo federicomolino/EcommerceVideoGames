@@ -8,8 +8,7 @@
 <!--importo navbar-->
 <div th:replace="~{navbar/navbar :: navbar}"></div>
 
-<div class="container">
-
+<div class="container mt-2">
     <!--Errore CSV-->
     <div th:if="${errorMessage}" class="alert alert-danger d-flex justify-content-between mt-2 col-4 mx-auto">
         <span th:text="${errorMessage}">Errore durante l'importazione del csv</span>
@@ -22,128 +21,166 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-    <h2 class="mb-2 mt-2">Nuovo Gioco</h2>
-    <!--Giochi dal file-->
-    <form method="post" th:action="@{/gioco/newGioco/file}" enctype="multipart/form-data">
-        <div class="row">
-            <div class="col-4 d-flex justify-content-between">
-                <div class="input-group mb-3">
-                    <input type="file" class="form-control" id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload"
-                    name="file">
-                </div>
+    <div class="row">
+        <div class="d-flex justify-content-between">
+            <div class="col-3">
+                <h2 class="mb-2">Nuovo Gioco</h2>
+            </div>
+            <div class="d-flex">
+                <!--Giochi dal file-->
+                <div class="ms-1 row">
+                    <form method="post" th:action="@{/gioco/newGioco/file}" enctype="multipart/form-data">
+                        <div class="d-flex">
+                            <div class="input-group-sm mb-3">
+                                <input type="file" class="form-control" id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload"
+                                       name="file">
+                            </div>
 
-                <div>
-                    <button type="submit" class="btn btn-primary btn-sm ms-4 mt-1">Importa</button>
+                            <div>
+                                <button type="submit" class="btn btn-secondary btn-sm ms-2">Importa</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
+</div>
 
-    <form method="post" th:object="${formAdd}" th:action="@{/gioco/newGioco}" enctype="multipart/form-data">
-        <div class="row">
-            <div class="col-4 col-md-6">
-                <!-- Titolo -->
-                <div class="mb-1">
-                    <label class="form-label">Titolo <span class="text-danger">*</span></label>
-                    <input type="text" name="titolo" th:field="*{titolo}" class="form-control" id="titolo" required>
-                    <ul th:if="${#fields.hasErrors('titolo')}">
-                        <li th:each="err : ${#fields.errors('titolo')}" th:text="${err}" class="text-danger">Input is incorrect</li>
-                    </ul>
-                </div>
-
-                <!-- Descrizione -->
-                <div class="mb-1">
-                    <label class="form-label">Descrizione</label>
-                    <input type="text" name="descrizione" th:field="*{descrizione}" class="form-control" id="descrizione">
-                    <ul th:if="${#fields.hasErrors('descrizione')}">
-                        <li th:each="err : ${#fields.errors('descrizione')}" th:text="${err}" class="text-danger">Input is incorrect</li>
-                    </ul>
-                </div>
-
-                <!-- Prezzo -->
-                <div class="mb-1">
-                    <label class="form-label">Prezzo <span class="text-danger">*</span></label>
-                    <input type="text" name="prezzo" th:field="*{prezzo}" class="form-control" id="prezzo" required>
-                    <ul th:if="${#fields.hasErrors('prezzo')}">
-                        <li th:each="err : ${#fields.errors('prezzo')}" th:text="${err}" class="text-danger">Input is incorrect</li>
-                    </ul>
-                </div>
-
-                <!-- Codice Prodotto -->
-                <div class="mb-1">
-                    <label class="form-label">Codice Prodotto <span class="text-danger">*</span></label>
-                    <input type="number" name="codiceProdotto" th:field="*{codiceProdotto}" class="form-control" id="codiceProdotto" required>
-                    <ul th:if="${#fields.hasErrors('codiceProdotto')}">
-                        <li th:each="err : ${#fields.errors('codiceProdotto')}" th:text="${err}" class="text-danger">Input is incorrect</li>
-                    </ul>
-                </div>
-
-                <!-- Chiave -->
-                <div class="mb-1">
-                    <label class="form-label">Chiave (Max. 20 caratteri) <span class="text-danger">*</span></label>
-                    <input type="text" name="keyAttivazione" th:field="*{keyAttivazione}" class="form-control" id="keyAttivazione" required>
-                    <ul th:if="${#fields.hasErrors('keyAttivazione')}">
-                        <li th:each="err : ${#fields.errors('keyAttivazione')}" th:text="${err}" class="text-danger">Input is incorrect</li>
-                    </ul>
-                </div>
-            </div>
-
-
-            <div class="col-4">
-                <!-- Software House -->
-                <div class="mb-1">
-                    <label class="form-label">Software House</label>
-                    <input type="text" name="softwareHouse" th:field="*{softwareHouse}" class="form-control" id="softwareHouse">
-                    <ul th:if="${#fields.hasErrors('softwareHouse')}">
-                        <li th:each="err : ${#fields.errors('softwareHouse')}" th:text="${err}" class="text-danger">Input is incorrect</li>
-                    </ul>
-                </div>
-
-                <div class="mb-1">
-                    <label class="form-label">Numero Prodotto</label>
-                    <input type="number" name="quantita" th:field="*{quantita}" class="form-control" id="quantita"
-                           required min="0">
-                    <ul th:if="${#fields.hasErrors('quantita')}">
-                        <li th:each="err : ${#fields.errors('quantita')}" th:text="${err}" class="text-danger">Input is incorrect</li>
-                    </ul>
-                </div>
-
-                <div class="mb-1">
-                    <label class="form-label">Data Uscita <span class="text-danger">*</span></label>
-                    <input type="date" name="dataUscitaGioco" th:field="*{dataUscitaGioco}" class="form-control"
-                           id="dataUscitaGioco" required>
-                    <ul th:if="${#fields.hasErrors('dataUscitaGioco')}">
-                        <li th:each="err : ${#fields.errors('dataUscitaGioco')}" th:text="${err}" class="text-danger">Input is incorrect</li>
-                    </ul>
-                </div>
-
-                <!--Lista di piattaforme disponibili-->
-                <div class="mt-3">
-                    <h6>Seleziona la piattaforma</h6>
-                    <div class="border rounded p-2" style="max-height: 150px; overflow-y: auto;">
-                        <div th:if="${listPiattaforma.isEmpty or listPiattaforma == null}">
-                            <a class="text-black text-decoration-none" href="/piattaforma">Nessuna Piattaforma inserita,
-                                clicca qui per inserirla!!</a>
+<div class="container">
+    <div class="row">
+        <form method="post" th:object="${formAdd}" th:action="@{/gioco/newGioco}" enctype="multipart/form-data">
+            <div class="d-flex">
+                <div class="col-8">
+                    <div class="row col-9">
+                        <div class="d-flex justify-content-between">
+                            <!-- Titolo -->
+                            <div class=" col-5">
+                                <label class="form-label">Titolo <span class="text-danger">*</span></label>
+                                <input type="text" name="titolo" th:field="*{titolo}" class="form-control form-control-sm"
+                                       id="titolo" required>
+                                <ul th:if="${#fields.hasErrors('titolo')}">
+                                    <li th:each="err : ${#fields.errors('titolo')}" th:text="${err}" class="text-danger">Input is incorrect</li>
+                                </ul>
+                            </div>
+                            <!-- Software House -->
+                            <div class="col-5">
+                                <label class="form-label">Software House</label>
+                                <input type="text" name="softwareHouse" th:field="*{softwareHouse}" class="form-control form-control-sm"
+                                       id="softwareHouse">
+                                <ul th:if="${#fields.hasErrors('softwareHouse')}">
+                                    <li th:each="err : ${#fields.errors('softwareHouse')}" th:text="${err}" class="text-danger">Input is incorrect</li>
+                                </ul>
+                            </div>
                         </div>
+                    </div>
 
-                        <div th:unless="${listPiattaforma.isEmpty or listPiattaforma == null}">
-                            <div class="form-check form-switch" th:each="piattaforma : ${listPiattaforma}">
-                                <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault"
-                                       th:value="${piattaforma.id_piattaforma}"
-                                        name="piattaformeSelezionate">
-                                <label class="form-check-label" for="switchCheckDefault"
-                                       th:text="${piattaforma.nomePiattaforma}">PC</label>
+                    <div class="row col-9">
+                        <div class="d-flex justify-content-between">
+                            <!-- Descrizione -->
+                            <div class="col-5">
+                                <label class="form-label">Descrizione</label>
+                                <input type="text" name="descrizione" th:field="*{descrizione}" class="form-control form-control-sm"
+                                       id="descrizione">
+                                <ul th:if="${#fields.hasErrors('descrizione')}">
+                                    <li th:each="err : ${#fields.errors('descrizione')}" th:text="${err}" class="text-danger">Input is incorrect</li>
+                                </ul>
+                            </div>
+
+                            <!-- Numero Prodotto -->
+                            <div class="col-5">
+                                <label class="form-label">Numero Prodotto</label>
+                                <input type="number" name="quantita" th:field="*{quantita}" class="form-control form-control-sm"
+                                       id="quantita"
+                                       required min="0">
+                                <ul th:if="${#fields.hasErrors('quantita')}">
+                                    <li th:each="err : ${#fields.errors('quantita')}" th:text="${err}" class="text-danger">Input is incorrect</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row col-9">
+                        <div class="d-flex justify-content-between">
+                            <!-- Prezzo -->
+                            <div class="col-5">
+                                <label class="form-label">Prezzo <span class="text-danger">*</span></label>
+                                <input type="text" name="prezzo" th:field="*{prezzo}" class="form-control form-control-sm"
+                                       id="prezzo" required>
+                                <ul th:if="${#fields.hasErrors('prezzo')}">
+                                    <li th:each="err : ${#fields.errors('prezzo')}" th:text="${err}" class="text-danger">Input is incorrect</li>
+                                </ul>
+                            </div>
+
+                            <!-- Codice Prodotto -->
+                            <div class="col-5">
+                                <label class="form-label">Codice Prodotto <span class="text-danger">*</span></label>
+                                <input type="number" name="codiceProdotto" th:field="*{codiceProdotto}" class="form-control form-control-sm"
+                                       id="codiceProdotto" required>
+                                <ul th:if="${#fields.hasErrors('codiceProdotto')}">
+                                    <li th:each="err : ${#fields.errors('codiceProdotto')}" th:text="${err}" class="text-danger">Input is incorrect</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row col-9">
+                        <div class="d-flex justify-content-between">
+                            <!-- Chiave -->
+                            <div class="col-5">
+                                <label class="form-label">Chiave (Max. 20 caratteri) <span class="text-danger">*</span></label>
+                                <input type="text" name="keyAttivazione" th:field="*{keyAttivazione}" class="form-control" id="keyAttivazione" required>
+                                <ul th:if="${#fields.hasErrors('keyAttivazione')}">
+                                    <li th:each="err : ${#fields.errors('keyAttivazione')}" th:text="${err}" class="text-danger">Input is incorrect</li>
+                                </ul>
+                            </div>
+                            <!-- Data Uscita Gioco -->
+                            <div class="col-5">
+                                <label class="form-label">Data Uscita <span class="text-danger">*</span></label>
+                                <input type="date" name="dataUscitaGioco" th:field="*{dataUscitaGioco}" class="form-control"
+                                       id="dataUscitaGioco" required>
+                                <ul th:if="${#fields.hasErrors('dataUscitaGioco')}">
+                                    <li th:each="err : ${#fields.errors('dataUscitaGioco')}" th:text="${err}" class="text-danger">Input is incorrect</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
-            <!-- Pulsanti -->
-            <div class="d-flex justify-content-center mt-3">
-                <button type="submit" class="btn btn-outline-success">Aggiungi Gioco</button>
-                <a th:href="@{/}" class="btn btn-outline-danger ms-4">Cancella</a>
+
+                <div class="col-4">
+                    <!--Lista di piattaforme disponibili-->
+                    <div class="mt-2">
+                        <div class="text-center">
+                            <h6>Seleziona la piattaforma</h6>
+                        </div>
+
+                        <div class="border rounded p-2">
+                            <div th:if="${listPiattaforma.isEmpty or listPiattaforma == null}">
+                                <a class="text-black text-decoration-none" href="/piattaforma">Nessuna Piattaforma inserita,
+                                    clicca qui per inserirla!!</a>
+                            </div>
+
+                            <div th:unless="${listPiattaforma.isEmpty or listPiattaforma == null}">
+                                <div class="form-check form-switch" th:each="piattaforma : ${listPiattaforma}">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault"
+                                           th:value="${piattaforma.id_piattaforma}"
+                                           name="piattaformeSelezionate">
+                                    <label class="form-check-label" for="switchCheckDefault"
+                                           th:text="${piattaforma.nomePiattaforma}">PC</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </form>
+
+            <!-- Pulsanti -->
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-sm btn-success">Aggiungi Gioco</button>
+                <a th:href="@{/}" class="btn btn-sm btn-danger ms-3">Cancella</a>
+            </div>
+        </form>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

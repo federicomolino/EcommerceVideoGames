@@ -127,4 +127,16 @@ public class GiocoService {
 
         return giocoList;
     }
+
+    public List<Gioco> RicercaGiochi(String rangePrezzo, String dataUscita, List<String> piattaforma)throws Exception{
+        //controllo i parametri da passare alla query
+        LocalDate inizioParse =  dataUscita.isEmpty() ? null : LocalDate.parse(dataUscita + "-01");
+        LocalDate fineParse = inizioParse == null ? null : inizioParse.withDayOfMonth(inizioParse.lengthOfMonth());
+        Double prezzo = rangePrezzo.isEmpty() ? null : Double.valueOf(rangePrezzo);
+        List<Gioco> query = giocoRepository.searchGiochi(piattaforma, prezzo, inizioParse,fineParse);
+        if (query.isEmpty()){
+            throw new Exception();
+        }
+        return query;
+    }
 }

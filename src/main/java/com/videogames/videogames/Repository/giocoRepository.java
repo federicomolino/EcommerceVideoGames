@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,4 +21,15 @@ public interface giocoRepository extends JpaRepository<Gioco,Integer> {
     Optional<Long> findcodiceProdottoGioco(@Param("codiceProdotto")long codiceProdotto);
 
     List<Gioco> findByTitoloContainingIgnoreCase(String titolo);
+
+    @Query("""
+    SELECT g FROM Gioco g JOIN g.piattaforma p
+    WHERE (:piattaforma IS NULL OR p.nomePiattaforma IN :piattaforma)
+      AND (:prezzo IS NULL OR g.prezzo >= :prezzo)
+      AND (:inizio IS NULL OR :fine IS NULL OR g.dataUscitaGioco BETWEEN :inizio AND :fine)
+""")
+    List<Gioco> searchGiochi(@Param("piattaforma") List<String> piattaforma,
+                             @Param("prezzo") Double prezzo,
+                             @Param("inizio") LocalDate inizio,
+                             @Param("fine") LocalDate fine);
 }

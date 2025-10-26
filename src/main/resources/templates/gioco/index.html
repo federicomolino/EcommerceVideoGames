@@ -19,7 +19,7 @@
         <div class="d-flex justify-content-between">
             <div class="row">
                 <div class="d-flex">
-                    <h3>Giochi</h3>
+                    <a href="/" class="h3 text-decoration-none">Giochi</a>
                     <div class="mt-2">
                         <a class="ms-4 mt-2 h5 text-decoration-none" sec:authorize="hasAuthority('ADMIN')"
                            th:href="@{/piattaforma}">
@@ -42,12 +42,18 @@
                                 <path d="M0 4.5A1.5 1.5 0 0 1 1.5 3h13A1.5 1.5 0 0 1 16 4.5V6a.5.5 0 0 1-.5.5 1.5 1.5 0 0 0 0 3 .5.5 0 0 1 .5.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5V10a.5.5 0 0 1 .5-.5 1.5 1.5 0 1 0 0-3A.5.5 0 0 1 0 6zm4 1a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7a.5.5 0 0 0-.5.5m0 5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7a.5.5 0 0 0-.5.5M4 8a1 1 0 0 0 1 1h6a1 1 0 1 0 0-2H5a1 1 0 0 0-1 1"/>
                             </svg>
                         </a>
+
+                        <a class="ms-4 mt-2 h6 text-decoration-none mt-2" sec:authorize="hasAuthority('ADMIN')"
+                           th:href="@{/parametro}">
+                            Parametro
+                        </a>
                     </div>
                 </div>
             </div>
 
             <!--Ricerca-->
-            <div class="col-3">
+            <div class="col-3"
+                 th:if="${parametri['BARRA_RICERCA']} == true">
                 <form>
                     <div class="input-group mt-2">
                         <input type="text" class="form-control" placeholder="Cerca gioco" name="titolo"
@@ -60,8 +66,15 @@
                     </div>
                 </form>
             </div>
+
         </div>
         <hr>
+        <!--ChekAlertRicerca-->
+        <div th:if="${nessunCampoRicercaSelezionato}" class="alert alert-warning d-flex justify-content-between mt-2 col-4 mx-auto">
+            <span th:text="${nessunCampoRicercaSelezionato}">OK</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
         <!--Lista giochi-->
         <div th:if="${list == null or list.isEmpty}" class="text-center mb-3 text-center alert alert-warning">
             <span>Nessun gioco presente</span>
@@ -70,56 +83,67 @@
         <div th:unless="${list.isEmpty}" class="mb-3">
             <!--CheckRicerca-->
             <div class="row">
-                <div class="col-3">
-                        <div class="container border rounded p-3 shadow bg-light">
-                            <h6>Dettagli</h6>
-                            <hr>
-
-                            <div class="mt-3">
-                                <h6>Prezzo</h6>
-                                <input type="range" class="form-range" min="0" max="5" step="1" id="customRange3"
-                                       name="rangePrezzo">
-                                <div class="d-flex justify-content-between px-2 text-muted small">
-                                    <span>10€</span>
-                                    <span> 20€</span>
-                                    <span> 30€</span>
-                                    <span> 40€</span>
-                                    <span> +50€</span>
+                <div class="col-3"
+                     th:if="${parametri['DETTAGLIO_RICERCA']} == true">
+                    <form method="get" th:action="@{/gioco/searchGiochi}">
+                        <div>
+                            <div class="container border rounded p-3 shadow bg-light">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6>Dettagli</h6>
+                                    </div>
+                                    <div>
+                                        <button type="submit" class="btn btn-success btn-sm">Cerca</button>
+                                    </div>
                                 </div>
-                            </div>
+                                <hr>
 
-                            <div class="mt-3">
-                                <h6>Anno pubblicazione</h6>
-                                <input type="month" id="annoPubblicazione" value="2025-05">
-                            </div>
-
-                            <div class="mt-3">
-                                <h6>Piattaforma</h6>
-                                <div>
-                                    <label for="customRange3" class="form-label">pc</label>
-                                    <input type="checkbox" value="pc">
+                                <div class="mt-3">
+                                    <h6>Prezzo</h6>
+                                    <input type="range" class="form-range" min="10" max="50" step="1" id="customRange3"
+                                           name="rangePrezzo">
+                                    <div class="d-flex justify-content-between px-2 text-muted small">
+                                        <span>10€</span>
+                                        <span> 20€</span>
+                                        <span> 30€</span>
+                                        <span> 40€</span>
+                                        <span> +50€</span>
+                                    </div>
                                 </div>
 
-                                <div>
-                                    <label for="customRange3" class="form-label">PS5</label>
-                                    <input type="checkbox" value="ps5">
+                                <div class="mt-3">
+                                    <h6>Anno pubblicazione</h6>
+                                    <input type="month" id="annoPubblicazione" value="2025-05" name="annoPubblicazione">
                                 </div>
 
-                                <div>
-                                    <label for="customRange3" class="form-label">Xbox One</label>
-                                    <input type="checkbox" value="ps5">
-                                </div>
+                                <div class="mt-3">
+                                    <h6>Piattaforma</h6>
+                                    <div>
+                                        <label for="customRange3" class="form-label">pc</label>
+                                        <input type="checkbox" value="pc" name="piattaforma">
+                                    </div>
 
-                                <div>
-                                    <label for="customRange3" class="form-label">Switch</label>
-                                    <input type="checkbox" value="switch">
+                                    <div>
+                                        <label for="customRange3" class="form-label">PS5</label>
+                                        <input type="checkbox" value="ps5" name="piattaforma">
+                                    </div>
+
+                                    <div>
+                                        <label for="customRange3" class="form-label">Xbox One</label>
+                                        <input type="checkbox" value="xboxOne" name="piattaforma">
+                                    </div>
+
+                                    <div>
+                                        <label for="customRange3" class="form-label">Switch</label>
+                                        <input type="checkbox" value="switch" name="piattaforma">
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </form>
                 </div>
 
-
-                <div class="col-9">
+                <div th:classappend="${parametri['DETTAGLIO_RICERCA']} == true ? 'col-9' : 'col-12'">
                     <div class="container border rounded p-5 shadow bg-light">
                         <div class="d-flex row fw-bold border-bottom pb-2 mb-3 text-secondary">
                             <div class="col-2 d-flex">
