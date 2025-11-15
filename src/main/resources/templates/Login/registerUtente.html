@@ -10,6 +10,20 @@
 <div th:replace="~{navbar/navbar :: navbar}"></div>
 
 <div class="container mt-3">
+  <div th:if="${parametri?.['GEST_DIPENDENTI_INT']} == true"
+       class="row d-flex justify-content-center mb-3">
+    <div class="col-8 border rounded p-2 shadow-sm">
+      <div class="text-center">
+        <span class="text-muted">
+          <a href="register/CreaDipendente" class="link-body-emphasis
+              link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover">
+            Clicca qui
+          </a>
+          per poter procedere con la creazione di un nuovo Dipendente sul gestionale
+        </span>
+      </div>
+    </div>
+  </div>
   <div class="row d-flex justify-content-around">
     <div class="col-4">
       <form class="border rounded p-4 shadow-sm" th:object="${UtenteForm}" th:action="@{/login/register}" method="post">
@@ -57,7 +71,6 @@
         <div class="d-flex justify-content-end">
           <button type="submit" class="btn btn-primary btn-sm">Registrati</button>
         </div>
-
       </form>
     </div>
 

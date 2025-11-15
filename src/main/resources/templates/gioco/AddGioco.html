@@ -28,7 +28,7 @@
             </div>
             <div class="d-flex">
                 <!--Giochi dal file-->
-                <div class="ms-1 row">
+                <div class="ms-1 row" th:if="${parametri?.['IMPORT_GIOCHI_EXCEL']} == true">
                     <form method="post" th:action="@{/gioco/newGioco/file}" enctype="multipart/form-data">
                         <div class="d-flex">
                             <div class="input-group-sm mb-3">

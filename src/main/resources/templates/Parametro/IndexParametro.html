@@ -3,6 +3,7 @@
 <head>
     <title>Parametro</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <meta charset="UTF-8">
 </head>
 <body>
 <!--importo navbar-->
@@ -23,8 +24,37 @@
 
         <div class="row">
             <div class="d-flex justify-content-between">
-                <div>
+                <div class="d-flex">
                     <h3 class="ms-3">Parametri</h3>
+                    <div>
+                        <!-- Bottone per aprire il modal -->
+                        <button type="button" class="btn btn-primary btn-sm mt-1 ms-2 btn-light"
+                                data-bs-toggle="modal"
+                                data-bs-target="#exampleModal">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                            </svg>
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable ">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Funzionamento Parametri</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Il parametro può essere creato tramite interfaccia,</p>
+                                        <p>ma per il corretto funzionamento deve essere presente anche nel codice.</p>
+                                        <p>Se parametro: 'ATTIVO' nel database (valore "1"), verrà considerato visibile.</p>
+                                        <p>Se parametro: 'DISATTIVO' nel database (valore "0"), verrà considerato non visibile.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!--Ricerca-->
                 <div class="col-3">
@@ -105,7 +135,7 @@
                     <div class="col-10 mx-auto">
                         <div class="border rounded p-2 border-dark-subtle mt-2"
                              th:each="parametro, iterStat : ${parametroList}">
-                            <a th:href="@{/parametro/editParametro/{idParametro}(idParametro=${parametro.idParametro})}"
+                            <div th:href="@{/parametro/editParametro/{idParametro}(idParametro=${parametro.idParametro})}"
                                class="text-decoration-none text-dark">
                                 <div class="row align-items-center py-1">
                                     <!-- Stato (pallino) -->
@@ -145,7 +175,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </a>
+                            </div>
                         </div>
                     </div>
                 </form>
