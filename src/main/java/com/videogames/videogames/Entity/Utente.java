@@ -1,7 +1,9 @@
 package com.videogames.videogames.Entity;
 
 import jakarta.persistence.*;
+import org.hibernate.validator.constraints.Length;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,12 +26,16 @@ public class Utente {
 
     private boolean disabilitaUtente;
 
-    public boolean isDisabilitaUtente() {
-        return disabilitaUtente;
+    @Column(unique = true)
+    @Length(min = 15, max = 34)
+    private String iban;
+
+    public String getIban() {
+        return iban;
     }
 
-    public void setDisabilitaUtente(boolean disabilitaUtente) {
-        this.disabilitaUtente = disabilitaUtente;
+    public void setIban(String iban) {
+        this.iban = iban;
     }
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -42,6 +48,43 @@ public class Utente {
 
     @OneToMany(mappedBy = "recensione_id")
     List<Recensione> recensione;
+
+    @OneToMany
+    @JoinColumn(name = "utente")
+    private List<Carrello> carrello;
+
+    @OneToMany(mappedBy = "utente")
+    public List<Gioco> giochi = new ArrayList<>();
+
+    @OneToMany(mappedBy = "utente")
+    private List<Piattaforma> piattaforma = new ArrayList<>();
+
+    @OneToMany(mappedBy = "utente")
+    private List<CodiciPromozionale> codiciPromozionale = new ArrayList<>();
+
+    public List<CodiciPromozionale> getCodiciPromozionale() {
+        return codiciPromozionale;
+    }
+
+    public void setCodiciPromozionale(List<CodiciPromozionale> codiciPromozionale) {
+        this.codiciPromozionale = codiciPromozionale;
+    }
+
+    public List<Piattaforma> getPiattaforma() {
+        return piattaforma;
+    }
+
+    public void setPiattaforma(List<Piattaforma> piattaforma) {
+        this.piattaforma = piattaforma;
+    }
+
+    public boolean isDisabilitaUtente() {
+        return disabilitaUtente;
+    }
+
+    public void setDisabilitaUtente(boolean disabilitaUtente) {
+        this.disabilitaUtente = disabilitaUtente;
+    }
 
     public List<Recensione> getRecensione() {
         return recensione;
@@ -59,9 +102,13 @@ public class Utente {
         this.carrello = carrello;
     }
 
-    @OneToMany
-    @JoinColumn(name = "utente")
-    private List<Carrello> carrello;
+    public List<Gioco> getGiochi() {
+        return giochi;
+    }
+
+    public void setGiochi(List<Gioco> giochi) {
+        this.giochi = giochi;
+    }
 
     public List<Role> getRoles() {
         return roles;

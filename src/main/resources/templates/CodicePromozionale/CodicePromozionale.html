@@ -52,7 +52,7 @@
 
                 <form method="post" th:object="${formAddCodicePromozionale}" th:action="@{/gioco/addCodicePromozionale}">
                   <label class="mt-2">Seleziona il gioco <span class="text-danger">*</span></label>
-                  <select class="form-select mt-2" aria-label="Default select example" th:field="*{gioco}">
+                  <select class="form-select form-control-sm mt-2" aria-label="Default select example" th:field="*{gioco}">
                     <option selected disabled th:value="0">Seleziona gioco</option>
                     <option th:each="gioco: ${listGiochi}"
                             th:value=${gioco.idGioco}
@@ -63,7 +63,8 @@
                   </ul>
 
                   <label class="mt-4">Inserisci Codice Sconto <span class="text-danger">*</span></label>
-                  <input type="text" id="codicePromozionale" class="form-control" maxlength="30" th:field="*{codicePromozionale}">
+                  <input type="text" id="codicePromozionale" class="form-control form-control-sm"
+                         maxlength="30" th:field="*{codicePromozionale}">
                   <div id="passwordHelpBlock" class="form-text">
                     Il codice promozionale è univoco, massimo di 30 caratteri
                   </div>
@@ -73,7 +74,8 @@
                   </ul>
 
                   <label class="mt-4">Inserisci Valore Codice Sconto <span class="text-danger">*</span></label>
-                  <select class="form-select mt-2" aria-label="Default select example" th:field="*{valoreCodicePromozionale}">
+                  <select class="form-select form-control-sm mt-2" aria-label="Default select example"
+                          th:field="*{valoreCodicePromozionale}">
                     <option selected disabled th:value="0">Valore Codice Sconto</option>
                     <option th:value="20">20€</option>
                     <option th:value="50">50€</option>

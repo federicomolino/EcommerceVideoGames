@@ -2,6 +2,8 @@ package com.videogames.videogames.Controller;
 
 import com.videogames.videogames.Entity.CodiciPromozionale;
 import com.videogames.videogames.Entity.Gioco;
+import com.videogames.videogames.Entity.Utente;
+import com.videogames.videogames.Helpers.HelpUtente;
 import com.videogames.videogames.Repository.CodicePromozionaleRepository;
 import com.videogames.videogames.Repository.giocoRepository;
 import com.videogames.videogames.Service.CodicePromozionaleService;
@@ -17,7 +19,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/gioco/addCodicePromozionale")
-public class CodicePromozionaleController {
+public class CodicePromozionaleController extends HelpUtente {
 
     @Autowired
     private giocoRepository giocoRepository;
@@ -30,7 +32,8 @@ public class CodicePromozionaleController {
 
     @GetMapping()
     public String showCodicePromozionale (Model model){
-        List<Gioco> gioco = giocoRepository.findAll();
+        Utente utente = GetUtente();
+        List<Gioco> gioco = giocoRepository.findGiochiByUtenteId(utente.getId_utente());
         model.addAttribute("listGiochi", gioco);
         model.addAttribute("formAddCodicePromozionale", new CodiciPromozionale());
         return "CodicePromozionale/CodicePromozionale";
@@ -39,9 +42,11 @@ public class CodicePromozionaleController {
     @PostMapping()
     public String addCodiceSconto(@Valid @ModelAttribute("formAddCodicePromozionale") CodiciPromozionale codiciPromozionale,
                                   BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes){
-        List<Gioco> gioco = giocoRepository.findAll();
+        Utente utente = GetUtente();
+        List<Gioco> gioco = giocoRepository.findGiochiByUtenteId(utente.getId_utente());
 
-        List<CodiciPromozionale> codiciPromozionali = codicePromozionaleRepository.findAll();
+        List<CodiciPromozionale> codiciPromozionali =
+                codicePromozionaleRepository.findCodiciPromozionaliByUtenteId(utente.getId_utente());
         for (CodiciPromozionale codice : codiciPromozionali){
             if (codice.getCodicePromozionale().equals(codiciPromozionale.getCodicePromozionale())){
                 bindingResult.rejectValue("codicePromozionale","ErrorCodicePromozionale",
@@ -64,19 +69,24 @@ public class CodicePromozionaleController {
             return "CodicePromozionale/CodicePromozionale";
         }
 
-        codicePromozionaleService.addCodicePromoziale(codiciPromozionale);
-
         if (bindingResult.hasErrors()){
             model.addAttribute("listGiochi",gioco);
             return "CodicePromozionale/CodicePromozionale";
         }
-        redirectAttributes.addFlashAttribute("codiceAggiunto","Il codice è stato aggiunto");
+        try {
+            codicePromozionaleService.addCodicePromoziale(codiciPromozionale, utente);
+            redirectAttributes.addFlashAttribute("codiceAggiunto","Il codice è stato aggiunto");
+        }catch (Exception e){
+            redirectAttributes.addFlashAttribute("codiceAggiunto","Errore durante il salvataggio");
+        }
         return "redirect:/gioco/addCodicePromozionale";
     }
 
     @GetMapping("/listaCodici")
     public String showCodiciPresenti(Model model){
-        List<CodiciPromozionale> codiciPromozionale = codicePromozionaleRepository.findAll();
+        Utente utente = GetUtente();
+        List<CodiciPromozionale> codiciPromozionale =
+                codicePromozionaleRepository.findCodiciPromozionaliByUtenteId(utente.getId_utente());
         model.addAttribute("listCodiciPromozinali", codiciPromozionale);
         return "CodicePromozionale/listaCodiciPromozionali";
     }

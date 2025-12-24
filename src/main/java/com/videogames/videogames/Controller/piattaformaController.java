@@ -1,6 +1,8 @@
 package com.videogames.videogames.Controller;
 
 import com.videogames.videogames.Entity.Piattaforma;
+import com.videogames.videogames.Entity.Utente;
+import com.videogames.videogames.Helpers.HelpUtente;
 import com.videogames.videogames.Repository.PiattaformaRepository;
 import com.videogames.videogames.Service.PiattaformaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +11,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
 @RequestMapping("/piattaforma")
-public class piattaformaController {
+public class piattaformaController extends HelpUtente {
 
     @Autowired
     private PiattaformaRepository piattaformaRepository;
@@ -22,9 +25,15 @@ public class piattaformaController {
     private PiattaformaService piattaformaService;
 
     @GetMapping()
-    public String showPiattaforma(Model model){
+    public String showPiattaforma(Model model, Principal principal){
+        if(principal.getName().equalsIgnoreCase("guest")){
+            model.addAttribute("listPiattaforma", piattaformaRepository.findAll());
+        }else{
+            Utente utente = GetUtente();
+            model.addAttribute("listPiattaforma",
+                    piattaformaRepository.findPiattaformaByUtenteId(utente.getId_utente()));
+        }
         model.addAttribute("formPiattaforma", new Piattaforma());
-        model.addAttribute("listPiattaforma", piattaformaRepository.findAll());
         return "Piattaforma/indexPiattaforma";
     }
 

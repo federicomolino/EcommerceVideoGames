@@ -54,7 +54,7 @@ public class giocoController {
     @PostMapping("newGioco")
     public String AddGioco(@Valid @ModelAttribute("formAdd") Gioco giocoForm, BindingResult bindingResult, Model model,
                            @RequestParam(value = "piattaformeSelezionate", required = false)
-                           List<Integer> piattaformaSelezionataId){
+                           List<Integer> piattaformaSelezionataId, RedirectAttributes redirectAttributes){
         if (giocoForm.getTitolo().trim().isEmpty() ||
                 giocoForm.getTitolo().equals(giocoRepository.TitleGioco(giocoForm.getTitolo()))){
             bindingResult.rejectValue("titolo","errorTitolo",
@@ -78,9 +78,16 @@ public class giocoController {
             model.addAttribute("listPiattaforma",piattaformaRepository.findAll());
             return "gioco/AddGioco";
         }
-
-        GiocoService.addGioco(giocoForm, piattaformaSelezionataId);
-        return "redirect:/";
+        try {
+            GiocoService.addGioco(giocoForm, piattaformaSelezionataId);
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Prodotto inserito correttamente");
+            return  "redirect:/gioco/newGioco";
+        }catch (Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Impossibile procedere con l'inserimento del prodotto");
+            return  "redirect:/gioco/newGioco";
+        }
     }
 
 
@@ -111,29 +118,28 @@ public class giocoController {
     public String editGioco(@PathVariable("idGioco")Integer idGioco, @Valid  @ModelAttribute("EditFormGioco")
                                 Gioco editFormGioco, BindingResult bindingResult,
                             @RequestParam(name = "piattaformeSelezionate", required = false) List<Integer> selezionePiattaformaID,
-                            Model model){
+                            Model model, RedirectAttributes redirectAttributes){
 
         Optional<Gioco> gioco = giocoRepository.findById(idGioco);
-        if (gioco.isPresent()){
-            if (!editFormGioco.getTitolo().equals(gioco.get().getTitolo())){
-                bindingResult.rejectValue("titolo", "errorTitolo",
-                        "Titolo non valido");
-            } else if (editFormGioco.getCodiceProdotto() != gioco.get().getCodiceProdotto()) {
-                bindingResult.rejectValue("codiceProdotto", "errorCodiceProdotto",
-                        "Codice Prodotto non valido");
-            }
-        }
-
         if (bindingResult.hasErrors()){
+            model.addAttribute("EditFormGioco", gioco.get());
+            model.addAttribute("listPiattaforma", piattaformaRepository.findAll());
+            model.addAttribute("listCodicePromozionale", codicePromozionaleRepository.findAll());
             return "gioco/editGioco";
         }
 
         if (selezionePiattaformaID == null){
             //Salvo che non c'è nulla
             editFormGioco.setPiattaforma(new ArrayList<>());
-            giocoRepository.save(editFormGioco);
-            model.addAttribute("gioco",editFormGioco);
-            model.addAttribute("listPiattaforma",piattaformaRepository.findAll());
+            try {
+                giocoRepository.save(editFormGioco);
+                model.addAttribute("gioco",editFormGioco);
+                model.addAttribute("listPiattaforma",piattaformaRepository.findAll());
+                redirectAttributes.addFlashAttribute("successMessage",
+                        "Modifica effettuata");
+            }catch (Exception e){
+
+            }
             return "redirect:/gioco/infoGame/" + idGioco;
         }
         GiocoService.editGioco(editFormGioco,selezionePiattaformaID);

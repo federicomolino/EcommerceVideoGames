@@ -61,6 +61,18 @@ public class Gioco {
     @JsonIgnore
     List<CodiciPromozionale> codiciPromozionali;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_utente")
+    private Utente utente;
+
+    public Utente getUtente() {
+        return utente;
+    }
+
+    public void setUtente(Utente utente) {
+        this.utente = utente;
+    }
+
     public List<Recensione> getRecensione() {
         return recensione;
     }

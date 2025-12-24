@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/login")
@@ -39,7 +40,7 @@ public class loginController {
 
     @GetMapping("register")
     public String RegistraUtente(Model model, Principal principal){
-        if (principal != null){
+        if (principal != null && !principal.getName().equalsIgnoreCase("guest")){
             String username = principal.getName();
             List<Utente> utente = utenteRepository.findByUsername(username);
             model.addAttribute("utente",utente.get(0));
@@ -58,6 +59,18 @@ public class loginController {
 
         List<Utente> utenteUsername = utenteRepository.findByUsername(utenteForm.getUsername());
         List<Utente> utenteEmail = utenteRepository.findByEmail(utenteForm.getEmail());
+        //Verifica Iban
+        try {
+            Optional<Utente> existIban = utenteRepository.findByIban(utenteForm.getIban().trim());
+            if (loginService.VerificaIban(utenteForm.getIban()) && existIban.isEmpty()){
+                redirectAttributes.addFlashAttribute("errorIban",
+                        "Errore durante la verifica dell'Iban");
+                return "redirect:/login/register";
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorIban",
+                    "Errore durante la verifica dell'Iban");
+        }
         if (!utenteUsername.isEmpty()){
             redirectAttributes.addFlashAttribute("errorUsername","Username inserito già usato");
             return "redirect:/login/register";
@@ -70,7 +83,6 @@ public class loginController {
         if (bindingResult.hasErrors()){
             return "redirect:/login/register";
         }
-
 
         loginService.newUtente(utenteForm, ruoli);
         return "redirect:/login/register";
@@ -103,6 +115,26 @@ public class loginController {
         if (!emailEsistente.isEmpty() && !emailEsistente.get(0).getId_utente().equals(utenteLoggato.getId_utente())){
             bindingResult.rejectValue("email", "ErrorEmail",
                     "Email già presente nel sitema");
+            return "Login/editutente";
+        }
+
+        Optional<Utente> ibanEsistente = utenteRepository.findByIban(editUtente.getIban());
+        if (!ibanEsistente.isEmpty() && !ibanEsistente.get().getId_utente().equals(utenteLoggato.getId_utente())){
+            bindingResult.rejectValue("iban", "ErrorIban",
+                    "Iban già presente nel sitema");
+            return "Login/editutente";
+        }
+
+        //Verifica Iban
+        try {
+            if (loginService.VerificaIban(editUtente.getIban())){
+                bindingResult.rejectValue("iban", "ErrorIban",
+                        "Errore durante la verifica dell'Iban");
+                return "Login/editutente";
+            }
+        } catch (Exception e) {
+            bindingResult.rejectValue("iban", "ErrorIban",
+                    "Errore durante la verifica dell'Iban");
             return "Login/editutente";
         }
 

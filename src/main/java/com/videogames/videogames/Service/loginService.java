@@ -25,6 +25,34 @@ public class loginService {
     @Autowired
     private CarrelloRepository carrelloRepository;
 
+    public boolean VerificaIban(String iban){
+
+        if(iban == null || iban.isEmpty()){
+            throw new IllegalArgumentException();
+        }
+
+        boolean isValido = false;
+        String formatIban = iban.trim().toUpperCase();
+        //Lunghezza minima di 15 e massima di 34
+        int checkIban = formatIban.length();
+        if(checkIban < 15 || checkIban > 34 ){
+            return !isValido;
+        }
+        //Caratteri ammessi solo A-Z e 0-9
+        for (int i = 0; i < formatIban.length(); i++){
+            char carattere = formatIban.charAt(i);
+            if (!((carattere >= 'A' && carattere <= 'Z')
+                    || (carattere >= '0' && carattere <= '9'))) {
+                //trovato carattere non corretto
+                return !isValido;
+            }
+        }
+
+        //Se mi torna 1 l'iban è valido
+        isValido = verificaIbanMod9710(formatIban) == 1;
+        return !isValido;
+    }
+
     public Utente newUtente(Utente formUtente, List<String> ruoli){
 
         //Assegno i ruoli all'utente
@@ -62,6 +90,7 @@ public class loginService {
         utenteDaModificare.setName(utente.getName());
         utenteDaModificare.setSurname(utente.getSurname());
         utenteDaModificare.setEmail(utente.getEmail());
+        utenteDaModificare.setIban(utente.getIban());
         utenteDaModificare.setPassword("{noop}" + utente.getPassword());
         return utenteRepository.save(utenteDaModificare);
     }
@@ -91,5 +120,43 @@ public class loginService {
         Carrello carrelloUtente = carrelloRepository.findById(id_utente).get();
         carrelloRepository.delete(carrelloUtente);
         utenteRepository.delete(utente);
+    }
+
+    private static int verificaIbanMod9710(String iban){
+        /*
+        Algoritmo di verifica MOD 97-10 (standard internazionale)
+        È la verifica più importante.
+        Funziona così:
+        Sposta le prime 4 cifre dell’IBAN alla fine
+        Trasforma le lettere in numeri (A=10, B=11, ..., Z=35)
+        Ottieni un numero molto lungo
+        Calcola numero % 97
+        Un IBAN è valido se e solo se:
+        iban_convertito % 97 == 1
+        Questo è il check ufficiale della UE.*/
+        String ibanConCifreAllaFine = iban.substring(4) + iban.substring(0,4);
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i<ibanConCifreAllaFine.length(); i++){
+            char c = ibanConCifreAllaFine.charAt(i);
+            if(c >= 'A' && c <='Z'){
+                int val = c - 'A' + 10; //A=10 B=11 ecc..
+                result.append(val);
+            }else{
+                result.append(c); //Se numero il valore sarà sempre quello
+            }
+        }
+
+        String numericiIban = result.toString();
+
+        //Calcolo MOD97 a blocchi
+        int remaider = 0;
+        for (int i = 0; i < numericiIban.length(); i +=7){
+            int end = Math.min(i + 7, numericiIban.length());
+            String block = numericiIban.substring(i,end);
+            remaider = (remaider * (int)Math.pow(10, block.length()) + Integer.parseInt(block)) % 97;
+        }
+
+        return remaider;
     }
 }

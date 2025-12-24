@@ -21,6 +21,18 @@ public class CodiciPromozionale {
     @ManyToOne
     private Gioco gioco;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_utente")
+    private Utente utente;
+
+    public Utente getUtente() {
+        return utente;
+    }
+
+    public void setUtente(Utente utente) {
+        this.utente = utente;
+    }
+
     public int getValoreCodicePromozionale() {
         return valoreCodicePromozionale;
     }

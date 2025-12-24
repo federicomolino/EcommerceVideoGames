@@ -11,7 +11,7 @@
     <div class="row">
         <!--Errore in caso di quantità a 0-->
         <div th:if="${erroreCarrello}" class="alert alert-warning d-flex justify-content-between">
-            <span th:text="${erroreCarrello}"></span>
+            <span th:utext="${erroreCarrello}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
             </button>
         </div>

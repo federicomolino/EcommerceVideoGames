@@ -40,6 +40,11 @@
                 <input type="text" name="emailUtente" th:field="*{email}" class="form-control" id="emailUtente" required>
                 <span th:if="${#fields.hasErrors('email')}" class="text-danger" th:errors="*{email}"></span>
               </li>
+              <li sec:authorize="hasAuthority('ADMIN')">
+                <h6>Iban</h6>
+                <input type="text" name="ibanUtente" th:field="*{iban}" class="form-control" id="ibanUtente" required>
+                <span th:if="${#fields.hasErrors('iban')}" class="text-danger" th:errors="*{iban}"></span>
+              </li>
               <li>
                 <h6>Password</h6>
                 <input type="password" name="passwordUtente" th:field="*{password}" class="form-control" id="passwordUtente" required>

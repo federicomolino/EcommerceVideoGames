@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
+
 @Controller
 public class indexController {
 
@@ -25,8 +27,8 @@ public class indexController {
 
     @GetMapping("/")
     public String indexPage(@RequestParam(name = "titolo", required = false)String titolo,
-                            Model model){
-        model.addAttribute("list", GiocoService.showGiochi(titolo));
+                            Model model, Principal principal){
+        model.addAttribute("list", GiocoService.showGiochi(titolo, principal));
         return "gioco/index";
     }
 }

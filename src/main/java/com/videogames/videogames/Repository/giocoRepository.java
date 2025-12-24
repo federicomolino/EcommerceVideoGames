@@ -32,4 +32,7 @@ public interface giocoRepository extends JpaRepository<Gioco,Integer> {
                              @Param("prezzo") Double prezzo,
                              @Param("inizio") LocalDate inizio,
                              @Param("fine") LocalDate fine);
+
+    @Query("SELECT g FROM Gioco g WHERE g.utente.id_utente = :idUtente")
+    List<Gioco> findGiochiByUtenteId(@Param("idUtente") Integer idUtente);
 }

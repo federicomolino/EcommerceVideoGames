@@ -20,9 +20,14 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/**").permitAll()
                 .requestMatchers("/login/**").permitAll()
+                .requestMatchers("/guest-login").permitAll()
+
                 .requestMatchers("/gioco/newGioco","/gioco/editGioco/**","/gioco/delete/**").hasAuthority("ADMIN")
                 .requestMatchers("/piattaforma").hasAuthority("ADMIN")
+
                 .requestMatchers("/","/**").authenticated()
+                // 👤 USER e GUEST
+                .requestMatchers("/", "/**").hasAnyAuthority("USER", "GUEST")
                 .and()
                 .formLogin()
                 .loginPage("/login")

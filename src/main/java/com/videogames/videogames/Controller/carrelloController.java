@@ -63,6 +63,13 @@ public class carrelloController {
     @PostMapping("/add/{id}")
     public String giocoAlCarrello(@PathVariable("id") Integer id, Principal principal,
                                   RedirectAttributes redirectAttributes){
+        //utente guest
+        if(principal.getName().equalsIgnoreCase("guest")){
+            redirectAttributes.addFlashAttribute("erroreCarrello", "Per poter procedere" +
+                    " è necessaria la registrazione" +
+                    "<a href='/login/register' class='alert-link'> Clicca qui per procedere</a>");
+            return "redirect:/";
+        }
         //Mi recupero il gioco
         Gioco optGioco = giocoRepository.findById(id).get();
         if (optGioco.getQuantita() <= 0) {

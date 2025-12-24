@@ -20,6 +20,10 @@ public class Piattaforma {
     @JsonIgnore
     private List<Gioco> gioco;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_utente")
+    private Utente utente;
+
     public List<Gioco> getGioco() {
         return gioco;
     }

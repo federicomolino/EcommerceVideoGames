@@ -11,7 +11,7 @@
 
 <div class="container mt-3">
   <div th:if="${parametri?.['GEST_DIPENDENTI_INT']} == true"
-       class="row d-flex justify-content-center mb-3">
+       class="row d-flex justify-content-center mb-3" sec:authorize="hasAuthority('ADMIN')">
     <div class="col-8 border rounded p-2 shadow-sm">
       <div class="text-center">
         <span class="text-muted">
@@ -54,6 +54,15 @@
           <label for="password" class="form-label">Inserisci la password <span class="text-danger">*</span></label>
           <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Inserisci password" required>
         </div>
+
+        <div class="mb-3" sec:authorize="hasAuthority('ADMIN')">
+          <label for="iban" class="form-label">Inserisci il tuo Iban <span class="text-danger">*</span></label>
+          <input type="text" id="iban" th:field="*{iban}" class="form-control"
+                 placeholder="Inserisci iban"
+                 required>
+          <div th:if="${errorIban}" class="text-danger" th:text="${errorIban}"></div>
+        </div>
+
         <!--Ruoli-->
         <div class="col-4" sec:authorize="hasAuthority('ADMIN')">
           <h6>Permessi</h6>

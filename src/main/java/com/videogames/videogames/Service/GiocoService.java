@@ -3,8 +3,10 @@ package com.videogames.videogames.Service;
 import com.videogames.videogames.Entity.CarrelloGioco;
 import com.videogames.videogames.Entity.Gioco;
 import com.videogames.videogames.Entity.Piattaforma;
+import com.videogames.videogames.Entity.Utente;
 import com.videogames.videogames.Exception.ExceptionAddGioco;
 import com.videogames.videogames.Exception.NessunGiocoTrovato;
+import com.videogames.videogames.Helpers.HelpUtente;
 import com.videogames.videogames.Repository.CarrelloGiocoRepository;
 import com.videogames.videogames.Repository.CodicePromozionaleRepository;
 import com.videogames.videogames.Repository.PiattaformaRepository;
@@ -24,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class GiocoService {
+public class GiocoService extends HelpUtente {
 
     @Autowired
     private giocoRepository giocoRepository;
@@ -41,21 +43,31 @@ public class GiocoService {
     @Autowired
     private CodicePromozionaleRepository codicePromozionaleRepository;
 
-    public List<Gioco> showGiochi(String titolo){
+    public List<Gioco> showGiochi(String titolo, Principal principal){
         List<Gioco> giochi;
-        if (titolo == null || titolo.isEmpty()){
+        if(principal.getName().equalsIgnoreCase("guest")){
             giochi = giocoRepository.findAll();
         }else {
+            Utente user = GetUtente();
+            giochi = giocoRepository.findGiochiByUtenteId(user.getId_utente());
+        }
+        if (titolo != null && titolo.isEmpty()){
             giochi = giocoRepository.findByTitoloContainingIgnoreCase(titolo);
         }
+
         return giochi;
     }
 
     public Gioco addGioco(Gioco giocoForm, List<Integer> piattaformaSelezionataId){
         try{
-            //Salvo la/e piattaforma selezionata
+            //Salvo la/e piattaforma selezionata e l'utente a cui appartiene il gioco
             List<Piattaforma> piattaformaSelezionata = piattaformaRepository.findAllById(piattaformaSelezionataId);
             giocoForm.setPiattaforma(piattaformaSelezionata);
+            if(GetUtente() != null){
+                giocoForm.setUtente(GetUtente());
+            }else {
+                throw new Exception("Utente non presente");
+            }
             return giocoRepository.save(giocoForm);
         }catch (Exception ex) {
             throw new ExceptionAddGioco("CG_500_DATI_INSERITI_PRESENTI_NEL_SISTEMA");
