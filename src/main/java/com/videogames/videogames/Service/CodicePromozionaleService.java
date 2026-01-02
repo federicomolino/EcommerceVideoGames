@@ -7,12 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class CodicePromozionaleService {
 
     @Autowired
     private CodicePromozionaleRepository codicePromozionaleRepository;
+
+    private static final String caratteri = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                                            "abcdefghijklmnopqrstuvwxyz" +
+                                            "0123456789";
 
     public CodiciPromozionale addCodicePromoziale(CodiciPromozionale codiciPromozionaleInserito, Utente utente){
         codiciPromozionaleInserito.setUtente(utente);
@@ -36,5 +41,25 @@ public class CodicePromozionaleService {
                 codicePromozionaleRepository.save(codiciPromozionale);
             }
         }
+    }
+
+    public String GeneraCodice(Integer idUtente){
+        boolean isCodicePresente = false;
+        Random r = new Random();
+        StringBuilder codice = new StringBuilder();
+        while (!isCodicePresente){
+            for (int i = 0; i <= 29; i++){
+                int index = r.nextInt(caratteri.length());
+                codice.append(caratteri.charAt(index));
+            }
+            if (codice.toString().length() == 30){
+               if(codicePromozionaleRepository.existsByCodiceAndUtenteId(codice.toString(), idUtente).isPresent()){
+                   codice = new StringBuilder();
+               }else {
+                   isCodicePresente = true;
+               }
+            }
+        }
+        return codice.toString();
     }
 }

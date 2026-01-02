@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface giocoRepository extends JpaRepository<Gioco,Integer> {
+public interface GiocoRepository extends JpaRepository<Gioco,Integer> {
 
     @Query("SELECT g.titolo FROM Gioco g WHERE g.titolo = :title")
     String TitleGioco(@Param("title")String title);

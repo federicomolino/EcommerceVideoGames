@@ -2,8 +2,8 @@ package com.videogames.videogames.Controller;
 
 import com.videogames.videogames.Entity.Utente;
 import com.videogames.videogames.Repository.CarrelloRepository;
-import com.videogames.videogames.Repository.utenteRepository;
-import com.videogames.videogames.Service.loginService;
+import com.videogames.videogames.Repository.UtenteRepository;
+import com.videogames.videogames.Service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -21,13 +21,13 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/login")
-public class loginController {
+public class LoginController {
 
     @Autowired
-    private utenteRepository utenteRepository;
+    private UtenteRepository utenteRepository;
 
     @Autowired
-    private loginService loginService;
+    private LoginService loginService;
 
     @Autowired
     private CarrelloRepository carrelloRepository;

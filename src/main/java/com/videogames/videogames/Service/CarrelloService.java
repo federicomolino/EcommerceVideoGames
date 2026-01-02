@@ -2,6 +2,7 @@ package com.videogames.videogames.Service;
 
 import com.videogames.videogames.Entity.*;
 import com.videogames.videogames.Exception.QuantitaInsufficenteException;
+import com.videogames.videogames.Helpers.HelpUtente;
 import com.videogames.videogames.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class carrelloService {
+public class CarrelloService extends HelpUtente {
 
     @Autowired
     private UserRepository userRepository;
@@ -21,7 +22,7 @@ public class carrelloService {
     private CarrelloGiocoRepository carrelloGiocoRepository;
 
     @Autowired
-    private giocoRepository giocoRepository;
+    private GiocoRepository giocoRepository;
 
     @Autowired
     private CarrelloRepository carrelloRepository;
@@ -137,13 +138,17 @@ public class carrelloService {
         prezzoFinaleCarrello(principal,sconto);
     }
 
-    public CarrelloGioco modificaQuantitaCarrello(Integer id, CarrelloGioco formEditCarrello, Principal principal){
-        CarrelloGioco carrelloGioco = carrelloGiocoRepository.findById(id).get();
+    public CarrelloGioco modificaQuantitaCarrello(Integer quantita, Principal principal){
+        Utente utente = GetUtente();
+        if(utente == null)  {
+            return null;
+        }
+        CarrelloGioco carrelloGioco = carrelloGiocoRepository.findByIdUtenteCarrello(utente.getId_utente());
         Gioco idGioco = carrelloGioco.getGioco();
 
-        if (carrelloGioco.getQuantita() < formEditCarrello.getQuantita()){
+        if (carrelloGioco.getQuantita() < quantita){
             //Diminusco dal magazzino
-            int quantitaRemoveMagazzino = formEditCarrello.getQuantita() - carrelloGioco.getQuantita();
+            int quantitaRemoveMagazzino = quantita - carrelloGioco.getQuantita();
 
             //Verifico se con la modifica nel magazzino i prodotti sono meno di 0
             int totMagazzino = idGioco.getQuantita() - quantitaRemoveMagazzino;
@@ -155,13 +160,13 @@ public class carrelloService {
             idGioco.setQuantita(idGioco.getQuantita() - quantitaRemoveMagazzino);
         }
 
-        if (carrelloGioco.getQuantita() > formEditCarrello.getQuantita()){
+        if (carrelloGioco.getQuantita() > quantita){
             //Aggiungo al magazzino
-            int quantitaAddMagazzino = carrelloGioco.getQuantita() - formEditCarrello.getQuantita();
+            int quantitaAddMagazzino = carrelloGioco.getQuantita() - quantita;
             idGioco.setQuantita(idGioco.getQuantita() + quantitaAddMagazzino);
         }
 
-        carrelloGioco.setQuantita(formEditCarrello.getQuantita());
+        carrelloGioco.setQuantita(quantita);
         prezzoFinaleCarrello(principal,recuperoScontoApplicato(principal));
         return carrelloGiocoRepository.save(carrelloGioco);
     }

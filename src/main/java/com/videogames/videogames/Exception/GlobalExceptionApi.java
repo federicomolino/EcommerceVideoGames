@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Map;
+
 @RestControllerAdvice
 public class GlobalExceptionApi{
 
@@ -44,5 +46,15 @@ public class GlobalExceptionApi{
                 request.getRequestURI()
         );
         return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(QuantitaInsufficenteException.class)
+    public ResponseEntity <Map<String, String>> handleQuantitaInsufficiente (QuantitaInsufficenteException ex){
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of(
+                        "message", ex.getMessage()
+                ));
     }
 }

@@ -1,17 +1,14 @@
 package com.videogames.videogames.Controller;
 
 import com.videogames.videogames.Entity.*;
-import com.videogames.videogames.Exception.QuantitaInsufficenteException;
 import com.videogames.videogames.Repository.CarrelloGiocoRepository;
 import com.videogames.videogames.Repository.CarrelloRepository;
 import com.videogames.videogames.Repository.CodicePromozionaleRepository;
-import com.videogames.videogames.Repository.giocoRepository;
-import com.videogames.videogames.Service.carrelloService;
-import jakarta.validation.Valid;
+import com.videogames.videogames.Repository.GiocoRepository;
+import com.videogames.videogames.Service.CarrelloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -19,20 +16,22 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/carrello")
-public class carrelloController {
+public class CarrelloController {
 
     @Autowired
     private CarrelloGiocoRepository carrelloGiocoRepository;
 
     @Autowired
-    private giocoRepository giocoRepository;
+    private GiocoRepository giocoRepository;
 
     @Autowired
-    private carrelloService carrelloService;
+    private CarrelloService carrelloService;
 
     @Autowired
     private CodicePromozionaleRepository codicePromozionaleRepository;
@@ -79,6 +78,39 @@ public class carrelloController {
 
         carrelloService.addCarrelloGioco(id, principal);
         return "redirect:/carrello";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String cancellaGiocoCarrello(@PathVariable("id") Integer id, Principal principal){
+        carrelloService.cancellaGiocoCarrello(id, principal);
+        return "redirect:/carrello";
+    }
+
+    @PostMapping("/aumenta")
+    @ResponseBody
+    public Map<String, Objects> aumentaQuantita(@RequestBody Map<String, Integer> body, Principal principal) throws Exception {
+        int nuovaQuantita = body.get("nuovaQuantita");
+
+        try{
+            carrelloService.modificaQuantitaCarrello(nuovaQuantita,principal);
+            carrelloService.prezzoFinaleCarrello(principal, 0);
+        }catch (Exception e){
+            throw new Exception(e);
+        }
+        return null;
+    }
+
+    @PostMapping("/diminuisci")
+    @ResponseBody
+    public Map<String, Objects> diminuisciQuantita(@RequestBody Map<String, Integer> body, Principal principal) throws Exception {
+        int nuovaQuantita = body.get("nuovaQuantita");
+        try{
+            carrelloService.modificaQuantitaCarrello(nuovaQuantita,principal);
+            carrelloService.prezzoFinaleCarrello(principal, 0);
+        }catch (Exception e){
+            throw new Exception(e);
+        }
+        return null;
     }
 
     //Sconto per codice promozionale inserito
@@ -139,45 +171,17 @@ public class carrelloController {
                                 return "redirect:/carrello";
                             }
                         }
+                    }else{
+                        redirectAttributes.addFlashAttribute("codicePromozionale",
+                                "Codice inserito non valido per il gioco presente nel carrello, " +
+                                        "codice valido per: " + c.getGioco().getDescrizione().toUpperCase());
+                        model.addAttribute("listCarrello", carrello);
+                        model.addAttribute("formAddCodicePromozionale", new CodiciPromozionale());
+                        return "redirect:/carrello";
                     }
                 }
             }
         }
         return "Carrello/carrello";
-    }
-
-    @PostMapping("/delete/{id}")
-    public String cancellaGiocoCarrello(@PathVariable("id") Integer id, Principal principal){
-        carrelloService.cancellaGiocoCarrello(id, principal);
-        return "redirect:/carrello";
-    }
-
-    @GetMapping("/edit/{id}")
-    public String showPageEditCarrello(@PathVariable("id") Integer id, Model model){
-        Optional<CarrelloGioco> carrelloGioco = carrelloGiocoRepository.findById(id);
-        model.addAttribute("carrelloGioco",carrelloGioco.get());
-        model.addAttribute("formEditCarrello", carrelloGioco.get());
-        return "Carrello/editCarrello";
-    }
-
-    @PostMapping("/edit/{id}")
-    public String carrelloGiocoEdit(@PathVariable("id") Integer id, @Valid
-                                    @ModelAttribute("formEditCarrello") CarrelloGioco formEditCarrello,
-                                    BindingResult bindingResult, Model model, Principal principal){
-        if (bindingResult.hasErrors()){
-            return "Carrello/editCarrello";
-        }
-        try {
-            carrelloService.modificaQuantitaCarrello(id, formEditCarrello,principal);
-            carrelloService.prezzoFinaleCarrello(principal, 0);
-        }catch (QuantitaInsufficenteException ex){
-            CarrelloGioco carrelloGioco = carrelloGiocoRepository.findById(id).get();
-            bindingResult.rejectValue("quantita", "errorQuantita",
-                    "Nel magazzino i prodotti ancora disponibili sono " + ex.getDisponibilitaMagazzino());
-            model.addAttribute("carrelloGioco", carrelloGioco);
-            model.addAttribute("formEditCarrello", formEditCarrello);
-            return "Carrello/editCarrello";
-        }
-        return "redirect:/carrello";
     }
 }

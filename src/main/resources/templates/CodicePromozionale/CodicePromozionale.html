@@ -3,102 +3,139 @@
 <head>
   <title>VideoGames</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/CSS/CodicePromozionale.css">
 </head>
 <body>
 <!--importo navbar-->
 <div th:replace="~{navbar/navbar :: navbar}"></div>
 <div class="container">
-  <div class="row">
-    <div>
-      <div class="row">
-        <div class="d-flex">
-          <h5>Lista Giochi Presenti</h5>
-        </div>
-      </div>
-      <hr>
+  <div class="mb-3">
+    <h4 class="fw-bold">📋 Lista Prodotti Presenti</h4>
+    <hr>
+  </div>
 
-      <div th:if="${listGiochi.isEmpty}">
-        <div class="alert alert-warning text-center" role="alert">
-          Nessun Gioco presente, aggiungili!!
-        </div>
-      </div>
+  <!-- Nessun gioco -->
+  <div th:if="${listGiochi.isEmpty}">
+    <div class="alert alert-warning text-center shadow-sm">
+      Nessun Gioco presente, aggiungili!!
+    </div>
+  </div>
 
-      <!---->
-      <div th:if="${codiceAggiunto}">
-        <div class="alert alert-success position-relative" role="alert">
-          <div class="text-center w-100">
-            Codice Aggiunto correttamente
+  <!-- Codice aggiunto -->
+  <div th:if="${codiceAggiunto}">
+    <div class="alert alert-success alert-dismissible fade show text-center shadow-sm">
+      Codice Aggiunto correttamente
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  </div>
+
+  <!-- Contenuto -->
+  <div th:unless="${listGiochi.isEmpty}">
+    <div class="row g-4">
+
+      <!-- Lista Prodotti -->
+      <div class="col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header">
+            <h6 class="mb-0">Prodotti Disponibili</h6>
           </div>
-          <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      </div>
 
-      <!--Lista giochi-->
-      <div th:unless="${listGiochi.isEmpty}">
-        <div class="container">
-          <div class="row">
-            <div class="col-6">
-              <div th:each="gioco : ${listGiochi}">
-                <ul class="list-group">
-                  <li class="list-group-item" th:text="${gioco.titolo}">Titolo del gioco</li>
-                </ul>
-              </div>
-            </div>
-
-            <!-- Aggiungi codice -->
-            <div class="col-4">
-              <div>
-                <h6>Aggiungi Codice Promozionale</h6>
-
-                <form method="post" th:object="${formAddCodicePromozionale}" th:action="@{/gioco/addCodicePromozionale}">
-                  <label class="mt-2">Seleziona il gioco <span class="text-danger">*</span></label>
-                  <select class="form-select form-control-sm mt-2" aria-label="Default select example" th:field="*{gioco}">
-                    <option selected disabled th:value="0">Seleziona gioco</option>
-                    <option th:each="gioco: ${listGiochi}"
-                            th:value=${gioco.idGioco}
-                            th:text="${gioco.titolo}">Prova</option>
-                  </select>
-                  <ul th:if="${#fields.hasErrors('gioco')}">
-                    <li th:each="err : ${#fields.errors('gioco')}" th:text="${err}" class="text-danger">Input is incorrect</li>
-                  </ul>
-
-                  <label class="mt-4">Inserisci Codice Sconto <span class="text-danger">*</span></label>
-                  <input type="text" id="codicePromozionale" class="form-control form-control-sm"
-                         maxlength="30" th:field="*{codicePromozionale}">
-                  <div id="passwordHelpBlock" class="form-text">
-                    Il codice promozionale è univoco, massimo di 30 caratteri
-                  </div>
-                  <ul th:if="${#fields.hasErrors('codicePromozionale')}">
-                    <li th:each="err : ${#fields.errors('codicePromozionale')}"
-                        th:text="${err}" class="text-danger">Input is incorrect</li>
-                  </ul>
-
-                  <label class="mt-4">Inserisci Valore Codice Sconto <span class="text-danger">*</span></label>
-                  <select class="form-select form-control-sm mt-2" aria-label="Default select example"
-                          th:field="*{valoreCodicePromozionale}">
-                    <option selected disabled th:value="0">Valore Codice Sconto</option>
-                    <option th:value="20">20€</option>
-                    <option th:value="50">50€</option>
-                    <option th:value="100">100€</option>
-                  </select>
-                  <ul th:if="${#fields.hasErrors('valoreCodicePromozionale')}">
-                    <li th:each="err : ${#fields.errors('valoreCodicePromozionale')}"
-                        th:text="${err}" class="text-danger">Input is incorrect</li>
-                  </ul>
-
-                  <div class="mt-4 d-flex justify-content-evenly">
-                    <button type="submit" class="btn btn-success btn-sm">Aggiungi Sconto</button>
-                    <button type="button" onclick="window.location.href='/gioco/addCodicePromozionale/listaCodici'" class="btn btn-link btn-sm
-                              link-underline link-underline-opacity-0 link-secondary">Lista Codici</button>
-                  </div>
-                </form>
-
-              </div>
-            </div>
+          <div class="card-body p-0">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item"
+                  th:each="gioco : ${listGiochi}"
+                  th:text="${gioco.titolo}">
+              </li>
+            </ul>
           </div>
         </div>
       </div>
+
+      <!-- Aggiungi codice -->
+      <div class="col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header">
+            <h6 class="mb-0">➕ Aggiungi Codice Promozionale</h6>
+          </div>
+
+          <div class="card-body">
+            <form method="post"
+                  th:object="${formAddCodicePromozionale}"
+                  th:action="@{/gioco/addCodicePromozionale}">
+
+              <!-- Seleziona gioco -->
+              <label class="form-label mt-2">Seleziona Prodotto <span class="text-danger">*</span></label>
+              <select class="form-select form-select-sm"
+                      th:field="*{gioco}">
+                <option selected disabled th:value="0"></option>
+                <option th:each="gioco: ${listGiochi}"
+                        th:value="${gioco.idGioco}"
+                        th:text="${gioco.titolo}">
+                </option>
+              </select>
+              <ul th:if="${#fields.hasErrors('gioco')}">
+                <li th:each="err : ${#fields.errors('gioco')}" th:text="${err}" class="text-danger"></li>
+              </ul>
+
+              <!-- Codice -->
+              <label class="form-label mt-4">Inserisci Codice Sconto <span class="text-danger">*</span></label>
+              <div class="d-flex">
+                <input type="text"<
+                       class="form-control form-control-sm"
+                       maxlength="30"
+                       th:field="*{codicePromozionale}">
+                <!--Genera Codice-->
+                <button th:if="${parametri?.['AUT_GENERA_CODICESCONTO']} == true"
+                        class="btn btn-light btn-sm" title="Genera Codice Sconto" type="submit"
+                        id="GeneraCodice"
+                        value="GeneraCodice"
+                        name="GeneraCodice">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                    <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0"/>
+                    <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="form-text">
+                Il codice promozionale è univoco, massimo 30 caratteri
+              </div>
+              <ul th:if="${#fields.hasErrors('codicePromozionale')}">
+                <li th:each="err : ${#fields.errors('codicePromozionale')}"
+                    th:text="${err}" class="text-danger"></li>
+              </ul>
+
+              <!-- Valore -->
+              <label class="form-label mt-4">Inserisci Valore Codice Sconto <span class="text-danger">*</span></label>
+              <select class="form-select form-select-sm"
+                      th:field="*{valoreCodicePromozionale}">
+                <option selected disabled th:value="0">Valore Codice Sconto</option>
+                <option th:value="20">20€</option>
+                <option th:value="50">50€</option>
+                <option th:value="100">100€</option>
+              </select>
+              <ul th:if="${#fields.hasErrors('valoreCodicePromozionale')}">
+                <li th:each="err : ${#fields.errors('valoreCodicePromozionale')}"
+                    th:text="${err}" class="text-danger"></li>
+              </ul>
+
+              <!-- Pulsanti -->
+              <div class="mt-4 d-flex justify-content-between">
+                <button type="submit" class="btn btn-success btn-sm px-4">
+                  Aggiungi Sconto
+                </button>
+
+                <button type="button"
+                        onclick="window.location.href='/gioco/addCodicePromozionale/listaCodici'"
+                        class="btn btn-outline-secondary btn-sm px-4">
+                  Lista Codici
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
       </div>
+    </div>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

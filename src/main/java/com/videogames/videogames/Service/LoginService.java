@@ -5,7 +5,7 @@ import com.videogames.videogames.Entity.Role;
 import com.videogames.videogames.Entity.Utente;
 import com.videogames.videogames.Repository.CarrelloRepository;
 import com.videogames.videogames.Repository.RoleRepository;
-import com.videogames.videogames.Repository.utenteRepository;
+import com.videogames.videogames.Repository.UtenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class loginService {
+public class LoginService {
 
     @Autowired
-    private utenteRepository utenteRepository;
+    private UtenteRepository utenteRepository;
 
     @Autowired
     private RoleRepository roleRepository;

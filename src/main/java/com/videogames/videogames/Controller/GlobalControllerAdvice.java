@@ -1,5 +1,4 @@
 package com.videogames.videogames.Controller;
-
 import com.videogames.videogames.Service.ParametroService;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -27,7 +26,8 @@ public class GlobalControllerAdvice {
                 "BARRA_RICERCA",
                 "DETTAGLIO_RICERCA",
                 "IMPORT_GIOCHI_EXCEL",
-                "GEST_DIPENDENTI_INT");
+                "GEST_DIPENDENTI_INT",
+                "AUT_GENERA_CODICESCONTO");
 
         HashMap<String, Boolean> parametri = parametroService.VerificaFlagParametro(codiceParametri);
         model.addAttribute("parametri", parametri);

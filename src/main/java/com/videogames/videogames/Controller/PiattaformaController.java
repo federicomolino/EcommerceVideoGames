@@ -16,7 +16,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/piattaforma")
-public class piattaformaController extends HelpUtente {
+public class PiattaformaController extends HelpUtente {
 
     @Autowired
     private PiattaformaRepository piattaformaRepository;

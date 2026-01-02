@@ -4,8 +4,8 @@ import com.videogames.videogames.Entity.Gioco;
 import com.videogames.videogames.Entity.Recensione;
 import com.videogames.videogames.Entity.Utente;
 import com.videogames.videogames.Repository.RecensioneRepository;
-import com.videogames.videogames.Repository.giocoRepository;
-import com.videogames.videogames.Repository.utenteRepository;
+import com.videogames.videogames.Repository.GiocoRepository;
+import com.videogames.videogames.Repository.UtenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +19,10 @@ public class RecensioniService {
     private RecensioneRepository recensioneRepository;
 
     @Autowired
-    private giocoRepository giocoRepository;
+    private GiocoRepository giocoRepository;
 
     @Autowired
-    private utenteRepository utenteRepository;
+    private UtenteRepository utenteRepository;
 
     public Recensione addRecensione(Recensione recensione, Integer idGioco, Principal principal){
         Gioco gioco = giocoRepository.findById(idGioco).get();

@@ -5,7 +5,7 @@ import com.videogames.videogames.Entity.Gioco;
 import com.videogames.videogames.Entity.Utente;
 import com.videogames.videogames.Helpers.HelpUtente;
 import com.videogames.videogames.Repository.CodicePromozionaleRepository;
-import com.videogames.videogames.Repository.giocoRepository;
+import com.videogames.videogames.Repository.GiocoRepository;
 import com.videogames.videogames.Service.CodicePromozionaleService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import java.util.List;
 public class CodicePromozionaleController extends HelpUtente {
 
     @Autowired
-    private giocoRepository giocoRepository;
+    private GiocoRepository giocoRepository;
 
     @Autowired
     private CodicePromozionaleRepository codicePromozionaleRepository;
@@ -41,7 +41,8 @@ public class CodicePromozionaleController extends HelpUtente {
 
     @PostMapping()
     public String addCodiceSconto(@Valid @ModelAttribute("formAddCodicePromozionale") CodiciPromozionale codiciPromozionale,
-                                  BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes){
+                                  @RequestParam(required = false) String GeneraCodice, BindingResult bindingResult, Model model,
+                                  RedirectAttributes redirectAttributes){
         Utente utente = GetUtente();
         List<Gioco> gioco = giocoRepository.findGiochiByUtenteId(utente.getId_utente());
 
@@ -55,10 +56,20 @@ public class CodicePromozionaleController extends HelpUtente {
                 return "CodicePromozionale/CodicePromozionale";
             }
         }
-        if (codiciPromozionale.getCodicePromozionale().trim().isEmpty()){
-            bindingResult.rejectValue("codicePromozionale","ErrorCodicePromozionale",
-                    "Codice non valido");
-            model.addAttribute("listGiochi",gioco);
+        if (GeneraCodice == null){
+            if (codiciPromozionale.getCodicePromozionale().trim().isEmpty()){
+                bindingResult.rejectValue("codicePromozionale","ErrorCodicePromozionale",
+                        "Codice non valido");
+                model.addAttribute("listGiochi",gioco);
+            }
+        }else {
+            String codiceGenerato = codicePromozionaleService.GeneraCodice(utente.getId_utente());
+            if (codiceGenerato != null && codiceGenerato.length() == 30){
+                codiciPromozionale.setCodicePromozionale(codiceGenerato);
+            }else {
+                redirectAttributes.addFlashAttribute("codiceAggiunto",
+                        "Errore durante la generazione del Codice Sconto");
+            }
         }
 
         if (codiciPromozionale.getValoreCodicePromozionale() != 20 && codiciPromozionale.getValoreCodicePromozionale() != 50

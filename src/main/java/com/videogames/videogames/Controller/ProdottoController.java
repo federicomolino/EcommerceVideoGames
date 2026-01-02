@@ -6,7 +6,7 @@ import com.videogames.videogames.Entity.Recensione;
 import com.videogames.videogames.Repository.CodicePromozionaleRepository;
 import com.videogames.videogames.Repository.PiattaformaRepository;
 import com.videogames.videogames.Repository.RecensioneRepository;
-import com.videogames.videogames.Repository.giocoRepository;
+import com.videogames.videogames.Repository.GiocoRepository;
 import com.videogames.videogames.Service.GiocoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +26,10 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/gioco")
-public class giocoController {
+public class ProdottoController {
 
     @Autowired
-    private giocoRepository giocoRepository;
+    private GiocoRepository giocoRepository;
 
     @Autowired
     private PiattaformaRepository piattaformaRepository;

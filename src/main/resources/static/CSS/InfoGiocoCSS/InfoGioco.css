@@ -1,0 +1,28 @@
+:root {
+    --main-blue: #2A8EFF;
+}
+
+.title-bar {
+    border-left: 5px solid var(--main-blue);
+    padding-left: 12px;
+}
+
+.info-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: none;
+}
+
+.info-card h6 {
+    color: var(--main-blue);
+    font-weight: 600;
+}
+
+.badge-blue {
+    background-color: var(--main-blue);
+}
+
+.scroll-box {
+    max-height: 400px;
+    overflow-y: auto;
+}

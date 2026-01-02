@@ -1,16 +1,13 @@
 package com.videogames.videogames.Service;
 
-import com.videogames.videogames.Entity.CarrelloGioco;
-import com.videogames.videogames.Entity.Gioco;
-import com.videogames.videogames.Entity.Piattaforma;
-import com.videogames.videogames.Entity.Utente;
+import com.videogames.videogames.Entity.*;
 import com.videogames.videogames.Exception.ExceptionAddGioco;
 import com.videogames.videogames.Exception.NessunGiocoTrovato;
 import com.videogames.videogames.Helpers.HelpUtente;
 import com.videogames.videogames.Repository.CarrelloGiocoRepository;
 import com.videogames.videogames.Repository.CodicePromozionaleRepository;
 import com.videogames.videogames.Repository.PiattaformaRepository;
-import com.videogames.videogames.Repository.giocoRepository;
+import com.videogames.videogames.Repository.GiocoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,13 +26,13 @@ import java.util.Optional;
 public class GiocoService extends HelpUtente {
 
     @Autowired
-    private giocoRepository giocoRepository;
+    private GiocoRepository giocoRepository;
 
     @Autowired
     private CarrelloGiocoRepository carrelloGiocoRepository;
 
     @Autowired
-    private carrelloService carrelloService;
+    private CarrelloService carrelloService;
 
     @Autowired
     private PiattaformaRepository piattaformaRepository;
@@ -45,7 +42,14 @@ public class GiocoService extends HelpUtente {
 
     public List<Gioco> showGiochi(String titolo, Principal principal){
         List<Gioco> giochi;
-        if(principal.getName().equalsIgnoreCase("guest")){
+        boolean isUser = false;
+        Utente utente = GetUtente();
+        if (utente != null){
+             isUser = utente.getRoles()
+                    .stream()
+                    .anyMatch(role -> "USER".equalsIgnoreCase(role.getName()));
+        }
+        if(principal.getName().equalsIgnoreCase("guest") || isUser){
             giochi = giocoRepository.findAll();
         }else {
             Utente user = GetUtente();

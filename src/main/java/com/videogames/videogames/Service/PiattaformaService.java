@@ -3,7 +3,7 @@ package com.videogames.videogames.Service;
 import com.videogames.videogames.Entity.Gioco;
 import com.videogames.videogames.Entity.Piattaforma;
 import com.videogames.videogames.Repository.PiattaformaRepository;
-import com.videogames.videogames.Repository.giocoRepository;
+import com.videogames.videogames.Repository.GiocoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ public class PiattaformaService {
     private PiattaformaRepository piattaformaRepository;
 
     @Autowired
-    private giocoRepository giocoRepository;
+    private GiocoRepository giocoRepository;
 
     public Piattaforma newPiattaforma(Piattaforma formPiattaforma){
         return piattaformaRepository.save(formPiattaforma);

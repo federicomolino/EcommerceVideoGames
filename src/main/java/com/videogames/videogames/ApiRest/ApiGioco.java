@@ -4,7 +4,7 @@ import com.videogames.videogames.Entity.Gioco;
 import com.videogames.videogames.Entity.Piattaforma;
 import com.videogames.videogames.Exception.ExceptionAddGioco;
 import com.videogames.videogames.Exception.NessunGiocoTrovato;
-import com.videogames.videogames.Repository.giocoRepository;
+import com.videogames.videogames.Repository.GiocoRepository;
 import com.videogames.videogames.Service.GiocoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ import java.util.List;
 public class ApiGioco {
 
     @Autowired
-    private giocoRepository giocoRepository;
+    private GiocoRepository giocoRepository;
 
     @Autowired
     private GiocoService GiocoService;

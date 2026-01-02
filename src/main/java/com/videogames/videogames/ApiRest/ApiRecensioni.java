@@ -4,7 +4,7 @@ import com.videogames.videogames.Entity.Gioco;
 import com.videogames.videogames.Entity.Recensione;
 import com.videogames.videogames.Exception.NessunGiocoTrovato;
 import com.videogames.videogames.Repository.RecensioneRepository;
-import com.videogames.videogames.Repository.giocoRepository;
+import com.videogames.videogames.Repository.GiocoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +20,10 @@ public class ApiRecensioni {
 
     private RecensioneRepository recensioneRepository;
 
-    private giocoRepository giocoRepository;
+    private GiocoRepository giocoRepository;
 
     @Autowired
-    public ApiRecensioni(RecensioneRepository recensioneRepository, giocoRepository giocoRepository){
+    public ApiRecensioni(RecensioneRepository recensioneRepository, GiocoRepository giocoRepository){
         this.recensioneRepository = recensioneRepository;
         this.giocoRepository = giocoRepository;
     }

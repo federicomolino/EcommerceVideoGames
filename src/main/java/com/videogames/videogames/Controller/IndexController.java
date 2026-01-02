@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.security.Principal;
 
 @Controller
-public class indexController {
+public class IndexController {
 
     private GiocoService GiocoService;
     private ParametroRepository parametroRepository;
 
     @Autowired
-    public indexController(GiocoService giocoService, ParametroRepository parametroRepository,
+    public IndexController(GiocoService giocoService, ParametroRepository parametroRepository,
                            ParametroService parametroService){
         this.GiocoService = giocoService;
         this.parametroRepository = parametroRepository;

@@ -1,0 +1,27 @@
+.frecciaSu,
+.frecciaGiu {
+  width: 16px;
+  height: 15px;
+  padding: 0;
+  border: none;
+  background: transparent;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* transizione fluida per l'ingrandimento */
+  transition: transform 0.2s ease;
+}
+
+.frecciaSu svg,
+.frecciaGiu svg {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+
+/* effetto hover */
+.frecciaSu:hover,
+.frecciaGiu:hover {
+  transform: scale(1.3); /* ingrandisce del 30% */
+}

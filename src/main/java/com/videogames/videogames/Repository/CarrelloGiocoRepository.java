@@ -18,4 +18,7 @@ public interface CarrelloGiocoRepository extends JpaRepository<CarrelloGioco, In
 
     @Query("SELECT cg FROM CarrelloGioco cg WHERE cg.gioco.id = :giocoId")
     Optional<CarrelloGioco> findByIdGiocoCarrello(@Param("giocoId")int giocoId);
+
+    @Query("SELECT cg FROM CarrelloGioco cg WHERE cg.utente.id = :utenteId")
+    CarrelloGioco findByIdUtenteCarrello(@Param("utenteId")int utenteId);
 }
