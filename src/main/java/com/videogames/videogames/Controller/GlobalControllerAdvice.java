@@ -27,7 +27,8 @@ public class GlobalControllerAdvice {
                 "DETTAGLIO_RICERCA",
                 "IMPORT_GIOCHI_EXCEL",
                 "GEST_DIPENDENTI_INT",
-                "AUT_GENERA_CODICESCONTO");
+                "AUT_GENERA_CODICESCONTO",
+                "ABILITA_PIATTAFORMA");
 
         HashMap<String, Boolean> parametri = parametroService.VerificaFlagParametro(codiceParametri);
         model.addAttribute("parametri", parametri);

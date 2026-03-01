@@ -1,6 +1,8 @@
 package com.videogames.videogames.Controller;
 
 import com.videogames.videogames.Entity.*;
+import com.videogames.videogames.Exception.NessunGiocoTrovato;
+import com.videogames.videogames.Exception.NessunaPiattaformaPresente;
 import com.videogames.videogames.Repository.CarrelloGiocoRepository;
 import com.videogames.videogames.Repository.CarrelloRepository;
 import com.videogames.videogames.Repository.CodicePromozionaleRepository;
@@ -61,6 +63,7 @@ public class CarrelloController {
 
     @PostMapping("/add/{id}")
     public String giocoAlCarrello(@PathVariable("id") Integer id, Principal principal,
+                                  @RequestParam(value = "piattaformaId", required = false) Integer piattaformaId,
                                   RedirectAttributes redirectAttributes){
         //utente guest
         if(principal.getName().equalsIgnoreCase("guest")){
@@ -69,14 +72,17 @@ public class CarrelloController {
                     "<a href='/login/register' class='alert-link'> Clicca qui per procedere</a>");
             return "redirect:/";
         }
-        //Mi recupero il gioco
-        Gioco optGioco = giocoRepository.findById(id).get();
-        if (optGioco.getQuantita() <= 0) {
-            redirectAttributes.addFlashAttribute("erroreCarrello", "Gioco esaurito");
-            return "redirect:/"; // o la pagina di dettaglio del gioco
+        Integer idPiattaforma = Optional.ofNullable(piattaformaId).orElse(0);
+        try {
+            carrelloService.addCarrelloGioco(id, principal, idPiattaforma);
+        }catch (NessunGiocoTrovato e){
+            redirectAttributes.addFlashAttribute("errorMessage", "Gioco esaurito");
+            return "redirect:/gioco/infoGame/" + id;
+        }catch (NessunaPiattaformaPresente ex){
+            redirectAttributes.addFlashAttribute("errorMessage", ex);
+            return "redirect:/gioco/infoGame/" + id;
         }
 
-        carrelloService.addCarrelloGioco(id, principal);
         return "redirect:/carrello";
     }
 
@@ -135,6 +141,7 @@ public class CarrelloController {
             if (codiciPromozionaliPresenti.get(i).getCodicePromozionale()
                     .equals(codiciPromozionale.getCodicePromozionale())){
                 codiceTrovato = true;
+                break;
             }
         }
         if (!codiceTrovato){
@@ -156,6 +163,18 @@ public class CarrelloController {
                 //Verifico se il gioco è nel carello
                 for (CarrelloGioco c : carrello){
                     if (c.getGioco().getIdGioco()==idGioco){
+                        //Se lo sconto che si vuole applicare è maggiore del costo del
+                        //gioco vado in errore
+                        boolean scontoValido = carrelloService.VerificaPrezzoConSconto(c.getCarrello().getId_carrello(),
+                                codice.getValoreCodicePromozionale());
+                        if (!scontoValido){
+                            redirectAttributes.addFlashAttribute("codicePromozionale",
+                                    "Codice inserito non valido in quanto lo sconto è inferiore al prezzo" +
+                                            " del gioco, sconto applicabile dal totale %d" .formatted(codice.getValoreCodicePromozionale() + 1));
+                            model.addAttribute("listCarrello", carrello);
+                            model.addAttribute("formAddCodicePromozionale", new CodiciPromozionale());
+                            return "redirect:/carrello";
+                        }
                         //Applico sconto
                         for (Gioco g : giochi){
                             if (g.getIdGioco() == idGioco){
@@ -184,4 +203,6 @@ public class CarrelloController {
         }
         return "Carrello/carrello";
     }
+
+
 }

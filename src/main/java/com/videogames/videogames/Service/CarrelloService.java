@@ -1,6 +1,8 @@
 package com.videogames.videogames.Service;
 
 import com.videogames.videogames.Entity.*;
+import com.videogames.videogames.Exception.NessunGiocoTrovato;
+import com.videogames.videogames.Exception.NessunaPiattaformaPresente;
 import com.videogames.videogames.Exception.QuantitaInsufficenteException;
 import com.videogames.videogames.Helpers.HelpUtente;
 import com.videogames.videogames.Repository.*;
@@ -30,6 +32,8 @@ public class CarrelloService extends HelpUtente {
     @Autowired
     private CodicePromozionaleRepository codicePromozionaleRepository;
 
+    @Autowired
+    private PiattaformaRepository piattaformaRepository;
     //Recupero utente
     public Optional<Utente> recuperoUtente(Principal principal){
 //      Recupero Utente
@@ -88,16 +92,33 @@ public class CarrelloService extends HelpUtente {
     }
 
     //Aggiunta al carrello
-    public String addCarrelloGioco(Integer id, Principal principal){
+    public String addCarrelloGioco(Integer id, Principal principal, int piattaformaId){
 
         //Mi recupero il gioco
         Gioco optGioco = giocoRepository.findById(id).get();
+        if (optGioco.getQuantita() <= 0)
+            throw new NessunGiocoTrovato("Gioco Non disponibile");
+
+        //Se per il gioco sono associate più piattaforme è necessario selezionarla
+        Optional<Piattaforma> p = null;
+        if(piattaformaId <= 0){
+            if(optGioco.getPiattaforma().size() > 1) {
+                throw new NessunaPiattaformaPresente("Nessuna piattaforma selezionata");
+            }
+        }
         //recupero utente
         Utente u = recuperoUtente(principal).get();
-
+        //Mi recupero il carrello associato all'utente
+        Carrello carrelloPrincipale = carrelloRepository.findByUtente(u);
+        p = piattaformaRepository.findById(piattaformaId);
 
         //Se il gioco è già presente nel carrello
-        Optional<CarrelloGioco> UtenteAndGioco = carrelloGiocoRepository.findByUtenteAndGioco(u,optGioco);
+        Optional<CarrelloGioco> UtenteAndGioco;
+        if (p.isPresent()){
+            UtenteAndGioco = carrelloGiocoRepository.findByUtenteAndGiocoAndPiattaforma(u,optGioco,p.get());
+        }else {
+            UtenteAndGioco = carrelloGiocoRepository.findByUtenteAndGioco(u,optGioco);
+        }
         if (UtenteAndGioco.isPresent()){
             //Diminuisco la quantià del gioco
             optGioco.setQuantita(optGioco.getQuantita() -1);
@@ -105,6 +126,10 @@ public class CarrelloService extends HelpUtente {
 
             CarrelloGioco carrelloGioco = UtenteAndGioco.get();
             carrelloGioco.setQuantita(carrelloGioco.getQuantita() +1);
+            carrelloGioco.setCarrello(carrelloPrincipale);
+            if (p.isPresent()){
+                carrelloGioco.setPiattaforma(p.get());
+            }
             carrelloGiocoRepository.save(carrelloGioco);
 
         } else {
@@ -117,6 +142,10 @@ public class CarrelloService extends HelpUtente {
             newCarello.setUtente(u);
             newCarello.setGioco(optGioco);
             newCarello.setQuantita(1);
+            newCarello.setCarrello(carrelloPrincipale);
+            if (p.isPresent()){
+                newCarello.setPiattaforma(p.get());
+            }
             carrelloGiocoRepository.save(newCarello);
         }
         prezzoFinaleCarrello(principal,recuperoScontoApplicato(principal));
@@ -171,4 +200,17 @@ public class CarrelloService extends HelpUtente {
         return carrelloGiocoRepository.save(carrelloGioco);
     }
 
+    public boolean VerificaPrezzoConSconto(int idCarrelloPrincipale, double scontoApplicabile){
+        if (scontoApplicabile > 0 ){
+            Optional<Carrello> c = carrelloRepository.findById(idCarrelloPrincipale);
+            if (c.isPresent()){
+                if (c.get().getPrezzoFinaleSconto() != null && c.get().getPrezzoFinaleSconto().doubleValue() > 0){
+                    return c.get().getPrezzoFinaleSconto().doubleValue() > scontoApplicabile;
+                } else {
+                    return c.get().getPrezzoFinale().doubleValue() > scontoApplicabile;
+                }
+            }
+        }
+        return false;
+    }
 }

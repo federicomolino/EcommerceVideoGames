@@ -95,7 +95,7 @@
       </div>
 
         <!--Lista di piattaforme disponibili-->
-      <div class="ms-3 col-4">
+      <div  th:if="${parametri?.['ABILITA_PIATTAFORMA']} == true" class="ms-3 col-4">
           <div class="border rounded p-2" style="max-height: 150px; overflow-y: auto;">
 
             <div th:if="${listPiattaforma.isEmpty or listPiattaforma == null}">

@@ -24,6 +24,26 @@ public class Piattaforma {
     @JoinColumn(name = "id_utente")
     private Utente utente;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "piattaforma")
+    private List<CarrelloGioco> carrelliAssociati;
+
+    public Utente getUtente() {
+        return utente;
+    }
+
+    public void setUtente(Utente utente) {
+        this.utente = utente;
+    }
+
+    public List<CarrelloGioco> getCarrelliAssociati() {
+        return carrelliAssociati;
+    }
+
+    public void setCarrelliAssociati(List<CarrelloGioco> carrelliAssociati) {
+        this.carrelliAssociati = carrelliAssociati;
+    }
+
     public List<Gioco> getGioco() {
         return gioco;
     }

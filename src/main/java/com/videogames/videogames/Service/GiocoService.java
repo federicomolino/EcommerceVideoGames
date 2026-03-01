@@ -65,8 +65,10 @@ public class GiocoService extends HelpUtente {
     public Gioco addGioco(Gioco giocoForm, List<Integer> piattaformaSelezionataId){
         try{
             //Salvo la/e piattaforma selezionata e l'utente a cui appartiene il gioco
-            List<Piattaforma> piattaformaSelezionata = piattaformaRepository.findAllById(piattaformaSelezionataId);
-            giocoForm.setPiattaforma(piattaformaSelezionata);
+            if(piattaformaSelezionataId != null){
+                List<Piattaforma> piattaformaSelezionata = piattaformaRepository.findAllById(piattaformaSelezionataId);
+                giocoForm.setPiattaforma(piattaformaSelezionata);
+            }
             if(GetUtente() != null){
                 giocoForm.setUtente(GetUtente());
             }else {
@@ -74,7 +76,7 @@ public class GiocoService extends HelpUtente {
             }
             return giocoRepository.save(giocoForm);
         }catch (Exception ex) {
-            throw new ExceptionAddGioco("CG_500_DATI_INSERITI_PRESENTI_NEL_SISTEMA");
+            throw new ExceptionAddGioco(ex.getMessage());
         }
     }
 
@@ -93,6 +95,10 @@ public class GiocoService extends HelpUtente {
 
     //Modifica Gioco
     public Gioco editGioco(Gioco editFormGioco, List<Integer> selezionePiattaformaID) {
+        Utente utente = GetUtente();
+        if(utente != null){
+            editFormGioco.setUtente(utente);
+        }
         //Salvo la/e piattaforma selezionata
         List<Piattaforma> piattaformaSelezionata = piattaformaRepository.findAllById(selezionePiattaformaID);
         editFormGioco.setPiattaforma(piattaformaSelezionata);

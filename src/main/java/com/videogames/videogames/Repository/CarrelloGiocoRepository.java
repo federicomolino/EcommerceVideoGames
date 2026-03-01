@@ -2,6 +2,7 @@ package com.videogames.videogames.Repository;
 
 import com.videogames.videogames.Entity.CarrelloGioco;
 import com.videogames.videogames.Entity.Gioco;
+import com.videogames.videogames.Entity.Piattaforma;
 import com.videogames.videogames.Entity.Utente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,6 +14,8 @@ import java.util.Optional;
 public interface CarrelloGiocoRepository extends JpaRepository<CarrelloGioco, Integer> {
 
     List<CarrelloGioco> findByUtente (Optional<Utente> utente);
+
+    Optional<CarrelloGioco> findByUtenteAndGiocoAndPiattaforma (Utente utente, Gioco gioco, Piattaforma piattaforma);
 
     Optional<CarrelloGioco> findByUtenteAndGioco (Utente utente, Gioco gioco);
 

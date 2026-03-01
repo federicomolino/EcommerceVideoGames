@@ -21,7 +21,8 @@
                 <div class="d-flex">
                     <a href="/" class="h3 text-decoration-none">MyShop</a>
                     <div class="mt-2">
-                        <a class="ms-4 mt-2 h5 text-decoration-none" sec:authorize="hasAuthority('ADMIN')"
+                        <a th:if="${parametri?.['ABILITA_PIATTAFORMA']} == true"
+                           class="ms-4 mt-2 h5 text-decoration-none" sec:authorize="hasAuthority('ADMIN')"
                            th:href="@{/piattaforma}">
                             Piattaforma
                         </a>
@@ -89,7 +90,15 @@
                                         <h6>Dettagli</h6>
                                     </div>
                                     <div>
-                                        <button type="submit" class="btn btn-success btn-sm">Cerca</button>
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                                            </svg>
+                                        </button>
+
+                                        <a class="btn btn-sm" href="/">
+                                            Reset
+                                        </a>
                                     </div>
                                 </div>
                                 <hr>
@@ -112,7 +121,7 @@
                                     <input type="month" id="annoPubblicazione" value="2025-05" name="annoPubblicazione">
                                 </div>
 
-                                <div class="mt-3">
+                                <div th:if="${parametri?.['ABILITA_PIATTAFORMA']} == true" class="mt-3">
                                     <h6>Piattaforma</h6>
                                     <div>
                                         <label for="customRange3" class="form-label">pc</label>
@@ -202,7 +211,7 @@
 
                                 <!--Aggiunta al carrello-->
                                 <div class="col-1 d-flex justify-content-center align-items-center">
-                                    <form th:action="@{/carrello/add/{id}(id=${gioco.idGioco})}" method="post">
+                                    <form th:action="@{/gioco/infoGame/{id}(id=${gioco.idGioco})}" method="get">
                                         <button type="submit" class="btn">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus-fill" viewBox="0 0 16 16">
                                                 <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0M8.5 8a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V12a.5.5 0 0 0 1 0v-1.5H10a.5.5 0 0 0 0-1H8.5z"/>

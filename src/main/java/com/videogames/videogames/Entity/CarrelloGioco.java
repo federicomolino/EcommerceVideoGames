@@ -27,6 +27,17 @@ public class CarrelloGioco {
     @Max(value = 9, message = "Valore massimo: 9")
     private Integer quantita;
 
+    @ManyToOne
+    private Piattaforma piattaforma;
+
+    public Piattaforma getPiattaforma() {
+        return piattaforma;
+    }
+
+    public void setPiattaforma(Piattaforma piattaforma) {
+        this.piattaforma = piattaforma;
+    }
+
     public Utente getUtente() {
         return utente;
     }

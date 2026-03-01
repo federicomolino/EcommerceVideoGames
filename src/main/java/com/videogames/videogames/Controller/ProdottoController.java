@@ -4,9 +4,9 @@ import com.videogames.videogames.Entity.CodiciPromozionale;
 import com.videogames.videogames.Entity.Gioco;
 import com.videogames.videogames.Entity.Recensione;
 import com.videogames.videogames.Repository.CodicePromozionaleRepository;
+import com.videogames.videogames.Repository.GiocoRepository;
 import com.videogames.videogames.Repository.PiattaformaRepository;
 import com.videogames.videogames.Repository.RecensioneRepository;
-import com.videogames.videogames.Repository.GiocoRepository;
 import com.videogames.videogames.Service.GiocoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,7 +79,7 @@ public class ProdottoController {
         }
         try {
             GiocoService.addGioco(giocoForm, piattaformaSelezionataId);
-            redirectAttributes.addFlashAttribute("errorMessage",
+            redirectAttributes.addFlashAttribute("successMessage",
                     "Prodotto inserito correttamente");
             return  "redirect:/gioco/newGioco";
         }catch (Exception e){
@@ -128,21 +127,14 @@ public class ProdottoController {
             return "gioco/editGioco";
         }
 
-        if (selezionePiattaformaID == null){
-            //Salvo che non c'è nulla
-            editFormGioco.setPiattaforma(new ArrayList<>());
-            try {
-                giocoRepository.save(editFormGioco);
-                model.addAttribute("gioco",editFormGioco);
-                model.addAttribute("listPiattaforma",piattaformaRepository.findAll());
-                redirectAttributes.addFlashAttribute("successMessage",
+        try{
+            GiocoService.editGioco(editFormGioco,selezionePiattaformaID);
+            redirectAttributes.addFlashAttribute("successMessage",
                         "Modifica effettuata");
-            }catch (Exception e){
-
-            }
-            return "redirect:/gioco/infoGame/" + idGioco;
+        }catch (Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Errore imprevisto durante il tentativo di salvataggio " + e.getMessage());
         }
-        GiocoService.editGioco(editFormGioco,selezionePiattaformaID);
         return "redirect:/gioco/infoGame/" + idGioco;
     }
 
