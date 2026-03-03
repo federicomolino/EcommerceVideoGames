@@ -9,13 +9,16 @@ document.addEventListener("DOMContentLoaded", () => {
              valore += 1;
              quantitaSpan.textContent = valore;
 
+            // Recupero l'id dal bottone
+            const id = parseInt(btn.dataset.id, 10);
+
              //Chiamata al backend aumento
              fetch('carrello/aumenta', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ nuovaQuantita: valore })
+                body: JSON.stringify({idCarrello: id, nuovaQuantita: valore })
              })
              .then(async response => {
 
@@ -48,13 +51,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 quantitaSpan.textContent = valore;
              }
 
+             const id = parseInt(btn.dataset.id, 10);
+
              //Chiamata al backend diminuisci
               fetch('carrello/diminuisci', {
                  method: 'POST',
                  headers: {
                      'Content-Type': 'application/json'
                  },
-                 body: JSON.stringify({ nuovaQuantita: valore })
+                 body: JSON.stringify({idCarrello: id, nuovaQuantita: valore })
               })
               .then(async response => {
 

@@ -15,6 +15,8 @@ public interface CarrelloGiocoRepository extends JpaRepository<CarrelloGioco, In
 
     List<CarrelloGioco> findByUtente (Optional<Utente> utente);
 
+    List<CarrelloGioco> findByUtente (Utente utente);
+
     Optional<CarrelloGioco> findByUtenteAndGiocoAndPiattaforma (Utente utente, Gioco gioco, Piattaforma piattaforma);
 
     Optional<CarrelloGioco> findByUtenteAndGioco (Utente utente, Gioco gioco);

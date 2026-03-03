@@ -1,5 +1,6 @@
 package com.videogames.videogames.Service;
 
+import com.videogames.videogames.Dto.CarrelloDto;
 import com.videogames.videogames.Entity.*;
 import com.videogames.videogames.Exception.NessunGiocoTrovato;
 import com.videogames.videogames.Exception.NessunaPiattaformaPresente;
@@ -7,6 +8,7 @@ import com.videogames.videogames.Exception.QuantitaInsufficenteException;
 import com.videogames.videogames.Helpers.HelpUtente;
 import com.videogames.videogames.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -45,10 +47,9 @@ public class CarrelloService extends HelpUtente {
         return utente;
     }
 
-    public double prezzoFinaleCarrello(Principal principal, double codicePromozionale){
-        Optional<Utente> utente = recuperoUtente(principal);
-        Utente user = utente.get();
-        Carrello carr = carrelloRepository.findByUtente(user);
+    public double prezzoFinaleCarrello(double codicePromozionale, Utente utente){
+
+        Carrello carr = carrelloRepository.findByUtente(utente);
         List<CarrelloGioco> carrelloGioco = carrelloGiocoRepository.findByUtente(utente);
         double price = 0;
 
@@ -77,11 +78,9 @@ public class CarrelloService extends HelpUtente {
         return price;
     }
 
-    public double recuperoScontoApplicato(Principal principal){
-        // Recupero utente
-        Utente u = recuperoUtente(principal).get();
+    public double recuperoScontoApplicato(Utente utente){
         // Recupero carrello
-        Carrello carr = carrelloRepository.findByUtente(u);
+        Carrello carr = carrelloRepository.findByUtente(utente);
         double scontoApplicato = 0;
         if (carr.getPrezzoFinaleSconto() != null &&
                 carr.getPrezzoFinaleSconto().compareTo(BigDecimal.ZERO) > 0) {
@@ -92,7 +91,7 @@ public class CarrelloService extends HelpUtente {
     }
 
     //Aggiunta al carrello
-    public String addCarrelloGioco(Integer id, Principal principal, int piattaformaId){
+    public void AddCarrelloGioco(Integer id, int piattaformaId, Utente u){
 
         //Mi recupero il gioco
         Gioco optGioco = giocoRepository.findById(id).get();
@@ -101,13 +100,18 @@ public class CarrelloService extends HelpUtente {
 
         //Se per il gioco sono associate più piattaforme è necessario selezionarla
         Optional<Piattaforma> p = null;
+        if (piattaformaId > 0){
+            Optional<Piattaforma> verificaPiattaformaExist =piattaformaRepository.findById(piattaformaId);
+            if (!verificaPiattaformaExist.isPresent()){
+                throw new NessunaPiattaformaPresente("Piattaforma inserita non valida");
+            }
+        }
+
         if(piattaformaId <= 0){
             if(optGioco.getPiattaforma().size() > 1) {
                 throw new NessunaPiattaformaPresente("Nessuna piattaforma selezionata");
             }
         }
-        //recupero utente
-        Utente u = recuperoUtente(principal).get();
         //Mi recupero il carrello associato all'utente
         Carrello carrelloPrincipale = carrelloRepository.findByUtente(u);
         p = piattaformaRepository.findById(piattaformaId);
@@ -148,11 +152,10 @@ public class CarrelloService extends HelpUtente {
             }
             carrelloGiocoRepository.save(newCarello);
         }
-        prezzoFinaleCarrello(principal,recuperoScontoApplicato(principal));
-        return "redirect:/carrello";
+        prezzoFinaleCarrello(recuperoScontoApplicato(u), u);
     }
 
-    public void cancellaGiocoCarrello(Integer id, Principal principal){
+    public void cancellaGiocoCarrello(Integer id, Utente utente){
         CarrelloGioco carrelloGioco = carrelloGiocoRepository.findById(id).get();
         Gioco gioco = carrelloGioco.getGioco();
         //Aggiungio la quantità eliminata al magazzino
@@ -163,16 +166,15 @@ public class CarrelloService extends HelpUtente {
         //Elimino il gioco dal carrello
         carrelloGiocoRepository.deleteById(id);
         //Recupero lo sconto precedentemente applicato
-        double sconto = recuperoScontoApplicato(principal);
-        prezzoFinaleCarrello(principal,sconto);
+        double sconto = recuperoScontoApplicato(utente);
+        prezzoFinaleCarrello(sconto, utente);
     }
 
-    public CarrelloGioco modificaQuantitaCarrello(Integer quantita, Principal principal){
-        Utente utente = GetUtente();
+    public CarrelloGioco modificaQuantitaCarrello(Integer quantita, Integer idCarrello, Utente utente){
         if(utente == null)  {
             return null;
         }
-        CarrelloGioco carrelloGioco = carrelloGiocoRepository.findByIdUtenteCarrello(utente.getId_utente());
+        CarrelloGioco carrelloGioco = carrelloGiocoRepository.findById(idCarrello).get();
         Gioco idGioco = carrelloGioco.getGioco();
 
         if (carrelloGioco.getQuantita() < quantita){
@@ -196,7 +198,7 @@ public class CarrelloService extends HelpUtente {
         }
 
         carrelloGioco.setQuantita(quantita);
-        prezzoFinaleCarrello(principal,recuperoScontoApplicato(principal));
+        prezzoFinaleCarrello(recuperoScontoApplicato(utente), utente);
         return carrelloGiocoRepository.save(carrelloGioco);
     }
 
@@ -212,5 +214,24 @@ public class CarrelloService extends HelpUtente {
             }
         }
         return false;
+    }
+
+    public void VerificaAggiungiAlCarrello(Integer id,
+                                           CarrelloDto.AggiungiAlCarrelloRequest aggiungiAlCarrelloRequest){
+
+        if (aggiungiAlCarrelloRequest != null){
+            Optional<Utente> utente = userRepository.findByUsername(aggiungiAlCarrelloRequest.getUsername());
+            if (utente.isPresent()){
+                try{
+                    AddCarrelloGioco(id, aggiungiAlCarrelloRequest.getPiattaformaId(), utente.get());
+                    return;
+                }catch (NessunGiocoTrovato e){
+                    throw new NessunGiocoTrovato(e.getMessage());
+                }catch (NessunaPiattaformaPresente e){
+                    throw new NessunaPiattaformaPresente(e.getMessage());
+                }
+            }
+            throw new UsernameNotFoundException("Utente non valido");
+        }
     }
 }

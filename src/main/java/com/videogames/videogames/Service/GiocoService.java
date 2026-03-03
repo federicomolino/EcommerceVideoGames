@@ -81,6 +81,8 @@ public class GiocoService extends HelpUtente {
     }
 
     public void cancellaGioco(Integer id, Principal principal){
+        //Recupero utente
+        Utente usetr = carrelloService.GetUtente();
         Optional<Gioco> gioco = giocoRepository.findById(id);
         if (!gioco.isPresent()){
             throw new NessunGiocoTrovato("CG400_ID_PASSATO_NON_VALIDO");
@@ -88,7 +90,7 @@ public class GiocoService extends HelpUtente {
         //Cerchiamo se il gioco è in qualche carrello
         Optional<CarrelloGioco> carrelloGioco = carrelloGiocoRepository.findByIdGiocoCarrello(id);
         if (carrelloGioco.isPresent()){
-            carrelloService.cancellaGiocoCarrello(carrelloGioco.get().getId_carrelloGioco(),principal);
+            carrelloService.cancellaGiocoCarrello(carrelloGioco.get().getId_carrelloGioco(),usetr);
         }
         giocoRepository.deleteById(id);
     }
