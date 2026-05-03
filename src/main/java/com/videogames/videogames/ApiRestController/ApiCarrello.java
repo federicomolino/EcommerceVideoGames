@@ -1,4 +1,4 @@
-package com.videogames.videogames.ApiRest;
+package com.videogames.videogames.ApiRestController;
 
 import com.videogames.videogames.Dto.CarrelloDto;
 import com.videogames.videogames.Exception.NessunGiocoTrovato;
@@ -27,7 +27,7 @@ public class ApiCarrello extends HelpUtente {
 
     @PostMapping("/add/{id}")
     @ResponseBody
-    public ResponseEntity<String> giocoAlCarrello(@PathVariable("id") Integer id,
+    public ResponseEntity<String> GiocoAlCarrello(@PathVariable("id") Integer id,
                                                   Principal principal,
                                                   @RequestBody(required = false) CarrelloDto.AggiungiAlCarrelloRequest aggiungiAlCarrelloRequest,
                                                   @RequestParam(value = "piattaformaId", required = false) Integer piattaformaId){
@@ -61,4 +61,26 @@ public class ApiCarrello extends HelpUtente {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
+
+    @PostMapping("/spostaNelCarrello/{id}/{idListaGiocoDesideri}")
+    @ResponseBody
+    public ResponseEntity<String> SpotaNelCarrello(@PathVariable("id") Integer id,
+                                                   @PathVariable("idListaGiocoDesideri") Integer idListaGiocoDesideri,
+                                                   @RequestParam(value = "piattaforma", required = false) Integer idPiattaformaListaGico,
+                                                   Principal principal){
+        //utente guest
+        if(principal.getName().equalsIgnoreCase("guest")){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Accedere per poter procedere con l'acquisto");
+        }
+        Integer idPiattaforma = Optional.ofNullable(idPiattaformaListaGico).orElse(0);
+        try {
+            carrelloService.SpostaNelCarrello(id, idListaGiocoDesideri, idPiattaforma, carrelloService.GetUtente());
+            return ResponseEntity.ok("Gioco Aggiunto Al Carrello");
+        }catch (NessunGiocoTrovato e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Gioco esaurito");
+        }catch (NessunaPiattaformaPresente ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
 }

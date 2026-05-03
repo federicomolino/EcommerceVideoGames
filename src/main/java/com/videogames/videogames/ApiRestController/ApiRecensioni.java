@@ -1,4 +1,4 @@
-package com.videogames.videogames.ApiRest;
+package com.videogames.videogames.ApiRestController;
 
 import com.videogames.videogames.Entity.Gioco;
 import com.videogames.videogames.Entity.Recensione;

@@ -17,7 +17,6 @@ public class Gioco {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idGioco;
 
-    @Column(unique = true)
     private String titolo;
 
     private String descrizione;
@@ -64,6 +63,16 @@ public class Gioco {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_utente")
     private Utente utente;
+
+    private byte[] imgProdotto;
+
+    public byte[] getImgProdotto() {
+        return imgProdotto;
+    }
+
+    public void setImgProdotto(byte[] imgProdotto) {
+        this.imgProdotto = imgProdotto;
+    }
 
     public Utente getUtente() {
         return utente;

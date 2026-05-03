@@ -27,8 +27,10 @@ public class IndexController {
 
     @GetMapping("/")
     public String indexPage(@RequestParam(name = "titolo", required = false)String titolo,
+                            @RequestParam(name = "checkAllView", defaultValue = "true") boolean checkAllView,
                             Model model, Principal principal){
-        model.addAttribute("list", GiocoService.showGiochi(titolo, principal));
+        model.addAttribute("list", GiocoService.showGiochi(titolo, checkAllView, principal));
+        model.addAttribute("checkAllView", checkAllView);
         return "gioco/index";
     }
 }

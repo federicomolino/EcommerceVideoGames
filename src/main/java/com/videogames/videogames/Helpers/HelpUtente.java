@@ -28,4 +28,16 @@ public class HelpUtente implements IHelpers {
             return null;
         }
     }
+
+    public Utente GetUtenteUsername(String username){
+        if (username == null){
+            return GetUtente();
+        }
+        Optional<Utente> utente = userRepository.findByUsername(username);
+        if (utente.isPresent()){
+            return utente.get();
+        }else {
+            return null;
+        }
+    }
 }

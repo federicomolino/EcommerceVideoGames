@@ -38,7 +38,8 @@ public class PiattaformaController extends HelpUtente {
     }
 
     @PostMapping("/newPiattaforma")
-    public String AddPiattaforma(@ModelAttribute("formPiattaforma") Piattaforma formPiattaforma, BindingResult bindingResult, Model model){
+    public String AddPiattaforma(@ModelAttribute("formPiattaforma") Piattaforma formPiattaforma, BindingResult bindingResult,
+                                 Model model){
         List<Piattaforma> piattaforma = piattaformaRepository.findAll();
 
         if (formPiattaforma.getNomePiattaforma().trim().equals("")){
@@ -61,7 +62,7 @@ public class PiattaformaController extends HelpUtente {
             return "Piattaforma/indexPiattaforma";
         }
 
-        piattaformaService.newPiattaforma(formPiattaforma);
+        piattaformaService.newPiattaforma(formPiattaforma, piattaformaService.GetUtente());
         return "redirect:/piattaforma";
     }
 

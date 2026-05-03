@@ -17,8 +17,17 @@ public interface GiocoRepository extends JpaRepository<Gioco,Integer> {
     @Query("SELECT g.keyAttivazione FROM Gioco g WHERE g.keyAttivazione = :keyAttivazione")
     String KeyGioco(@Param("keyAttivazione")String keyAttivazione);
 
+    @Query("SELECT g FROM Gioco g WHERE g.keyAttivazione = :keyAttivazione " +
+            "and g.idGioco != :idGioco")
+    Gioco KeyGiocoAndIdGioco(@Param("keyAttivazione")String keyAttivazione,
+                            @Param("idGioco") int idGioco);
+
     @Query("SELECT g.codiceProdotto FROM Gioco g WHERE g.codiceProdotto = :codiceProdotto")
     Optional<Long> findcodiceProdottoGioco(@Param("codiceProdotto")long codiceProdotto);
+
+    @Query("SELECT g FROM Gioco g WHERE g.codiceProdotto = :codiceProdotto and g.idGioco != :idGioco")
+    Optional<Long> findcodiceProdottoAndGioco(@Param("codiceProdotto")long codiceProdotto,
+                                           @Param("idGioco") int idGioco);
 
     List<Gioco> findByTitoloContainingIgnoreCase(String titolo);
 

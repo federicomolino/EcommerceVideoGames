@@ -24,9 +24,9 @@ public class RicercaGiochiController {
     }
 
     @GetMapping("/searchGiochi")
-    public String GetSearchGioco(@RequestParam(required = false) String rangePrezzo,
-                                 @RequestParam(required = false) String annoPubblicazione,
-                                 @RequestParam(required = false)List<String> piattaforma,
+    public String GetSearchGioco(@RequestParam(required = false, defaultValue = "null") String rangePrezzo,
+                                 @RequestParam(required = false, defaultValue = "null") String annoPubblicazione,
+                                 @RequestParam(required = false, defaultValue = "")List<String> piattaforma,
                                  RedirectAttributes redirectAttributes, Model model){
 
         if (rangePrezzo == null || rangePrezzo.isEmpty() || annoPubblicazione == null || annoPubblicazione.isEmpty() ||

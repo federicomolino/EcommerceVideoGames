@@ -1,4 +1,4 @@
-package com.videogames.videogames.ApiRest;
+package com.videogames.videogames.ApiRestController;
 
 import com.videogames.videogames.Entity.Piattaforma;
 import com.videogames.videogames.Exception.NessunaPiattaformaPresente;

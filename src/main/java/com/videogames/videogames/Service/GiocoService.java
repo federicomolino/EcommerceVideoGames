@@ -1,13 +1,16 @@
 package com.videogames.videogames.Service;
 
-import com.videogames.videogames.Entity.*;
+import com.videogames.videogames.Entity.CarrelloGioco;
+import com.videogames.videogames.Entity.Gioco;
+import com.videogames.videogames.Entity.Piattaforma;
+import com.videogames.videogames.Entity.Utente;
 import com.videogames.videogames.Exception.ExceptionAddGioco;
 import com.videogames.videogames.Exception.NessunGiocoTrovato;
 import com.videogames.videogames.Helpers.HelpUtente;
 import com.videogames.videogames.Repository.CarrelloGiocoRepository;
 import com.videogames.videogames.Repository.CodicePromozionaleRepository;
-import com.videogames.videogames.Repository.PiattaformaRepository;
 import com.videogames.videogames.Repository.GiocoRepository;
+import com.videogames.videogames.Repository.PiattaformaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,7 +43,7 @@ public class GiocoService extends HelpUtente {
     @Autowired
     private CodicePromozionaleRepository codicePromozionaleRepository;
 
-    public List<Gioco> showGiochi(String titolo, Principal principal){
+    public List<Gioco> showGiochi(String titolo, boolean checkAllView, Principal principal){
         List<Gioco> giochi;
         boolean isUser = false;
         Utente utente = GetUtente();
@@ -49,12 +52,16 @@ public class GiocoService extends HelpUtente {
                     .stream()
                     .anyMatch(role -> "USER".equalsIgnoreCase(role.getName()));
         }
+
         if(principal.getName().equalsIgnoreCase("guest") || isUser){
             giochi = giocoRepository.findAll();
-        }else {
+        }else if (!checkAllView){
             Utente user = GetUtente();
             giochi = giocoRepository.findGiochiByUtenteId(user.getId_utente());
+        }else {
+            giochi = giocoRepository.findAll();
         }
+
         if (titolo != null && titolo.isEmpty()){
             giochi = giocoRepository.findByTitoloContainingIgnoreCase(titolo);
         }
@@ -69,11 +76,15 @@ public class GiocoService extends HelpUtente {
                 List<Piattaforma> piattaformaSelezionata = piattaformaRepository.findAllById(piattaformaSelezionataId);
                 giocoForm.setPiattaforma(piattaformaSelezionata);
             }
-            if(GetUtente() != null){
-                giocoForm.setUtente(GetUtente());
-            }else {
-                throw new Exception("Utente non presente");
+
+            if (giocoForm.getUtente() == null){
+                if(GetUtente() != null){
+                    giocoForm.setUtente(GetUtente());
+                }else {
+                    throw new Exception("Utente non presente");
+                }
             }
+            ControlliPreSalvataggio(giocoForm, giocoForm.getUtente().getUsername());
             return giocoRepository.save(giocoForm);
         }catch (Exception ex) {
             throw new ExceptionAddGioco(ex.getMessage());
@@ -97,20 +108,28 @@ public class GiocoService extends HelpUtente {
 
     //Modifica Gioco
     public Gioco editGioco(Gioco editFormGioco, List<Integer> selezionePiattaformaID) {
-        Utente utente = GetUtente();
-        if(utente != null){
-            editFormGioco.setUtente(utente);
+        try {
+            if (editFormGioco.getUtente() == null){
+                if(GetUtente() != null){
+                    editFormGioco.setUtente(GetUtente());
+                }else {
+                    throw new Exception("Utente non presente");
+                }
+            }
+            ControlliPreSalvataggio(editFormGioco, editFormGioco.getUtente().getUsername());
+            //Salvo la/e piattaforma selezionata
+            List<Piattaforma> piattaformaSelezionata = piattaformaRepository.findAllById(selezionePiattaformaID);
+            editFormGioco.setPiattaforma(piattaformaSelezionata);
+            editFormGioco.setTitolo(editFormGioco.getTitolo());
+            editFormGioco.setDescrizione(editFormGioco.getDescrizione());
+            editFormGioco.setPrezzo(editFormGioco.getPrezzo());
+            editFormGioco.setCodiceProdotto(editFormGioco.getCodiceProdotto());
+            editFormGioco.setQuantita(editFormGioco.getQuantita());
+            editFormGioco.setSoftwareHouse(editFormGioco.getSoftwareHouse());
+            return giocoRepository.save(editFormGioco);
+        }catch (Exception ex){
+            throw new ExceptionAddGioco(ex.getMessage());
         }
-        //Salvo la/e piattaforma selezionata
-        List<Piattaforma> piattaformaSelezionata = piattaformaRepository.findAllById(selezionePiattaformaID);
-        editFormGioco.setPiattaforma(piattaformaSelezionata);
-        editFormGioco.setTitolo(editFormGioco.getTitolo());
-        editFormGioco.setDescrizione(editFormGioco.getDescrizione());
-        editFormGioco.setPrezzo(editFormGioco.getPrezzo());
-        editFormGioco.setCodiceProdotto(editFormGioco.getCodiceProdotto());
-        editFormGioco.setQuantita(editFormGioco.getQuantita());
-        editFormGioco.setSoftwareHouse(editFormGioco.getSoftwareHouse());
-        return giocoRepository.save(editFormGioco);
     }
 
     //Aggiungo giochi tramite file
@@ -154,13 +173,55 @@ public class GiocoService extends HelpUtente {
 
     public List<Gioco> RicercaGiochi(String rangePrezzo, String dataUscita, List<String> piattaforma)throws Exception{
         //controllo i parametri da passare alla query
-        LocalDate inizioParse =  dataUscita.isEmpty() ? null : LocalDate.parse(dataUscita + "-01");
-        LocalDate fineParse = inizioParse == null ? null : inizioParse.withDayOfMonth(inizioParse.lengthOfMonth());
-        Double prezzo = rangePrezzo.isEmpty() ? null : Double.valueOf(rangePrezzo);
-        List<Gioco> query = giocoRepository.searchGiochi(piattaforma, prezzo, inizioParse,fineParse);
+
+        LocalDate inizioParse = null;
+        LocalDate fineParse = null;
+        List<String> piattaforme = null;
+        if (!piattaforma.isEmpty()){
+            piattaforme = piattaforma;
+        }
+        if (!dataUscita.equals("null")){
+            inizioParse =  dataUscita.isEmpty() ? null : LocalDate.parse(dataUscita + "-01");
+            fineParse = inizioParse == null ? null : inizioParse.withDayOfMonth(inizioParse.lengthOfMonth());
+        }
+        Double prezzo = rangePrezzo.isEmpty() || rangePrezzo == null ? null : Double.valueOf(rangePrezzo);
+        List<Gioco> query = giocoRepository.searchGiochi(piattaforme, prezzo, inizioParse,fineParse);
         if (query.isEmpty()){
             throw new Exception();
         }
         return query;
+    }
+
+    private void ControlliPreSalvataggio(Gioco g, String username){
+        if (username == null){
+            Utente utente = GetUtente();
+            username = utente.getUsername();
+        }
+
+        if (g.getTitolo().trim().isEmpty()){
+            throw new IllegalArgumentException("Titolo non valido");
+        }
+
+        //Siamo in creazione
+        if (g.getIdGioco() <= 0){
+            if (g.getKeyAttivazione() != null && (g.getKeyAttivazione().length() > 20
+                    ||g.getKeyAttivazione().equals(giocoRepository.KeyGioco(g.getKeyAttivazione())))){
+                throw new IllegalArgumentException("Key Attivazione non Valida");
+            }
+
+            if(giocoRepository.findcodiceProdottoGioco(g.getCodiceProdotto()).isPresent()){
+                throw new IllegalArgumentException("Il codice Prodotto è già presente a sistema");
+            }
+        }else {
+            //siamo in modifica
+            if (g.getKeyAttivazione() != null && (g.getKeyAttivazione().length() > 20
+                    || g.getKeyAttivazione().equals(giocoRepository.KeyGiocoAndIdGioco(g.getKeyAttivazione(), g.getIdGioco())))){
+                throw new IllegalArgumentException("Key Attivazione non Valida");
+            }
+            if(giocoRepository.findcodiceProdottoAndGioco(g.getCodiceProdotto(), g.getIdGioco()).isPresent()){
+                throw new IllegalArgumentException("Il codice Prodotto è già presente a sistema");
+            }
+        }
+
     }
 }

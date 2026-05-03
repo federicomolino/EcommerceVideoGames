@@ -3,11 +3,13 @@ package com.videogames.videogames.Controller;
 import com.videogames.videogames.Entity.CodiciPromozionale;
 import com.videogames.videogames.Entity.Gioco;
 import com.videogames.videogames.Entity.Recensione;
+import com.videogames.videogames.Entity.Utente;
 import com.videogames.videogames.Repository.CodicePromozionaleRepository;
 import com.videogames.videogames.Repository.GiocoRepository;
 import com.videogames.videogames.Repository.PiattaformaRepository;
 import com.videogames.videogames.Repository.RecensioneRepository;
 import com.videogames.videogames.Service.GiocoService;
+import com.videogames.videogames.Service.PiattaformaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -42,10 +44,14 @@ public class ProdottoController {
     @Autowired
     private CodicePromozionaleRepository codicePromozionaleRepository;
 
+    @Autowired
+    private PiattaformaService piattaformaService;
+
     @GetMapping("/newGioco")
     public String showNewGioco(Model model){
         model.addAttribute("formAdd", new Gioco());
-        model.addAttribute("listPiattaforma",piattaformaRepository.findAll());
+        model.addAttribute("listPiattaforma",
+                piattaformaRepository.findPiattaformaByUtenteId(piattaformaService.GetUtente().getId_utente()));
         return "gioco/Addgioco";
     }
 
@@ -54,28 +60,11 @@ public class ProdottoController {
     public String AddGioco(@Valid @ModelAttribute("formAdd") Gioco giocoForm, BindingResult bindingResult, Model model,
                            @RequestParam(value = "piattaformeSelezionate", required = false)
                            List<Integer> piattaformaSelezionataId, RedirectAttributes redirectAttributes){
-        if (giocoForm.getTitolo().trim().isEmpty() ||
-                giocoForm.getTitolo().equals(giocoRepository.TitleGioco(giocoForm.getTitolo()))){
-            bindingResult.rejectValue("titolo","errorTitolo",
-                    "Titolo inserito non corretto");
-
-        }else if (giocoForm.getKeyAttivazione().length() > 20 ||
-                giocoForm.getKeyAttivazione().equals(giocoRepository.KeyGioco(giocoForm.getKeyAttivazione()))){
-            bindingResult.rejectValue("keyAttivazione","errorkeyAttivazione",
-                    "Chiave inserita non valida");
-        }
-        Optional<Long> CodiceProdotto = giocoRepository.findcodiceProdottoGioco(giocoForm.getCodiceProdotto());
-        if (CodiceProdotto.isPresent()) {
-            long codice = CodiceProdotto.get();
-            if (codice == giocoForm.getCodiceProdotto()){
-                bindingResult.rejectValue("codiceProdotto","errorcodiceProdotto",
-                        "Codice Prodotto non valido");
-            }
-        }
-
         if (bindingResult.hasErrors()){
+            bindingResult.rejectValue("codiceProdotto","errorcodiceProdotto",
+                    "Error generico durante l'esecuzione");
             model.addAttribute("listPiattaforma",piattaformaRepository.findAll());
-            return "gioco/AddGioco";
+            return  "redirect:/gioco/newGioco";
         }
         try {
             GiocoService.addGioco(giocoForm, piattaformaSelezionataId);
@@ -84,7 +73,7 @@ public class ProdottoController {
             return  "redirect:/gioco/newGioco";
         }catch (Exception e){
             redirectAttributes.addFlashAttribute("errorMessage",
-                    "Impossibile procedere con l'inserimento del prodotto");
+                    "Impossibile procedere con l'inserimento del prodotto" + e.getMessage());
             return  "redirect:/gioco/newGioco";
         }
     }
@@ -103,11 +92,20 @@ public class ProdottoController {
 
 
     @GetMapping("editGioco/{idGioco}")
-    public String showEditGioco(@PathVariable("idGioco") Integer idGioco, Model model){
+    public String showEditGioco(@PathVariable("idGioco") Integer idGioco, Model model,
+                                RedirectAttributes redirectAttributes){
         Optional<Gioco> idSingoloGioco = giocoRepository.findById(idGioco);
+        try {
+            ControlloModificaGioco(idSingoloGioco);
+        }catch (Exception ex){
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Errore: " + ex.getMessage());
+            return "redirect:/gioco/infoGame/" + idGioco;
+        }
         model.addAttribute("gioco", idSingoloGioco.get());
         model.addAttribute("EditFormGioco", idSingoloGioco.get());
-        model.addAttribute("listPiattaforma", piattaformaRepository.findAll());
+        model.addAttribute("listPiattaforma",
+                piattaformaRepository.findPiattaformaByUtenteId(piattaformaService.GetUtente().getId_utente()));
         model.addAttribute("listCodicePromozionale", codicePromozionaleRepository.findAll());
         model.addAttribute("codicePromozionale", new CodiciPromozionale());
         return "gioco/editGioco";
@@ -163,4 +161,10 @@ public class ProdottoController {
         return  "redirect:/gioco/newGioco";
     }
 
+
+    private void ControlloModificaGioco(Optional<Gioco> idGioco) throws IllegalAccessException {
+        Utente user = GiocoService.GetUtente();
+        if (user.getId_utente() != idGioco.get().getUtente().getId_utente())
+            throw new IllegalAccessException("Non puoi modificare un gioco non caricato dal tuo utente");
+    }
 }

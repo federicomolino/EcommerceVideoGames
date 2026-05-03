@@ -36,6 +36,12 @@ public class CarrelloService extends HelpUtente {
 
     @Autowired
     private PiattaformaRepository piattaformaRepository;
+
+    @Autowired
+    private ListaDesideriGiocoRepository listaDesideriGiocoRepository;
+
+    @Autowired
+    private ListaDesideriRepository listaDesideriRepository;
     //Recupero utente
     public Optional<Utente> recuperoUtente(Principal principal){
 //      Recupero Utente
@@ -153,6 +159,15 @@ public class CarrelloService extends HelpUtente {
             carrelloGiocoRepository.save(newCarello);
         }
         prezzoFinaleCarrello(recuperoScontoApplicato(u), u);
+    }
+
+    public void SpostaNelCarrello(Integer id, int idListaDesideri, int piattaformaId, Utente utente){
+        AddCarrelloGioco(id, piattaformaId, utente);
+        List <ListaDesideriGioco> list =
+                listaDesideriGiocoRepository.findByUtenteIdAndGioco(utente.getId_utente(), id);
+        if (!list.isEmpty()){
+            listaDesideriGiocoRepository.deleteById(idListaDesideri);
+        }
     }
 
     public void cancellaGiocoCarrello(Integer id, Utente utente){

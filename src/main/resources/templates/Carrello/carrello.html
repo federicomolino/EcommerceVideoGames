@@ -4,196 +4,199 @@
   <title>Carrello</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="/CSS/CarrelloCSS/carrello.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 <body>
 <!--importo navbar-->
-<div th:replace="~{navbar/navbar :: navbar}"></div>
-<div class="container my-5">
-  <div class="row g-4">
+<div th:replace="~{navbar/navbar :: sidebar}">
+  <div th:fragment="content">
+    <div class="container my-5">
+      <div class="row g-4">
 
-    <!-- ===================== -->
-    <!-- CARRELLO -->
-    <!-- ===================== -->
-    <div class="col-lg-7">
-      <div class="card shadow-sm">
-        <div class="card-header bg-white">
-          <h4 class="mb-0">🛒 Carrello</h4>
-        </div>
-
-        <div class="card-body">
-
-          <!-- Carrello vuoto -->
-          <div th:if="${listCarrello.isEmpty}">
-            <div class="alert alert-light text-center">
-              Carrello vuoto,
-              <a href="/" class="alert-link">aggiungi un gioco</a>
-            </div>
-          </div>
-
-          <!-- Carrello con elementi -->
-          <div th:unless="${listCarrello.isEmpty}">
-
-            <div class="table-responsive">
-              <table class="table align-middle">
-                <thead class="table-light">
-                <tr>
-                  <th>Titolo</th>
-                  <th class="text-center">Prezzo</th>
-                  <th class="text-center">Quantità</th>
-                  <th class="text-center">Azioni</th>
-                </tr>
-                </thead>
-
-                <tbody>
-                <tr th:each="carrelloGioco : ${listCarrello}">
-                  <td>
-                    <strong th:text="${carrelloGioco.gioco.titolo}">Titolo</strong>
-                  </td>
-
-                  <td class="text-center">
-                    <span th:text="${carrelloGioco.gioco.prezzo} + ' €'">12 €</span>
-                  </td>
-
-                  <td class="text-center d-flex align-items-center justify-content-center">
-                    <span class="me-2 quantita" th:text="${carrelloGioco.quantita}">2</span>
-
-                    <div class="d-flex flex-column align-items-start">
-                      <button class="frecciaSu" title="Aumenta quantità"
-                              th:attr="data-id=${carrelloGioco.id_carrelloGioco}">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-arrow-up-short">
-                          <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5"/>
-                        </svg>
-                      </button>
-
-                      <button class="frecciaGiu" title="Diminuisci quantità"
-                              th:attr="data-id=${carrelloGioco.id_carrelloGioco}">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-arrow-down-short">
-                          <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4"/>
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-
-                  <td class="text-center">
-                    <form th:action="@{/carrello/delete/{id}(id=${carrelloGioco.id_carrelloGioco})}"
-                          method="post"
-                          class="d-inline">
-                      <button type="submit"
-                              class="btn btn-sm btn-outline-danger"
-                              onclick="return confirm('Vuoi eliminare il gioco dal carrello?')">
-                        🗑
-                      </button>
-                    </form>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
+        <!-- ===================== -->
+        <!-- CARRELLO -->
+        <!-- ===================== -->
+        <div class="col-lg-7">
+          <div class="card shadow-sm">
+            <div class="card-header bg-white">
+              <h4 class="mb-0">🛒 Carrello</h4>
             </div>
 
+            <div class="card-body">
+
+              <!-- Carrello vuoto -->
+              <div th:if="${listCarrello.isEmpty}">
+                <div class="alert alert-light text-center">
+                  Carrello vuoto,
+                  <a href="/" class="alert-link">aggiungi un gioco</a>
+                </div>
+              </div>
+
+              <!-- Carrello con elementi -->
+              <div th:unless="${listCarrello.isEmpty}">
+
+                <div class="table-responsive">
+                  <table class="table align-middle">
+                    <thead class="table-light">
+                    <tr>
+                      <th>Titolo</th>
+                      <th class="text-center">Prezzo</th>
+                      <th class="text-center">Quantità</th>
+                      <th class="text-center">Azioni</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="carrelloGioco : ${listCarrello}">
+                      <td>
+                        <strong th:text="${carrelloGioco.gioco.titolo}">Titolo</strong>
+                      </td>
+
+                      <td class="text-center">
+                        <span th:text="${carrelloGioco.gioco.prezzo} + ' €'">12 €</span>
+                      </td>
+
+                      <td class="text-center d-flex align-items-center justify-content-center">
+                        <span class="me-2 quantita" th:text="${carrelloGioco.quantita}">2</span>
+
+                        <div class="d-flex flex-column align-items-start">
+                          <button class="frecciaSu" title="Aumenta quantità"
+                                  th:attr="data-id=${carrelloGioco.id_carrelloGioco}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-arrow-up-short">
+                              <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5"/>
+                            </svg>
+                          </button>
+
+                          <button class="frecciaGiu" title="Diminuisci quantità"
+                                  th:attr="data-id=${carrelloGioco.id_carrelloGioco}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-arrow-down-short">
+                              <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4"/>
+                            </svg>
+                          </button>
+                        </div>
+                      </td>
+
+                      <td class="text-center">
+                        <form th:action="@{/carrello/delete/{id}(id=${carrelloGioco.id_carrelloGioco})}"
+                              method="post"
+                              class="d-inline">
+                          <button type="submit"
+                                  class="btn btn-sm btn-outline-danger"
+                                  onclick="return confirm('Vuoi eliminare il gioco dal carrello?')">
+                            🗑
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- ===================== -->
+        <!-- RIEPILOGO PAGAMENTO -->
+        <!-- ===================== -->
+        <div class="col-lg-5">
+          <div class="card shadow-sm">
+            <div class="card-header bg-white">
+              <h5 class="mb-0">💳 Riepilogo pagamento</h5>
+            </div>
+
+            <div class="card-body">
+
+              <!-- Totale -->
+              <div class="mb-3">
+                <h6>Totale pagamento</h6>
+                <h4 class="fw-bold text-success"
+                    th:text="'€ ' + ${prezzoTotale}">
+                  € 12
+                </h4>
+              </div>
+
+              <hr>
+
+              <!-- Codice promozionale -->
+              <form th:object="${formAddCodicePromozionale}"
+                    method="post"
+                    th:action="@{/carrello/codicePromozionale}">
+                <div class="mb-3">
+                  <label class="form-label">Codice promozionale</label>
+                  <div class="input-group">
+                    <input type="text"
+                           maxlength="30"
+                           class="form-control"
+                           placeholder="Inserisci codice"
+                           th:field="*{codicePromozionale}">
+                    <button class="btn btn-outline-success" type="submit">
+                      Verifica
+                    </button>
+                  </div>
+
+                  <!-- Errore -->
+                  <div th:if="${codicePromozionale}" class="text-danger mt-1">
+                    <small th:text="${codicePromozionale}">Codice già utilizzato</small>
+                  </div>
+
+                  <!-- Successo -->
+                  <div th:if="${scontoApplicato}" class="text-success mt-1">
+                    <small><strong>Sconto applicato!</strong></small>
+                  </div>
+                </div>
+              </form>
+
+              <hr>
+
+              <!-- Metodo pagamento -->
+              <form>
+                <h6 class="mb-3">Metodo di pagamento</h6>
+
+                <div class="mb-2">
+                  <label class="form-label">Numero carta</label>
+                  <input type="text"
+                         class="form-control"
+                         placeholder="1234 5678 9012 3456"
+                         maxlength="19"
+                         autocomplete="cc-number"
+                         pattern="[0-9\s]{13,19}"
+                         oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                </div>
+
+                <div class="row">
+                  <div class="col-6">
+                    <label class="form-label">Scadenza</label>
+                    <input type="month" class="form-control">
+                  </div>
+
+                  <div class="col-6">
+                    <label class="form-label">CVV</label>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="123"
+                           maxlength="3">
+                  </div>
+                </div>
+
+                <div class="d-grid mt-4">
+                  <button type="submit"
+                          class="btn btn-success"
+                          th:disabled="${prezzoTotale == 0}">
+                    Paga ora
+                  </button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
-
-    <!-- ===================== -->
-    <!-- RIEPILOGO PAGAMENTO -->
-    <!-- ===================== -->
-    <div class="col-lg-5">
-      <div class="card shadow-sm">
-        <div class="card-header bg-white">
-          <h5 class="mb-0">💳 Riepilogo pagamento</h5>
-        </div>
-
-        <div class="card-body">
-
-          <!-- Totale -->
-          <div class="mb-3">
-            <h6>Totale pagamento</h6>
-            <h4 class="fw-bold text-success"
-                th:text="'€ ' + ${prezzoTotale}">
-              € 12
-            </h4>
-          </div>
-
-          <hr>
-
-          <!-- Codice promozionale -->
-          <form th:object="${formAddCodicePromozionale}"
-                method="post"
-                th:action="@{/carrello/codicePromozionale}">
-            <div class="mb-3">
-              <label class="form-label">Codice promozionale</label>
-              <div class="input-group">
-                <input type="text"
-                       maxlength="30"
-                       class="form-control"
-                       placeholder="Inserisci codice"
-                       th:field="*{codicePromozionale}">
-                <button class="btn btn-outline-success" type="submit">
-                  Verifica
-                </button>
-              </div>
-
-              <!-- Errore -->
-              <div th:if="${codicePromozionale}" class="text-danger mt-1">
-                <small th:text="${codicePromozionale}">Codice già utilizzato</small>
-              </div>
-
-              <!-- Successo -->
-              <div th:if="${scontoApplicato}" class="text-success mt-1">
-                <small><strong>Sconto applicato!</strong></small>
-              </div>
-            </div>
-          </form>
-
-          <hr>
-
-          <!-- Metodo pagamento -->
-          <form>
-            <h6 class="mb-3">Metodo di pagamento</h6>
-
-            <div class="mb-2">
-              <label class="form-label">Numero carta</label>
-              <input type="text"
-                     class="form-control"
-                     placeholder="1234 5678 9012 3456"
-                     maxlength="19"
-                     autocomplete="cc-number"
-                     pattern="[0-9\s]{13,19}"
-                     oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-            </div>
-
-            <div class="row">
-              <div class="col-6">
-                <label class="form-label">Scadenza</label>
-                <input type="month" class="form-control">
-              </div>
-
-              <div class="col-6">
-                <label class="form-label">CVV</label>
-                <input type="text"
-                       class="form-control"
-                       placeholder="123"
-                       maxlength="3">
-              </div>
-            </div>
-
-            <div class="d-grid mt-4">
-              <button type="submit"
-                      class="btn btn-success"
-                      th:disabled="${prezzoTotale == 0}">
-                Paga ora
-              </button>
-            </div>
-
-          </form>
-        </div>
-      </div>
-    </div>
-
   </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/Scripts/Carrello.js"></script>
 </body>
