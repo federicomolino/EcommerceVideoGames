@@ -218,49 +218,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-  function aggiungiAlCarrello(idGioco, tipo) {
-    const piattaformaSelect = document.getElementById("piattaformaSelect");
-    const piattaformaId = piattaformaSelect ? piattaformaSelect.value : 0;
-
-    let url;
-    if(tipo == "carrello"){
-      url = '/api/v1/carrello/add/' + idGioco;
-    }else if(tipo == "listaDesideri"){
-      url = '/api/v1/listaDesideri/add/' + idGioco;
-    }
-
-    if (piattaformaId !== null && piattaformaId !== undefined) {
-        url += '?piattaformaId=' + piattaformaId;
-    }
-
-    fetch(url, { method: 'POST' })
-        .then(async response => {
-            const message = await response.text();
-            const toastEl = document.getElementById('toastCarrello');
-            toastEl.querySelector('.toast-body').textContent = message;
-            const toast = new bootstrap.Toast(toastEl);
-
-            if (response.ok) {
-                toastEl.classList.remove('bg-danger');
-                toastEl.classList.add('bg-success');
-            } else {
-                toastEl.classList.remove('bg-success');
-                toastEl.classList.add('bg-danger');
-            }
-
-            toast.show();
-        })
-        .catch(error => {
-            const toastEl = document.getElementById('toastCarrello');
-            toastEl.querySelector('.toast-body').textContent = "Errore di connessione";
-            toastEl.classList.remove('bg-success');
-            toastEl.classList.add('bg-danger');
-            new bootstrap.Toast(toastEl).show();
-        });
-}
-</script>
-
+<script src="/Scripts/InfoGioco.js"></script>
+<script src="/Scripts/auth.js"></script>
 </body>
 </html>

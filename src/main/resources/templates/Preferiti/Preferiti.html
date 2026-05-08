@@ -95,89 +95,99 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    let datiPulsante = {};
+<!--  document.addEventListener('DOMContentLoaded', () => {-->
+<!--    let datiPulsante = {};-->
 
-    // Intercetta quando si apre qualsiasi modal
-    document.addEventListener('show.bs.modal', function(e) {
+<!--    // Intercetta quando si apre qualsiasi modal-->
+<!--    document.addEventListener('show.bs.modal', function(e) {-->
 
-     const trigger = e.relatedTarget;
-      if (!trigger) return;
+<!--     const trigger = e.relatedTarget;-->
+<!--      if (!trigger) return;-->
 
-      if (e.target.id === 'confermaModal') {
-        datiPulsante = {
-          idGioco: e.relatedTarget.getAttribute('data-id'),
-          piattaforma: e.relatedTarget.getAttribute('data-piattaforma'),
-          idLista: e.relatedTarget.getAttribute('data-lista'),
-          action: trigger.dataset.action
-        };
-      }
+<!--      if (e.target.id === 'confermaModal') {-->
+<!--        datiPulsante = {-->
+<!--          idGioco: e.relatedTarget.getAttribute('data-id'),-->
+<!--          piattaforma: e.relatedTarget.getAttribute('data-piattaforma'),-->
+<!--          idLista: e.relatedTarget.getAttribute('data-lista'),-->
+<!--          action: trigger.dataset.action-->
+<!--        };-->
+<!--      }-->
 
-      // 👉 testo dinamico
-      const bodyText = trigger.getAttribute('data-body');
-      if (bodyText) {
-        e.target.querySelector('.modal-body').innerText = bodyText;
-      }
-    });
+<!--      // 👉 testo dinamico-->
+<!--      const bodyText = trigger.getAttribute('data-body');-->
+<!--      if (bodyText) {-->
+<!--        e.target.querySelector('.modal-body').innerText = bodyText;-->
+<!--      }-->
+<!--    });-->
 
-    document.addEventListener('click', function(e) {
-      const btn = e.target.closest('#confermaBtn');
-      if (!btn) return;
+<!--    document.addEventListener('click', function(e) {-->
+<!--      const btn = e.target.closest('#confermaBtn');-->
+<!--      if (!btn) return;-->
 
-      const { idGioco, piattaforma, idLista, action } = datiPulsante;
+<!--      const { idGioco, piattaforma, idLista, action } = datiPulsante;-->
 
-      let url = '';
-      let method = 'POST';
+<!--      let url = '';-->
+<!--      let method = 'POST';-->
 
-      switch (action) {
+<!--      switch (action) {-->
 
-        case 'addCarrello':
-          url = `/api/v1/carrello/spostaNelCarrello/${idGioco}/${idLista}`;
-          if (piattaforma) url += `?piattaforma=${piattaforma}`;
-          break;
+<!--        case 'addCarrello':-->
+<!--          url = `/api/v1/carrello/spostaNelCarrello/${idGioco}/${idLista}`;-->
+<!--          if (piattaforma) url += `?piattaforma=${piattaforma}`;-->
+<!--          break;-->
 
-        case 'removePreferiti':
-          <!--Se entra qui idGioco fa riferimento al singolo id della "lista_desideri_gioco" non del gioco -->
-          url = `/api/v1/listaDesideri/rimuovi/${idGioco}`;
-          method = 'DELETE';
-          break;
+<!--        case 'removePreferiti':-->
+<!--          &lt;!&ndash;Se entra qui idGioco fa riferimento al singolo id della "lista_desideri_gioco" non del gioco &ndash;&gt;-->
+<!--          url = `/api/v1/listaDesideri/rimuovi/${idGioco}`;-->
+<!--          method = 'DELETE';-->
+<!--          break;-->
 
-        default:
-          console.error("Azione non riconosciuta");
-          return;
-      }
+<!--        default:-->
+<!--          console.error("Azione non riconosciuta");-->
+<!--          return;-->
+<!--      }-->
 
-      fetch(url, { method })
-        .then(async res => {
-          const text = await res.text();
-          if (!res.ok) throw new Error(text || 'Errore server');
-          return text;
-        })
-        .then(msg => {
-          const toastEl = document.getElementById('toastCarrello');
-          toastEl.querySelector('.toast-body').textContent = msg;
+<!--      fetch(url, { method })-->
+<!--        .then(async res => {-->
+<!--          const text = await res.text();-->
+<!--          if (!res.ok) throw new Error(text || 'Errore server');-->
+<!--          return text;-->
+<!--        })-->
+<!--        .then(msg => {-->
+<!--          const toastEl = document.getElementById('toastCarrello');-->
+<!--          toastEl.querySelector('.toast-body').textContent = msg;-->
 
-          toastEl.classList.remove('bg-danger');
-          toastEl.classList.add('bg-success');
+<!--          toastEl.classList.remove('bg-danger');-->
+<!--          toastEl.classList.add('bg-success');-->
 
-          new bootstrap.Toast(toastEl).show();
+<!--          new bootstrap.Toast(toastEl).show();-->
 
-          setTimeout(() => window.location.reload(), 2000);
-        })
-        .catch(err => {
-          const toastEl = document.getElementById('toastCarrello');
-          toastEl.querySelector('.toast-body').textContent = err.message;
+<!--          setTimeout(() => window.location.reload(), 2000);-->
+<!--        })-->
+<!--        .catch(err => {-->
+<!--          const toastEl = document.getElementById('toastCarrello');-->
+<!--          toastEl.querySelector('.toast-body').textContent = err.message;-->
 
-          toastEl.classList.remove('bg-success');
-          toastEl.classList.add('bg-danger');
+<!--          toastEl.classList.remove('bg-success');-->
+<!--          toastEl.classList.add('bg-danger');-->
 
-          new bootstrap.Toast(toastEl).show();
-        });
-      bootstrap.Modal.getInstance(document.getElementById('confermaModal'))?.hide();
-    });
-  });
+<!--          new bootstrap.Toast(toastEl).show();-->
+<!--        });-->
+<!--      bootstrap.Modal.getInstance(document.getElementById('confermaModal'))?.hide();-->
+<!--    });-->
+<!--  });-->
 </script>
 <div th:replace="~{Modali/ModaleConfermaAnnulla :: ModaleConfermaAnnulla}"></div>
 <div th:replace="~{Modali/ModaleErroreOSuccesso :: ModaleErroreOSuccesso}"></div>
+<!--rottella-->
+<div id="loadingOverlay" class="d-none position-fixed top-0 start-0 w-100 h-100"
+     style="background: rgba(0,0,0,0.4); z-index: 9999;">
+  <div class="d-flex justify-content-center align-items-center h-100">
+    <div class="spinner-border text-light" role="status"></div>
+  </div>
+</div>
+
+<script src="/Scripts/Preferiti.js"></script>
+<script src="/Scripts/auth.js"></script>
 </body>
 </html>

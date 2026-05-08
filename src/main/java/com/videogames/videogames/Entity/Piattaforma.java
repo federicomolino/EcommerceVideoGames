@@ -2,6 +2,7 @@ package com.videogames.videogames.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ public class Piattaforma {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_piattaforma;
 
+    @NotBlank
     private String nomePiattaforma;
 
     private int quantitaPerPiattaforma;
