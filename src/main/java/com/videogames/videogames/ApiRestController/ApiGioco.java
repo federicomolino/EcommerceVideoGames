@@ -3,7 +3,9 @@ package com.videogames.videogames.ApiRestController;
 import com.videogames.videogames.ApiRestController.Gioco.CreaGioco;
 import com.videogames.videogames.ApiRestController.Gioco.EditGioco;
 import com.videogames.videogames.ApiRestController.Gioco.GiocoCommand;
+import com.videogames.videogames.ApiRestController.Gioco.RecuperaGiochi;
 import com.videogames.videogames.Entity.Gioco;
+import com.videogames.videogames.Entity.Utente;
 import com.videogames.videogames.Exception.ExceptionAddGioco;
 import com.videogames.videogames.Exception.NessunGiocoTrovato;
 import com.videogames.videogames.Repository.GiocoRepository;
@@ -14,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -148,6 +151,58 @@ public class ApiGioco {
             );
             tableLog.InizializzaLog(requestJson, jsonUtil.toJson(response),
                     request.getRequestURI(), BaseCommad.ResponseType.ALERT.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(response);
+        }
+    }
+
+    @GetMapping("/RecuperaGiochi")
+    public ResponseEntity<RecuperaGiochi.Response> GetGiochiPerUtente(@RequestParam String username){
+        try {
+            if (username.isBlank()){
+
+                RecuperaGiochi.Response response = new RecuperaGiochi.Response(
+                    "Username non indicato",
+                    BaseCommad.ResponseType.ERROR,
+                    null
+                );
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(response);
+            }
+
+            Utente user = null;
+            try {
+                user = GiocoService.GetUtenteUsername(username);
+                if (user == null){
+                    throw new UsernameNotFoundException("Username Non valido");
+                }
+            }catch (UsernameNotFoundException e){
+                RecuperaGiochi.Response response = new RecuperaGiochi.Response(
+                        e.getMessage(),
+                        BaseCommad.ResponseType.ERROR,
+                        null
+                );
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(response);
+            }
+
+            List<Gioco> listGiocoPerUtente = GiocoService.GetGiochiPerUtente(user.getId_utente());
+            RecuperaGiochi.Response response = new RecuperaGiochi.Response(
+                    "",
+                    BaseCommad.ResponseType.OK,
+                    listGiocoPerUtente.stream()
+                            .map(RecuperaGiochi.Response.GiocoDto::new)
+                            .toList()
+            );
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(response);
+
+        }catch (Exception ex){
+            RecuperaGiochi.Response response = new RecuperaGiochi.Response(
+                    "Errore generico durante il tentativo di recupero dei giochi",
+                    BaseCommad.ResponseType.ERROR,
+                    null
+            );
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(response);
         }

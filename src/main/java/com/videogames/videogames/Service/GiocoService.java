@@ -192,6 +192,14 @@ public class GiocoService extends HelpUtente {
         return query;
     }
 
+    public List<Gioco> GetGiochiPerUtente(int idUtente){
+
+        if (idUtente <= 0){
+            return null;
+        }
+       return giocoRepository.findGiochiByUtenteId(idUtente);
+    }
+
     private void ControlliPreSalvataggio(Gioco g, String username){
         if (username == null){
             Utente utente = GetUtente();
