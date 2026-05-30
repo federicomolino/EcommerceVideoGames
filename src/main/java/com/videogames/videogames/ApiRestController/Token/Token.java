@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class Token {
     public static class Command extends BaseCommad.BaseCmd{
-
+        public String password;
         public Command(String username){
             super(username);
         }

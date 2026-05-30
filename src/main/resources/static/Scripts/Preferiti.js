@@ -97,10 +97,12 @@ document.addEventListener('show.bs.modal', function(e) {
       } catch (error) {
         const toastEl = document.getElementById('toastCarrello');
         toastEl.querySelector('.toast-body').textContent = error.message;
-
         toastEl.classList.remove('bg-success');
         toastEl.classList.add('bg-danger');
         new bootstrap.Toast(toastEl).show();
+        await minTime;
+        hideLoading();
+        setTimeout(() => window.location.reload(), 500);
       }
     });
 });

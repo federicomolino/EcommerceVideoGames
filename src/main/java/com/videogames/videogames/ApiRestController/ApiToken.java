@@ -38,7 +38,18 @@ public class ApiToken extends HelpUtente {
         String username = null;
         //Caso API
         if (token != null && token.username != null & !token.username.isBlank()){
-            username = token.username;
+            if (tokenService.ControlloPreGenerazioneToken(token.username, token.password)){
+                username = token.username;
+            }else {
+                Token.Response response = new Token.Response(
+                        "Credenziali Errate, Impossibile generare il token",
+                        BaseCommad.ResponseType.ERROR
+                );
+                tableLog.InizializzaLog(requestJson, jsonUtil.toJson(response),
+                        request.getRequestURI(), BaseCommad.ResponseType.ERROR.toString());
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(response);
+            }
         }else {
             //Caso Utente Autenticato
             Utente u = GetUtente();

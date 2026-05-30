@@ -2,12 +2,13 @@ package com.videogames.videogames.Service;
 
 import com.videogames.videogames.Entity.Utente;
 import com.videogames.videogames.Helpers.HelpUtente;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
 import java.util.Date;
 
 @Service
@@ -43,6 +44,15 @@ public class TokenService extends HelpUtente {
                     .getSubject();//Ritorniamo l'utente
         }catch (JwtException e){
             return null;
+        }
+    }
+
+    public boolean ControlloPreGenerazioneToken(String username, String password){
+        try {
+            Utente u = GetUtenteUsername(username);
+            return u.getPassword().equals("{noop}"+password);
+        }catch (Exception e){
+            throw new RuntimeException("Credenziali errate");
         }
     }
 }
