@@ -1,6 +1,6 @@
-package com.videogames.videogames.ApiRestController;
+package com.videogames.videogames.ApiRestController.Token;
 
-import com.videogames.videogames.ApiRestController.Token.Token;
+import com.videogames.videogames.ApiRestController.BaseCommad;
 import com.videogames.videogames.Entity.Utente;
 import com.videogames.videogames.Helpers.HelpUtente;
 import com.videogames.videogames.Service.TokenService;

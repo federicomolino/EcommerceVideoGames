@@ -1,9 +1,7 @@
-package com.videogames.videogames.ApiRestController;
+package com.videogames.videogames.ApiRestController.Gioco;
 
-import com.videogames.videogames.ApiRestController.Gioco.CreaGioco;
-import com.videogames.videogames.ApiRestController.Gioco.EditGioco;
-import com.videogames.videogames.ApiRestController.Gioco.GiocoCommand;
-import com.videogames.videogames.ApiRestController.Gioco.RecuperaGiochi;
+import com.videogames.videogames.ApiRestController.BaseCommad;
+import com.videogames.videogames.ApiRestController.Interfacce.IGioco;
 import com.videogames.videogames.Entity.Gioco;
 import com.videogames.videogames.Entity.Utente;
 import com.videogames.videogames.Exception.ExceptionAddGioco;
@@ -25,7 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/gioco")
-public class ApiGioco {
+public class ApiGiocoController implements IGioco {
 
     @Autowired
     private GiocoRepository giocoRepository;
@@ -49,7 +47,7 @@ public class ApiGioco {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteGioco(@PathVariable Integer id, HttpServletRequest request,
+    public ResponseEntity<?> DeleteGioco(@PathVariable Integer id, HttpServletRequest request,
                                          Principal principal){
         String requestJson = jsonUtil.toJson(id);
         try{

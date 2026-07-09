@@ -62,6 +62,17 @@ public class Utente {
     @OneToMany(mappedBy = "utente")
     private List<CodiciPromozionale> codiciPromozionale = new ArrayList<>();
 
+    @OneToMany(mappedBy = "utente")
+    public List<Batch> batch = new ArrayList<>();
+
+    public List<Batch> getBatch() {
+        return batch;
+    }
+
+    public void setBatch(List<Batch> batch) {
+        this.batch = batch;
+    }
+
     public List<CodiciPromozionale> getCodiciPromozionale() {
         return codiciPromozionale;
     }

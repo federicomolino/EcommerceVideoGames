@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PiattaformaService extends HelpUtente {
+public class PiattaformaService extends HelpUtente{
 
     @Autowired
     private PiattaformaRepository piattaformaRepository;
